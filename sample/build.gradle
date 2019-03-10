@@ -1,0 +1,31 @@
+apply from: '../dependencies.gradle'
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+  compileSdkVersion versions.compileSdk
+
+  defaultConfig {
+    applicationId "com.afollestad.recyclicalsample"
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.compileSdk
+    versionCode versions.publishVersionCode
+    versionName versions.publishVersion
+  }
+
+  compileOptions {
+    kotlinOptions.freeCompilerArgs += ['-module-name', "com.afollestad.recyclicalsample"]
+  }
+}
+
+dependencies {
+  implementation project(':library')
+
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
+  implementation 'androidx.appcompat:appcompat:' + versions.androidx
+  implementation 'androidx.recyclerview:recyclerview:' + versions.androidxRecyclerView
+}
+
+apply from: '../spotless.gradle'
