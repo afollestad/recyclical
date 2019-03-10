@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
       recyclerView.setup {
           withDataSource(dataSource)
           withItem<Person>(R.layout.person_item_layout) {
-            onBind(::PersonViewHolder) { _, item ->
+            onBind(::PersonViewHolder) { index, item ->
               name.text = item.name
               age.text = "${item.age}"
             }
@@ -107,7 +107,7 @@ recyclerView.setup {
 
 ## Multiple Item Types
 
-You can mix different types of items, but need to specify view holders and layouts for them too:
+You can mix different types of items - but you need to specify view holders and layouts for them too:
 
 ```kotlin
 val items = listOf(
@@ -121,20 +121,20 @@ recyclerView.setup {
   withDataSource(dataSource)
     
   withItem<Person>(R.layout.person_item_layout) {
-     onBind(::PersonViewHolder) { _, item ->
+     onBind(::PersonViewHolder) { index, item ->
         name.text = item.name
         age.text = "${item.age}"
      }
   }
   withItem<Motorcycle>(R.layout.motorcycle_item_layout) {
-     onBind(::MotorcycleViewHolder) { _, item ->
+     onBind(::MotorcycleViewHolder) { index, item ->
         year.text = "${item.year}"
         make.text = item.make
         model.text = item.model
      }
   }
   withItem<Car>(R.layout.car_item_layout) {
-     onBind(::CarViewHolder) { _, item ->
+     onBind(::CarViewHolder) { index, item ->
         year.text = "${item.year}"
         name.text = item.name
      } 
