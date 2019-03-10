@@ -13,15 +13,6 @@
 
 ## Gradle Dependency
 
-*The publish to jCenter is pending, so add this to your repositories for now:*
-
-```gradle
-repositories {
-
-  maven { url 'https://dl.bintray.com/drummer-aidan/maven' }
-}
-```
-
 Add this to your module's `build.gradle` file:
 
 ```gradle
