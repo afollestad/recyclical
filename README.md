@@ -177,12 +177,18 @@ dataSource.swap(1, 4)
 dataSource.move(1, 4)
 // clears all items from the data source
 dataSource.clear()
+
 // iterates over the items in the data source
 for (item in dataSource) { }
-// self explanatory properties
+dataSource.forEach { }
+dataSource.forEachOf<Person> { }
+
+// collection-like methods
 dataSource.size()
 dataSource.isEmpty()
 dataSource.isNotEmpty()
+dataSource.indexOfFirst { }
+dataSource.indexOfLast { }
 ```
 
 When performing a `set` on the data set, you can opt to use diff utils:

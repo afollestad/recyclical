@@ -30,7 +30,10 @@ internal class DefinitionAdapter(
   private val bindingsToTypes = setup.bindingsToTypes
 
   init {
-    dataSource.attachAdapter(this)
+    dataSource.apply {
+      attachAdapter(this@DefinitionAdapter)
+      invalidateEmptyView()
+    }
   }
 
   override fun getItemViewType(position: Int): Int {

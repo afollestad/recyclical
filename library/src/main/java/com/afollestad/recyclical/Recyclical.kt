@@ -76,7 +76,6 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
   } ?: throw IllegalStateException("Must set a data source.")
 
   adapter = DefinitionAdapter(setup, dataSource)
-  dataSource.invalidateEmptyView()
 
   return setup
 }

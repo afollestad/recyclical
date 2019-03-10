@@ -20,6 +20,8 @@ package com.afollestad.recyclical
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.annotation.RestrictTo
+import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
@@ -129,9 +131,22 @@ class DataSource(initialData: List<Any> = mutableListOf()) {
 
   fun isNotEmpty() = items.isNotEmpty()
 
+  fun forEach(block: (Any) -> Unit) = items.forEach(block)
+
+  fun indexOfFirst(predicate: (Any) -> Boolean): Int = items.indexOfFirst(predicate)
+
+  fun indexOfLast(predicate: (Any) -> Boolean): Int = items.indexOfLast(predicate)
+
+  @RestrictTo(LIBRARY) fun items() = items
+
   internal fun invalidateEmptyView() = emptyView.showOrHide(isEmpty())
 
   private fun ensureAttached() = adapter ?: throw IllegalStateException("Not attached")
+}
+
+inline fun <reified T : Any> DataSource.forEachOf(block: (T) -> Unit) {
+  items().filter { it is T }
+      .forEach { block(it as T) }
 }
 
 private fun View?.showOrHide(show: Boolean) {
