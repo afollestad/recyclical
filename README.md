@@ -7,7 +7,7 @@
 [![Build Status](https://travis-ci.org/afollestad/recyclical.svg)](https://travis-ci.org/afollestad/recyclical)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-<img src="https://raw.githubusercontent.com/afollestad/recyclical/master/art/showcase.png" width="600" />
+<img src="https://raw.githubusercontent.com/afollestad/recyclical/master/art/showcase2.png" width="600" />
 
 ---
 
