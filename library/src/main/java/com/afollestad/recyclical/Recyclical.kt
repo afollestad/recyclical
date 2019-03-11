@@ -37,21 +37,38 @@ class RecyclicalSetup internal constructor(
   internal var dataSource: DataSource? = null
   internal var globalOnClick: ItemClickListener<Any>? = null
 
+  /**
+   * Sets a layout manaher for the RecyclerView. The default is a vertical LinearLayoutManager,
+   * so this method is optional.
+   */
   fun withLayoutManager(layoutManager: LayoutManager): RecyclicalSetup {
     recyclerView.layoutManager = layoutManager
     return this
   }
 
+  /**
+   * Sets an empty view that is shown if the data source is empty. Else the view is hidden
+   * (its visibility to gone).
+   */
   fun withEmptyView(emptyView: View): RecyclicalSetup {
     this.emptyView = emptyView
     return this
   }
 
+  /**
+   * Sets a [DataSource] that provides the content which is displayed in the RecyclerView.
+   * You must use [withItem] to link model definitions to layouts and view holders, of any item
+   * types that are added to the data source.
+   */
   fun withDataSource(dataSource: DataSource): RecyclicalSetup {
     this.dataSource = dataSource
     return this
   }
 
+  /**
+   * Sets a global click listener that is invoked when any type of item is clicked in the list.
+   * Gets called after any item-specific click listeners that may be set.
+   */
   fun withClickListener(block: ItemClickListener<Any>): RecyclicalSetup {
     this.globalOnClick = block
     return this
