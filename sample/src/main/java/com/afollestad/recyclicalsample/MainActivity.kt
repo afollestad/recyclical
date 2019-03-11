@@ -72,39 +72,6 @@ class MainActivity : AppCompatActivity() {
         }
       }
     }
-
-    val newItems = items.toMutableList()
-        .apply { removeAt(0) }
-    dataSource.set(
-        newItems = newItems,
-        areTheSame = ::areItemsTheSame,
-        areContentsTheSame = ::areItemContentsTheSame
-    )
-  }
-
-  private fun areItemsTheSame(
-    left: Any,
-    right: Any
-  ): Boolean {
-    return left === right
-  }
-
-  private fun areItemContentsTheSame(
-    left: Any,
-    right: Any
-  ): Boolean {
-    return when (left) {
-      is ItemOne -> {
-        right is ItemOne &&
-            right.title == left.title
-      }
-      is ItemTwo -> {
-        right is ItemTwo &&
-            right.title == left.title &&
-            right.body == left.body
-      }
-      else -> false
-    }
   }
 
   private fun toast(message: String) {
