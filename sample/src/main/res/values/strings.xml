@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">recyclical</string>
+
+  <string name="app_name">recyclical</string>
+  <string name="empty_text">No items to display!</string>
+  <string name="x_items">%1$d item(s)</string>
+
 </resources>

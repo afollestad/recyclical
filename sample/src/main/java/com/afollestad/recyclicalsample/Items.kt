@@ -15,11 +15,7 @@
  */
 package com.afollestad.recyclicalsample
 
-data class ItemOne(
-  val title: String
-)
-
-data class ItemTwo(
+data class MyListItem(
   val title: String,
   val body: String
 )

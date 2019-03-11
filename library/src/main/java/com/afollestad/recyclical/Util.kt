@@ -60,3 +60,9 @@ internal fun View?.onDetach(block: View.() -> Unit) {
     override fun onViewAttachedToWindow(v: View) = Unit
   })
 }
+
+internal fun View?.makeBackgroundSelectable() {
+  if (this != null && background == null) {
+    background = context.resolveDrawable(R.attr.selectableItemBackground)
+  }
+}

@@ -20,11 +20,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
-class ViewHolderOne(itemView: View) : ViewHolder(itemView) {
-  val title: TextView = itemView.findViewById(R.id.title)
-}
-
-class ViewHolderTwo(itemView: View) : ViewHolder(itemView) {
+class MyViewHolder(itemView: View) : ViewHolder(itemView) {
   val icon: ImageView = itemView.findViewById(R.id.icon)
   val title: TextView = itemView.findViewById(R.id.title)
   val body: TextView = itemView.findViewById(R.id.body)

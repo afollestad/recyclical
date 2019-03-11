@@ -16,61 +16,103 @@
 package com.afollestad.recyclicalsample
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.afollestad.recyclical.dataSourceOf
+import com.afollestad.materialcab.MaterialCab
+import com.afollestad.recyclical.emptySelectableDataSource
+import com.afollestad.recyclical.hasSelection
+import com.afollestad.recyclical.isSelectedAt
 import com.afollestad.recyclical.setup
+import com.afollestad.recyclical.toggleSelectionAt
 import com.afollestad.recyclical.withItem
 import kotlinx.android.synthetic.main.activity_main.emptyView
 import kotlinx.android.synthetic.main.activity_main.list
 
 class MainActivity : AppCompatActivity() {
   private var toast: Toast? = null
+  private val dataSource = emptySelectableDataSource().apply {
+    onSelectionChange { invalidateCab() }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    MaterialCab.tryRestore(this, savedInstanceState)
 
-    @Suppress("IMPLICIT_CAST_TO_ANY")
-    val items = IntArray(1000) { it + 1 }
-        .map {
-          if (it.isEven()) {
-            ItemOne("Even #$it")
-          } else {
-            ItemTwo(
-                title = "Odd #$it",
-                body = "Hello, world! $it"
-            )
-          }
-        }
-
-    val dataSource = dataSourceOf(items)
+    dataSource.set(
+        IntArray(1000) { it + 1 }
+            .map {
+              MyListItem(
+                  title = "#$it",
+                  body = "Hello, world! #$it"
+              )
+            }
+    )
 
     list.setup {
-      withLayoutManager(LinearLayoutManager(this@MainActivity))
       withEmptyView(emptyView)
       withDataSource(dataSource)
 
-      withItem<ItemOne>(R.layout.list_item_one) {
-        onBind(::ViewHolderOne) { _, item ->
-          title.text = item.title
-        }
-        onClick { index, item ->
-          toast("Clicked $index: ${item.title}")
-        }
-      }
-
-      withItem<ItemTwo>(R.layout.list_item_two) {
-        onBind(::ViewHolderTwo) { _, item ->
+      withItem<MyListItem>(R.layout.my_list_item) {
+        onBind(::MyViewHolder) { index, item ->
+          icon.setImageResource(
+              if (isSelectedAt(index)) {
+                R.drawable.check_circle
+              } else {
+                R.drawable.person
+              }
+          )
           title.text = item.title
           body.text = item.body
         }
+
         onClick { index, item ->
-          toast("Clicked $index: ${item.title} / ${item.body}")
+          if (hasSelection()) {
+            // If we are in selection mode, click should toggle selection
+            toggleSelectionAt(index)
+          } else {
+            // Else just show a toast
+            toast("Clicked $index: ${item.title} / ${item.body}")
+          }
+        }
+
+        onLongClick { index, _ ->
+          // Long clicking starts selection mode, or ends it
+          toggleSelectionAt(index)
         }
       }
+    }
+  }
+
+  private fun invalidateCab() {
+    if (dataSource.hasSelection()) {
+      MaterialCab.attach(this, R.id.cab_stub) {
+        title = getString(R.string.x_items, dataSource.selectionCount())
+        onDestroy {
+          dataSource.deselectAll()
+          true
+        }
+      }
+    } else {
+      MaterialCab.destroy()
+    }
+  }
+
+  override fun onSaveInstanceState(
+    outState: Bundle?,
+    outPersistentState: PersistableBundle?
+  ) {
+    MaterialCab.saveState(outState)
+    super.onSaveInstanceState(outState, outPersistentState)
+  }
+
+  override fun onBackPressed() {
+    if (dataSource.hasSelection()) {
+      dataSource.deselectAll()
+    } else {
+      super.onBackPressed()
     }
   }
 
@@ -80,5 +122,3 @@ class MainActivity : AppCompatActivity() {
         .apply { show() }
   }
 }
-
-private fun Int.isEven() = this.rem(2) == 0

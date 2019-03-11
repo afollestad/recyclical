@@ -12,5 +12,6 @@ ext.versions = [
     bintrayRelease      : '0.9',
 
     androidx            : '1.0.2',
-    androidxRecyclerView: '1.0.0'
+    androidxRecyclerView: '1.0.0',
+    materialCab         : '1.3.1'
 ]

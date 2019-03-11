@@ -11,6 +11,23 @@
 
 ---
 
+## Table of Contents
+
+1. [Gradle Dependency](#gradle-dependency)
+2. [The Basics](#the-basics)
+3. [More Options](#more-options)
+4. [Multiple Item Types](#multiple-item-types)
+5. [DataSource](#datasource)
+    1. [Construction](#construction)
+    2. [Manipulation](#manipulation)
+    4. [Diffing](#diffing)
+6. [SelectableDataSource](#selectabledatasource)
+    1. [Construction](#construction-1)
+    2. [Manipulation](#manipulation-1)
+    3. [Use in Binding](#use-in-binding)
+
+---
+
 ## Gradle Dependency
 
 Add this to your module's `build.gradle` file:
@@ -82,6 +99,9 @@ class MainActivity : AppCompatActivity() {
             onClick { index, item ->
               toast("Clicked $index: ${item.name}")
             }
+            onLongClick { index, item -> 
+              toast("Long clicked $index: ${item.name}")
+            }
          }
       }
   }
@@ -102,6 +122,8 @@ recyclerView.setup {
   withEmptyView(view)
   // Global click listener for any item type. Individual item click listeners are called first.
   withClickListener { index, item -> }
+  // Global long click listener for any item type. Individual item long click listeners are called first.
+  withLongClickListener { index, item -> }
 }
 ```
 
@@ -145,7 +167,7 @@ recyclerView.setup {
 
 ---
 
-## Data Source
+## DataSource
 
 `DataSource` is an interface which provides data and allows manipulation of the data, to display in a RecyclerView. 
 Being an interface means you make your own implementations of it, you can mock it in tests, you could even provide it 
@@ -240,3 +262,91 @@ private fun areItemContentsTheSame(left: Any, right: Any): Boolean {
 
 This will automatically coordinate notifying of adds, moves, and insertions so that 
 update of the data set is pretty and animated by the RecyclerView.
+
+---
+
+## SelectableDataSource
+
+A `SelectableDataSource` is built on top of a regular [DataSource]. It provides additional APIs 
+to manage the selection state of items in your list.
+
+### Construction
+
+Construction methods for `SelectableDataSource` are the same as the `DataSource` ones, they just 
+include `selectable` in their names.
+
+```kotlin
+// Empty by default, but can still add, insert, etc.
+val dataSource = emptySelectableDataSource()
+
+// Initial data set of items from a vararg list
+val dataSource = selectableDataSourceOf(item1, item2)
+
+// Initial data set of items from an existing list
+val items = listOf(item1, item2)
+val dataSource = selectableDataSourceOf(items)
+```
+
+### Manipulation
+
+There are some additional methods added on top of the `DataSource` methods:
+
+```kotlin
+val dataSource: SelectableDataSource = // ...
+
+// Index operations
+dataSource.selectAt(1)
+dataSource.deselectAt(1)
+dataSource.toggleSelectionAt(1)
+val selected: Boolean = dataSource.isSelectedAt(1)
+
+// Mass operations
+dataSource.selectAll()
+dataSource.deselectAll()
+
+// Item operations, uses index operations under the hood
+val item: Any = // ...
+dataSource.select(item)
+dataSource.deselect(item)
+dataSource.toggleSelection(item)
+val selected: Boolean = dataSource.isSelected(item)
+
+// Misc operations
+val count: Int = dataSource.selectionCount()
+val hasSelection: Boolean = dataSource.hasSelection()
+
+// Set a callback invoked when something is selected or deselected
+dataSource.onSelectionChange { dataSource -> }
+```
+
+### Use in Binding
+
+During binding of your items, you can access selection states *even if you don't have a direct 
+reference to your `DataSource`.
+
+```kotlin
+recyclerView.setup {
+    withEmptyView(emptyView)
+    withDataSource(dataSource)
+    
+    withItem<MyListItem>(R.layout.my_list_item) {
+      onBind(::MyViewHolder) { index, item ->
+          val itemSelected = isSelectedAt(index)
+          // Do something
+      }
+      
+      onClick { index, item ->
+          if (hasSelection()) {
+            toggleSelectionAt(index)
+          } else {
+            // Normal click handling
+          } 
+      }
+      
+      onLongClick { index, _ ->
+          // Generally long clicks trigger selection mode
+          toggleSelectionAt(index)
+      }
+    }
+}  
+```

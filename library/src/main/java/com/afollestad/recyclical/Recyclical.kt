@@ -36,6 +36,7 @@ class RecyclicalSetup internal constructor(
   internal var emptyView: View? = null
   internal var dataSource: DataSource? = null
   internal var globalOnClick: ItemClickListener<Any>? = null
+  internal var globalOnLongClick: ItemClickListener<Any>? = null
 
   /**
    * Sets a layout manaher for the RecyclerView. The default is a vertical LinearLayoutManager,
@@ -71,6 +72,15 @@ class RecyclicalSetup internal constructor(
    */
   fun withClickListener(block: ItemClickListener<Any>): RecyclicalSetup {
     this.globalOnClick = block
+    return this
+  }
+
+  /**
+   * Sets a global long click listener that is invoked when any type of item is long clicked in the
+   * list. Gets called after any item-specific long click listeners that may be set.
+   */
+  fun withLongClickListener(block: ItemClickListener<Any>): RecyclicalSetup {
+    this.globalOnLongClick = block
     return this
   }
 }

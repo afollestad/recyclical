@@ -117,15 +117,24 @@ interface DataSource {
   /** Calls [block] for each item in the data source. */
   fun forEach(block: (Any) -> Unit)
 
-  /** Returns the index of the first item matching the given predicate. */
+  /** Returns the index of the first item matching the given predicate. -1 if none. */
   fun indexOfFirst(predicate: (Any) -> Boolean): Int
 
-  /** Returns the index of the last item matching the given predicate. */
+  /** Returns the index of the last item matching the given predicate. -1 if none. */
   fun indexOfLast(predicate: (Any) -> Boolean): Int
+
+  /** Returns the index of the first item that equals the given. -1 if none. */
+  fun indexOf(item: Any): Int = indexOfFirst { it == item }
+
+  /** Used by other [DataSource] implementations to notify that an item has changed state. */
+  fun invalidateAt(index: Int)
+
+  /** Used by other [DataSource] implementations to notify that the whole data set has changed state. */
+  fun invalidateAll()
 }
 
 /** @author Aidan Follestad (@afollestad) */
-class RealDataSource internal constructor(
+open class RealDataSource internal constructor(
   initialData: List<Any> = mutableListOf()
 ) : DataSource {
   private var items = if (initialData is MutableList) {
@@ -247,6 +256,16 @@ class RealDataSource internal constructor(
   override fun indexOfFirst(predicate: (Any) -> Boolean): Int = items.indexOfFirst(predicate)
 
   override fun indexOfLast(predicate: (Any) -> Boolean): Int = items.indexOfLast(predicate)
+
+  override fun indexOf(item: Any): Int = items.indexOf(item)
+
+  override fun invalidateAt(index: Int) {
+    adapter?.notifyItemChanged(index)
+  }
+
+  override fun invalidateAll() {
+    adapter?.notifyDataSetChanged()
+  }
 
   private fun notify(block: Adapter<*>.() -> Unit) {
     adapter?.let {
