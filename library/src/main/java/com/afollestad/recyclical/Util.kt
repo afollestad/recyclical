@@ -44,3 +44,19 @@ internal fun Context.resolveDrawable(
 internal fun View?.showOrHide(show: Boolean) {
   this?.visibility = if (show) VISIBLE else GONE
 }
+
+internal fun View?.onAttach(block: View.() -> Unit) {
+  this?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+    override fun onViewDetachedFromWindow(v: View) = Unit
+
+    override fun onViewAttachedToWindow(v: View) = v.block()
+  })
+}
+
+internal fun View?.onDetach(block: View.() -> Unit) {
+  this?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+    override fun onViewDetachedFromWindow(v: View) = v.block()
+
+    override fun onViewAttachedToWindow(v: View) = Unit
+  })
+}

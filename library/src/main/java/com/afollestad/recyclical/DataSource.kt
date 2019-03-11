@@ -21,7 +21,7 @@ import android.view.View
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 
 /**
  * Provides a data set for a RecyclerView to bind and display.
@@ -39,15 +39,14 @@ interface DataSource {
   @RestrictTo(LIBRARY)
   fun attach(
     setup: RecyclicalSetup,
-    adapter: DefinitionAdapter
+    adapter: DefinitionAdapter?
   )
 
   /**
-   * Invalidates the empty view given by the user based on the content of the source. This
-   * doesn't need to be manually called.
+   * Detaches the data source, clearing up references to anything that can leak.
    */
   @RestrictTo(LIBRARY)
-  fun invalidateEmptyView()
+  fun detach()
 
   /** Retrieves an item at a given index from the data source */
   operator fun get(index: Int): Any = underlyingItems[index]
@@ -132,7 +131,6 @@ class RealDataSource internal constructor(
     initialData.toMutableList()
   }
   private var adapter: DefinitionAdapter? = null
-  private var recyclerView: RecyclerView? = null
   private var emptyView: View? = null
 
   override val underlyingItems: List<Any>
@@ -140,28 +138,23 @@ class RealDataSource internal constructor(
 
   override fun attach(
     setup: RecyclicalSetup,
-    adapter: DefinitionAdapter
+    adapter: DefinitionAdapter?
   ) {
-    this.adapter = adapter
     this.emptyView = setup.emptyView
+    this.adapter = adapter
+    notify { notifyDataSetChanged() }
   }
 
-  override fun invalidateEmptyView() = emptyView.showOrHide(isEmpty())
-
-  override operator fun get(index: Int): Any = items[index]
-
-  override operator fun plusAssign(item: Any) {
-    add(item)
+  override fun detach() {
+    this.adapter = null
+    this.emptyView = null
   }
-
-  override operator fun iterator(): Iterator<Any> = items.iterator()
 
   override fun contains(item: Any) = items.contains(item)
 
   override fun add(item: Any) {
     items.add(item)
-    ensureAttached().notifyItemInserted(items.size - 1)
-    invalidateEmptyView()
+    notify { notifyItemInserted(items.size - 1) }
   }
 
   override fun set(
@@ -183,9 +176,8 @@ class RealDataSource internal constructor(
       adapter?.let { diffResult.dispatchUpdatesTo(it) }
     } else {
       this.items = newItems.toMutableList()
-      ensureAttached().notifyDataSetChanged()
+      notify { notifyDataSetChanged() }
     }
-    invalidateEmptyView()
   }
 
   override fun insert(
@@ -193,14 +185,12 @@ class RealDataSource internal constructor(
     item: Any
   ) {
     items.add(index, item)
-    ensureAttached().notifyItemInserted(index)
-    invalidateEmptyView()
+    notify { notifyItemInserted(index) }
   }
 
   override fun removeAt(index: Int) {
     items.removeAt(index)
-    ensureAttached().notifyItemRemoved(index)
-    invalidateEmptyView()
+    notify { notifyItemRemoved(index) }
   }
 
   override fun remove(item: Any) {
@@ -216,8 +206,10 @@ class RealDataSource internal constructor(
     val leftItem = items[left]
     items[left] = items[right]
     items[right] = leftItem
-    ensureAttached().notifyItemChanged(left)
-    ensureAttached().notifyItemChanged(right)
+    notify {
+      notifyItemChanged(left)
+      notifyItemChanged(right)
+    }
   }
 
   override fun move(
@@ -227,13 +219,12 @@ class RealDataSource internal constructor(
     val item = items[from]
     items.removeAt(from)
     items.add(to, item)
-    ensureAttached().notifyItemMoved(from, to)
+    notify { notifyItemMoved(from, to) }
   }
 
   override fun clear() {
     items.clear()
-    ensureAttached().notifyDataSetChanged()
-    invalidateEmptyView()
+    notify { notifyDataSetChanged() }
   }
 
   override fun size() = items.size
@@ -248,7 +239,12 @@ class RealDataSource internal constructor(
 
   override fun indexOfLast(predicate: (Any) -> Boolean): Int = items.indexOfLast(predicate)
 
-  private fun ensureAttached() = adapter ?: throw IllegalStateException("Not attached")
+  private fun notify(block: Adapter<*>.() -> Unit) {
+    adapter?.let {
+      it.block()
+      emptyView.showOrHide(isEmpty())
+    }
+  }
 }
 
 /**

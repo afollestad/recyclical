@@ -100,6 +100,8 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
   adapter = DefinitionAdapter(setup, dataSource).also {
     dataSource.attach(setup, it)
   }
+  onAttach { dataSource.attach(setup, adapter as? DefinitionAdapter) }
+  onDetach { dataSource.detach() }
 
   return setup
 }
