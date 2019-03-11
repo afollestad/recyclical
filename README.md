@@ -39,12 +39,15 @@ Second, a layout and a View Holder:
 
 ```xml
 <LinearLayout ...>
+
   <TextView 
      android:id="@+id/text_name"
      ... />    
+     
   <TextView 
      android:id="@+id/text_age"
      ... />
+     
 </LinearLayout>
 ```
 
@@ -142,10 +145,32 @@ recyclerView.setup {
 
 ---
 
-## Data Source Manipulation
+## Data Source
+
+`DataSource` is an interface which provides data and allows manipulation of the data, to display in a RecyclerView. 
+Being an interface means you make your own implementations of it, you can mock it in tests, you could even provide it 
+via Dagger to a presenter and manipulate the RecyclerView outside of your UI layer.
+
+### Construction
+
+The included implementation of data source operates on a List of objects (of any type).
 
 ```kotlin
-val dataSource = emptyDataSource() // could also use dataSourceOf()
+// Empty by default, but can still add, insert, etc.
+val dataSource = emptyDataSource()
+
+// Initial data set of items from a vararg list
+val dataSource = dataSourceOf(item1, item2)
+
+// Initial data set of items from an existing list
+val items = listOf(item1, item2)
+val dataSource = dataSourceOf(items)
+```
+
+### Manipulation
+
+```kotlin
+val dataSource: DataSource = // ...
 val person = Person("Aidan", 24)
 
 // gets item from a given index from the data source
@@ -181,6 +206,8 @@ dataSource.isNotEmpty()
 dataSource.indexOfFirst { }
 dataSource.indexOfLast { }
 ```
+
+### Diffing
 
 When performing a `set` on the data set, you can opt to use diff utils:
 
