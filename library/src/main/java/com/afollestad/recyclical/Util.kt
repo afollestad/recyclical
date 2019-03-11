@@ -17,6 +17,9 @@ package com.afollestad.recyclical
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.annotation.AttrRes
 
 internal fun Context.resolveDrawable(
@@ -36,4 +39,8 @@ internal fun Context.resolveDrawable(
     }
   }
   return fallback
+}
+
+internal fun View?.showOrHide(show: Boolean) {
+  this?.visibility = if (show) VISIBLE else GONE
 }

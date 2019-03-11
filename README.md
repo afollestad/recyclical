@@ -63,11 +63,10 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
       
-      val items = listOf(
-        Person("Aidan", 24),
-        Person("Nina", 24)
+      val dataSource = dataSourceOf(
+          Person("Aidan", 24),
+          Person("Nina", 24)
       )
-      val dataSource = DataSource(items)
       
       // setup{} is an extension method on RecyclerView
       recyclerView.setup {
@@ -110,12 +109,11 @@ recyclerView.setup {
 You can mix different types of items - but you need to specify view holders and layouts for them too:
 
 ```kotlin
-val items = listOf(
+val dataSource = dataSourceOf(
   Car(2012, "Volkswagen GTI"),
   Motorcycle(2018, "Triumph", "Thruxton R"),
   Person("Aidan", 24)
 )
-val dataSource = DataSource(items)
 
 recyclerView.setup {
   withDataSource(dataSource)
@@ -147,12 +145,12 @@ recyclerView.setup {
 ## Data Source Manipulation
 
 ```kotlin
-val dataSource = DataSource()
+val dataSource = emptyDataSource() // could also use dataSourceOf()
 val person = Person("Aidan", 24)
 
 // gets item from a given index from the data source
 val item = dataSource[5]
-// append item to the data source
+// append item to the data source, could also use add()
 dataSource += person
 // replaces all items in the data source with another list of items
 dataSource.set(listOf(person))

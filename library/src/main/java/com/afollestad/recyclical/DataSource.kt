@@ -18,14 +18,70 @@
 package com.afollestad.recyclical
 
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import androidx.annotation.RestrictTo
-import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-class DataSource(initialData: List<Any> = mutableListOf()) {
+interface DataSource {
+  val underlyingItems: List<Any>
+
+  fun attach(
+    setup: RecyclicalSetup,
+    adapter: DefinitionAdapter
+  )
+
+  fun invalidateEmptyView()
+
+  operator fun get(index: Int): Any
+
+  operator fun plusAssign(item: Any)
+
+  operator fun iterator(): Iterator<Any>
+
+  fun add(item: Any)
+
+  fun set(
+    newItems: List<Any>,
+    areTheSame: LeftAndRightComparer? = null,
+    areContentsTheSame: LeftAndRightComparer? = null
+  )
+
+  fun insert(
+    index: Int,
+    item: Any
+  )
+
+  fun removeAt(index: Int)
+
+  fun remove(item: Any)
+
+  fun swap(
+    left: Int,
+    right: Int
+  )
+
+  fun move(
+    from: Int,
+    to: Int
+  )
+
+  fun clear()
+
+  fun size(): Int
+
+  fun isEmpty(): Boolean
+
+  fun isNotEmpty(): Boolean
+
+  fun forEach(block: (Any) -> Unit)
+
+  fun indexOfFirst(predicate: (Any) -> Boolean): Int
+
+  fun indexOfLast(predicate: (Any) -> Boolean): Int
+}
+
+class RealDataSource internal constructor(
+  initialData: List<Any> = mutableListOf()
+) : DataSource {
   private var items = if (initialData is MutableList) {
     initialData
   } else {
@@ -35,28 +91,37 @@ class DataSource(initialData: List<Any> = mutableListOf()) {
   private var recyclerView: RecyclerView? = null
   private var emptyView: View? = null
 
-  internal fun attachAdapter(adapter: DefinitionAdapter) {
-    this.adapter = adapter
-  }
+  override val underlyingItems: List<Any>
+    get() = items
 
-  internal fun finishSetup(setup: RecyclicalSetup) {
+  override fun attach(
+    setup: RecyclicalSetup,
+    adapter: DefinitionAdapter
+  ) {
+    this.adapter = adapter
     this.emptyView = setup.emptyView
   }
 
-  operator fun get(index: Int): Any = items[index]
+  override fun invalidateEmptyView() = emptyView.showOrHide(isEmpty())
 
-  operator fun plusAssign(item: Any) {
+  override operator fun get(index: Int): Any = items[index]
+
+  override operator fun plusAssign(item: Any) {
+    add(item)
+  }
+
+  override operator fun iterator(): Iterator<Any> = items.iterator()
+
+  override fun add(item: Any) {
     items.add(item)
     ensureAttached().notifyItemInserted(items.size - 1)
     invalidateEmptyView()
   }
 
-  operator fun iterator(): Iterator<Any> = items.iterator()
-
-  fun set(
+  override fun set(
     newItems: List<Any>,
-    areTheSame: LeftAndRightComparer? = null,
-    areContentsTheSame: LeftAndRightComparer? = null
+    areTheSame: LeftAndRightComparer?,
+    areContentsTheSame: LeftAndRightComparer?
   ) {
     if (this.items.isNotEmpty() && areTheSame != null && areContentsTheSame != null) {
       val oldItems = this.items
@@ -77,7 +142,7 @@ class DataSource(initialData: List<Any> = mutableListOf()) {
     invalidateEmptyView()
   }
 
-  fun insert(
+  override fun insert(
     index: Int,
     item: Any
   ) {
@@ -86,19 +151,19 @@ class DataSource(initialData: List<Any> = mutableListOf()) {
     invalidateEmptyView()
   }
 
-  fun removeAt(index: Int) {
+  override fun removeAt(index: Int) {
     items.removeAt(index)
     ensureAttached().notifyItemRemoved(index)
     invalidateEmptyView()
   }
 
-  fun remove(item: Any) {
+  override fun remove(item: Any) {
     val index = items.indexOf(item)
     if (index == -1) return
     removeAt(index)
   }
 
-  fun swap(
+  override fun swap(
     left: Int,
     right: Int
   ) {
@@ -109,7 +174,7 @@ class DataSource(initialData: List<Any> = mutableListOf()) {
     ensureAttached().notifyItemChanged(right)
   }
 
-  fun move(
+  override fun move(
     from: Int,
     to: Int
   ) {
@@ -119,36 +184,34 @@ class DataSource(initialData: List<Any> = mutableListOf()) {
     ensureAttached().notifyItemMoved(from, to)
   }
 
-  fun clear() {
+  override fun clear() {
     items.clear()
     ensureAttached().notifyDataSetChanged()
     invalidateEmptyView()
   }
 
-  fun size() = items.size
+  override fun size() = items.size
 
-  fun isEmpty() = items.isEmpty()
+  override fun isEmpty() = items.isEmpty()
 
-  fun isNotEmpty() = items.isNotEmpty()
+  override fun isNotEmpty() = items.isNotEmpty()
 
-  fun forEach(block: (Any) -> Unit) = items.forEach(block)
+  override fun forEach(block: (Any) -> Unit) = items.forEach(block)
 
-  fun indexOfFirst(predicate: (Any) -> Boolean): Int = items.indexOfFirst(predicate)
+  override fun indexOfFirst(predicate: (Any) -> Boolean): Int = items.indexOfFirst(predicate)
 
-  fun indexOfLast(predicate: (Any) -> Boolean): Int = items.indexOfLast(predicate)
-
-  @RestrictTo(LIBRARY) fun items() = items
-
-  internal fun invalidateEmptyView() = emptyView.showOrHide(isEmpty())
+  override fun indexOfLast(predicate: (Any) -> Boolean): Int = items.indexOfLast(predicate)
 
   private fun ensureAttached() = adapter ?: throw IllegalStateException("Not attached")
 }
 
-inline fun <reified T : Any> DataSource.forEachOf(block: (T) -> Unit) {
-  items().filter { it is T }
-      .forEach { block(it as T) }
-}
+fun dataSourceOf(items: List<Any>): DataSource = RealDataSource(items.toMutableList())
 
-private fun View?.showOrHide(show: Boolean) {
-  this?.visibility = if (show) VISIBLE else GONE
+fun dataSourceOf(vararg items: Any): DataSource = RealDataSource(items.toMutableList())
+
+fun emptyDataSource(): DataSource = RealDataSource()
+
+inline fun <reified T : Any> DataSource.forEachOf(block: (T) -> Unit) {
+  underlyingItems.filter { it is T }
+      .forEach { block(it as T) }
 }

@@ -61,7 +61,7 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
   val setup = RecyclicalSetup(this)
       .apply { block() }
 
-  with(setup) {
+  setup.apply {
     check(itemClassToType.isNotEmpty()) { "No bindings defined." }
     check(bindingsToTypes.size == itemClassToType.size) {
       "Something is very wrong - binding maps don't have matching sizes."
@@ -71,11 +71,12 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
   if (layoutManager == null) {
     layoutManager = LinearLayoutManager(context)
   }
-  val dataSource = setup.dataSource?.apply {
-    finishSetup(setup)
-  } ?: throw IllegalStateException("Must set a data source.")
 
-  adapter = DefinitionAdapter(setup, dataSource)
+  val dataSource = setup.dataSource
+      ?: throw IllegalStateException("Must set a data source.")
+  adapter = DefinitionAdapter(setup, dataSource).also {
+    dataSource.attach(setup, it)
+  }
 
   return setup
 }

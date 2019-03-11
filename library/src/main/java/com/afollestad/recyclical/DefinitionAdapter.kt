@@ -22,19 +22,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
-internal class DefinitionAdapter(
+class DefinitionAdapter internal constructor(
   setup: RecyclicalSetup,
   private val dataSource: DataSource
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
   private val itemClassToType = setup.itemClassToType
   private val bindingsToTypes = setup.bindingsToTypes
-
-  init {
-    dataSource.apply {
-      attachAdapter(this@DefinitionAdapter)
-      invalidateEmptyView()
-    }
-  }
 
   override fun getItemViewType(position: Int): Int {
     return dataSource[position].getItemType()
