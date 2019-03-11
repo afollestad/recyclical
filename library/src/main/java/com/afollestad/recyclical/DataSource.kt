@@ -58,6 +58,9 @@ interface DataSource {
   /** Returns an iterator to loop over all items in the data source. */
   operator fun iterator(): Iterator<Any>
 
+  /** Returns true if the data source contains the given item. */
+  fun contains(item: Any): Boolean
+
   /** Appends an item to the data source. */
   fun add(item: Any)
 
@@ -150,6 +153,8 @@ class RealDataSource internal constructor(
   }
 
   override operator fun iterator(): Iterator<Any> = items.iterator()
+
+  override fun contains(item: Any) = items.contains(item)
 
   override fun add(item: Any) {
     items.add(item)

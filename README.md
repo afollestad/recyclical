@@ -150,6 +150,8 @@ val person = Person("Aidan", 24)
 
 // gets item from a given index from the data source
 val item = dataSource[5]
+// returns true if the data source contains the given item
+dataSource.contains(person)
 // append item to the data source, could also use add()
 dataSource += person
 // replaces all items in the data source with another list of items
