@@ -50,13 +50,15 @@ interface DataSource {
   fun invalidateEmptyView()
 
   /** Retrieves an item at a given index from the data source */
-  operator fun get(index: Int): Any
+  operator fun get(index: Int): Any = underlyingItems[index]
 
   /** Appends an item to the data source. */
-  operator fun plusAssign(item: Any)
+  operator fun plusAssign(item: Any) {
+    add(item)
+  }
 
   /** Returns an iterator to loop over all items in the data source. */
-  operator fun iterator(): Iterator<Any>
+  operator fun iterator(): Iterator<Any> = underlyingItems.iterator()
 
   /** Returns true if the data source contains the given item. */
   fun contains(item: Any): Boolean

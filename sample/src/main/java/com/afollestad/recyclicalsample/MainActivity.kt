@@ -20,7 +20,7 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.afollestad.recyclical.DataSource
+import com.afollestad.recyclical.dataSourceOf
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.withItem
 import kotlinx.android.synthetic.main.activity_main.emptyView
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
           }
         }
 
-    val dataSource = DataSource(items)
+    val dataSource = dataSourceOf(items)
 
     list.setup {
       withLayoutManager(LinearLayoutManager(this@MainActivity))
