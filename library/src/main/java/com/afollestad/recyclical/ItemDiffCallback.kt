@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DiffUtil
 
 typealias LeftAndRightComparer = (left: Any, right: Any) -> Boolean
 
+/** @author Aidan Follestad (@afollestad) */
 internal class ItemDiffCallback(
   private val oldItems: List<Any>,
   private val newItems: List<Any>,

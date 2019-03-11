@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
+/** @author Aidan Follestad (@afollestad) */
 class DefinitionAdapter internal constructor(
   setup: RecyclicalSetup,
   private val dataSource: DataSource

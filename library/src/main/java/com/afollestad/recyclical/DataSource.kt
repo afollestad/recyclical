@@ -18,67 +18,106 @@
 package com.afollestad.recyclical
 
 import android.view.View
+import androidx.annotation.RestrictTo
+import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * Provides a data set for a RecyclerView to bind and display.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 interface DataSource {
+  /** The items at the foundation of the data source. */
   val underlyingItems: List<Any>
 
+  /**
+   * Attaches the data source to a setup object and adapter. This doesn't need to be manually
+   * called.
+   */
+  @RestrictTo(LIBRARY)
   fun attach(
     setup: RecyclicalSetup,
     adapter: DefinitionAdapter
   )
 
+  /**
+   * Invalidates the empty view given by the user based on the content of the source. This
+   * doesn't need to be manually called.
+   */
+  @RestrictTo(LIBRARY)
   fun invalidateEmptyView()
 
+  /** Retrieves an item at a given index from the data source */
   operator fun get(index: Int): Any
 
+  /** Appends an item to the data source. */
   operator fun plusAssign(item: Any)
 
+  /** Returns an iterator to loop over all items in the data source. */
   operator fun iterator(): Iterator<Any>
 
+  /** Appends an item to the data source. */
   fun add(item: Any)
 
+  /**
+   * Replaces the whole contents of the data source. If [areTheSame] AND [areContentsTheSame] are
+   * both provided, [DiffUtil] will be used.
+   */
   fun set(
     newItems: List<Any>,
     areTheSame: LeftAndRightComparer? = null,
     areContentsTheSame: LeftAndRightComparer? = null
   )
 
+  /** Inserts an item into the dats source at a given index. */
   fun insert(
     index: Int,
     item: Any
   )
 
+  /** Removes an item from the data source at a given index. */
   fun removeAt(index: Int)
 
+  /** Removes a given item from the data source, if it exists. */
   fun remove(item: Any)
 
+  /** Swaps two items at given indices in the data source. */
   fun swap(
     left: Int,
     right: Int
   )
 
+  /** Moves an item to another index in the data source. */
   fun move(
     from: Int,
     to: Int
   )
 
+  /** Clears all items from the data source, making it empty. */
   fun clear()
 
+  /** Returns how many items are in the data source. */
   fun size(): Int
 
+  /** Returns true if the data source is empty. */
   fun isEmpty(): Boolean
 
+  /** Returns true if the data source is NOT empty. */
   fun isNotEmpty(): Boolean
 
+  /** Calls [block] for each item in the data source. */
   fun forEach(block: (Any) -> Unit)
 
+  /** Returns the index of the first item matching the given predicate. */
   fun indexOfFirst(predicate: (Any) -> Boolean): Int
 
+  /** Returns the index of the last item matching the given predicate. */
   fun indexOfLast(predicate: (Any) -> Boolean): Int
 }
 
+/** @author Aidan Follestad (@afollestad) */
 class RealDataSource internal constructor(
   initialData: List<Any> = mutableListOf()
 ) : DataSource {
@@ -205,12 +244,32 @@ class RealDataSource internal constructor(
   private fun ensureAttached() = adapter ?: throw IllegalStateException("Not attached")
 }
 
+/**
+ * Constructs a [DataSource] with an initial list of items of any type.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 fun dataSourceOf(items: List<Any>): DataSource = RealDataSource(items.toMutableList())
 
+/**
+ * Constructs a [DataSource] with an initial set of items of any type.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 fun dataSourceOf(vararg items: Any): DataSource = RealDataSource(items.toMutableList())
 
+/**
+ * Constructs a data source that is empty by default.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 fun emptyDataSource(): DataSource = RealDataSource()
 
+/**
+ * Same as [DataSource.forEach] but only emits items of a certain type.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 inline fun <reified T : Any> DataSource.forEachOf(block: (T) -> Unit) {
   underlyingItems.filter { it is T }
       .forEach { block(it as T) }

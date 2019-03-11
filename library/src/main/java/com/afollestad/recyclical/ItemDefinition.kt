@@ -26,6 +26,7 @@ typealias ItemClickListener<IT> = (index: Int, item: IT) -> Unit
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
 typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
 
+/** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
 class ItemDefinition<out IT : Any>(
   private val setup: RecyclicalSetup,
@@ -90,6 +91,11 @@ class ItemDefinition<out IT : Any>(
   }
 }
 
+/**
+ * Defines an item definition which binds a model with a view model and layout.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 inline fun <reified IT : Any> RecyclicalSetup.withItem(
   @LayoutRes layoutRes: Int,
   noinline block: ItemDefinition<IT>.() -> Unit

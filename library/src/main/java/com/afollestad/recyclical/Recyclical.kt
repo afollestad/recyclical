@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 @DslMarker
 annotation class RecyclicalMarker
 
+/** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
 class RecyclicalSetup internal constructor(
   private val recyclerView: RecyclerView
@@ -57,6 +58,11 @@ class RecyclicalSetup internal constructor(
   }
 }
 
+/**
+ * Setups a RecyclerView, accepts methods of [RecyclicalSetup] in its [block].
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
   val setup = RecyclicalSetup(this)
       .apply { block() }
