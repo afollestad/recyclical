@@ -98,9 +98,9 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
   val dataSource = setup.dataSource
       ?: throw IllegalStateException("Must set a data source.")
   adapter = DefinitionAdapter(setup, dataSource).also {
-    dataSource.attach(setup, it)
+    dataSource.attach(setup.emptyView, it)
   }
-  onAttach { dataSource.attach(setup, adapter as? DefinitionAdapter) }
+  onAttach { dataSource.attach(setup.emptyView, adapter as? DefinitionAdapter) }
   onDetach { dataSource.detach() }
 
   return setup

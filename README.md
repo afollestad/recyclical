@@ -171,40 +171,37 @@ val dataSource = dataSourceOf(items)
 
 ```kotlin
 val dataSource: DataSource = // ...
-val person = Person("Aidan", 24)
 
-// gets item from a given index from the data source
-val item = dataSource[5]
-// returns true if the data source contains the given item
-dataSource.contains(person)
-// append item to the data source, could also use add()
-dataSource += person
-// replaces all items in the data source with another list of items
+// getters
+val item: Any = dataSource.get(5)
+val contains: Boolean = dataSource.contains(item)
+val size: Int = dataSource.size()
+val isEmpty: Boolean = dataSource.isEmpty()
+val isNotEmpty: Boolean = dataSource.isNotEmpty()
+val firstIndex: Int = dataSource.indexOfFirst { }
+val lastIndex: Int = dataSource.indexOfLast { }
+
+// mutation
+val person = Person("Aidan", 24)
+dataSource.add(person)
 dataSource.set(listOf(person))
-// insert an item into the data source at a given index
 dataSource.insert(1, person)
-// remove an item from the data source at a given index
 dataSource.removeAt(1)
-// removes an item from the data source
 dataSource.remove(person)
-// swaps two items by their indices in the data source
 dataSource.swap(1, 4)
-// moves an item to another index in the data source
 dataSource.move(1, 4)
-// clears all items from the data source
 dataSource.clear()
 
-// iterates over the items in the data source
+// iteration
 for (item in dataSource) { }
-dataSource.forEach { }
-dataSource.forEachOf<Person> { }
+dataSource.forEach { }  // emits all items
+dataSource.forEachOf<Person> { }  // only emits items that are a Person
 
-// collection-like methods
-dataSource.size()
-dataSource.isEmpty()
-dataSource.isNotEmpty()
-dataSource.indexOfFirst { }
-dataSource.indexOfLast { }
+// operators
+val item: Any = dataSource[5]  // get(5)
+val contains: Boolean = item in dataSource  // contains(item)
+dataSource += person  // add(person)
+dataSource -= person  // remove(person)
 ```
 
 ### Diffing

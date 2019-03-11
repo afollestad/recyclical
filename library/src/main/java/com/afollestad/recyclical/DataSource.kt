@@ -29,16 +29,33 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
  * @author Aidan Follestad (@afollestad)
  */
 interface DataSource {
-  /** The items at the foundation of the data source. */
-  val underlyingItems: List<Any>
+
+  /** Retrieves an item at a given index from the data source */
+  operator fun get(index: Int): Any
+
+  /** Appends an item to the data source; calls [add] in its default implementation. */
+  operator fun plusAssign(item: Any) {
+    add(item)
+  }
+
+  /** Removes an item from the data source; calls [remove] in its default implementation. */
+  operator fun minusAssign(item: Any) {
+    remove(item)
+  }
+
+  /** Returns true if the data source contains the given item. */
+  operator fun contains(item: Any): Boolean
+
+  /** Returns an iterator to loop over all items in the data source. */
+  operator fun iterator(): Iterator<Any>
 
   /**
-   * Attaches the data source to a setup object and adapter. This doesn't need to be manually
+   * Attaches the data source to an empty view and adapter. This doesn't need to be manually
    * called.
    */
   @RestrictTo(LIBRARY)
   fun attach(
-    setup: RecyclicalSetup,
+    emptyView: View?,
     adapter: DefinitionAdapter?
   )
 
@@ -47,23 +64,6 @@ interface DataSource {
    */
   @RestrictTo(LIBRARY)
   fun detach()
-
-  /** Retrieves an item at a given index from the data source */
-  operator fun get(index: Int): Any = underlyingItems[index]
-
-  /** Appends an item to the data source. */
-  operator fun plusAssign(item: Any) {
-    add(item)
-  }
-
-  /** Returns an iterator to loop over all items in the data source. */
-  operator fun iterator(): Iterator<Any> = underlyingItems.iterator()
-
-  /** Returns true if the data source contains the given item. */
-  fun contains(item: Any): Boolean
-
-  /** Appends an item to the data source. */
-  fun add(item: Any)
 
   /**
    * Replaces the whole contents of the data source. If [areTheSame] AND [areContentsTheSame] are
@@ -74,6 +74,9 @@ interface DataSource {
     areTheSame: LeftAndRightComparer? = null,
     areContentsTheSame: LeftAndRightComparer? = null
   )
+
+  /** Appends an item to the data source. */
+  fun add(item: Any)
 
   /** Inserts an item into the dats source at a given index. */
   fun insert(
@@ -106,10 +109,10 @@ interface DataSource {
   fun size(): Int
 
   /** Returns true if the data source is empty. */
-  fun isEmpty(): Boolean
+  fun isEmpty(): Boolean = size() == 0
 
   /** Returns true if the data source is NOT empty. */
-  fun isNotEmpty(): Boolean
+  fun isNotEmpty(): Boolean = !isEmpty()
 
   /** Calls [block] for each item in the data source. */
   fun forEach(block: (Any) -> Unit)
@@ -132,15 +135,22 @@ class RealDataSource internal constructor(
   }
   private var adapter: DefinitionAdapter? = null
   private var emptyView: View? = null
+  private var isAttached: Boolean = false
 
-  override val underlyingItems: List<Any>
-    get() = items
+  override operator fun get(index: Int): Any = items[index]
+
+  override operator fun contains(item: Any): Boolean = items.contains(item)
+
+  override operator fun iterator(): Iterator<Any> = items.iterator()
 
   override fun attach(
-    setup: RecyclicalSetup,
+    emptyView: View?,
     adapter: DefinitionAdapter?
   ) {
-    this.emptyView = setup.emptyView
+    if (this.isAttached) return
+    this.isAttached = true
+
+    this.emptyView = emptyView
     this.adapter = adapter
     notify { notifyDataSetChanged() }
   }
@@ -148,9 +158,8 @@ class RealDataSource internal constructor(
   override fun detach() {
     this.adapter = null
     this.emptyView = null
+    this.isAttached = false
   }
-
-  override fun contains(item: Any) = items.contains(item)
 
   override fun add(item: Any) {
     items.add(item)
@@ -274,6 +283,9 @@ fun emptyDataSource(): DataSource = RealDataSource()
  * @author Aidan Follestad (@afollestad)
  */
 inline fun <reified T : Any> DataSource.forEachOf(block: (T) -> Unit) {
-  underlyingItems.filter { it is T }
-      .forEach { block(it as T) }
+  iterator()
+      .asSequence()
+      .filter { it is T }
+      .map { it as T }
+      .forEach { block(it) }
 }
