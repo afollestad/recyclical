@@ -35,7 +35,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad:recyclical:0.2.1'
+  implementation 'com.afollestad:recyclical:0.3.0'
 }
 ```
 
