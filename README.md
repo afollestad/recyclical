@@ -1,6 +1,6 @@
 ## Recyclical
 
-*recyclical*, an easy-to-use DSL API to setup RecyclerViews from Kotlin.
+*recyclical*, an easy-to-use Kotlin DSL API for setting up and manipulating RecyclerViews.
 
 [ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/recyclical/images/download.svg) ](https://bintray.com/drummer-aidan/maven/recyclical/_latestVersion)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdc552fb3832423986a296a47b9ddef0)](https://www.codacy.com/app/drummeraidan_50/recyclical?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/recyclical&amp;utm_campaign=Badge_Grade)
