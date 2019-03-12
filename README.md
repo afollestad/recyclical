@@ -69,7 +69,7 @@ data class Person(
 ```
 
 ```kotlin
-class PersonViewHolder(itemView: View) : ViewHolder {
+class PersonViewHolder(itemView: View) : ViewHolder(itemView) {
   val name: TextView = itemView.findViewById(R.id.text_name)
   val age: TextView = itemView.findViewById(R.id.text_age)
 }

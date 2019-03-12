@@ -18,7 +18,7 @@ package com.afollestad.recyclicalsample
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.afollestad.recyclical.ViewHolder
 
 class MyViewHolder(itemView: View) : ViewHolder(itemView) {
   val icon: ImageView = itemView.findViewById(R.id.icon)
