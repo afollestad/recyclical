@@ -23,11 +23,7 @@ import com.afollestad.recyclical.internal.ItemDiffCallback
 open class RealDataSource internal constructor(
   initialData: List<Any> = mutableListOf()
 ) : DataSource {
-  private var items = if (initialData is MutableList) {
-    initialData
-  } else {
-    initialData.toMutableList()
-  }
+  private var items = initialData.toMutableList()
   private var handle: RecyclicalHandle? = null
 
   override operator fun get(index: Int): Any = items[index]
@@ -140,12 +136,10 @@ open class RealDataSource internal constructor(
   override fun indexOf(item: Any): Int = items.indexOf(item)
 
   override fun invalidateAt(index: Int) {
-    handle?.getAdapter()
-        ?.notifyItemChanged(index)
+    handle?.invalidateList { notifyItemChanged(index) }
   }
 
   override fun invalidateAll() {
-    handle?.getAdapter()
-        ?.notifyDataSetChanged()
+    handle?.invalidateList { notifyDataSetChanged() }
   }
 }

@@ -102,6 +102,9 @@ class RealSelectableDataSource(
   private var onSelectionChange: ((SelectableDataSource) -> Unit)? = null
 
   override fun selectAt(index: Int): Boolean {
+    if (index < 0 || index >= size()) {
+      return false
+    }
     return maybeNotifyCallback {
       selectedIndices.add(index)
       invalidateAt(index)
@@ -109,6 +112,9 @@ class RealSelectableDataSource(
   }
 
   override fun deselectAt(index: Int): Boolean {
+    if (index < 0 || index >= size()) {
+      return false
+    }
     return maybeNotifyCallback {
       selectedIndices.remove(index)
       invalidateAt(index)
@@ -142,10 +148,11 @@ class RealSelectableDataSource(
     item: Any
   ) {
     val greaterIndices = selectedIndices
-        .filter { it > index }
+        .filter { it >= index }
         .sortedByDescending { it }
     greaterIndices.forEach { selectedIndices.remove(it) }
     greaterIndices.map { it + 1 }
+        .filter { it < size() }
         .forEach { selectedIndices.add(it) }
     super.insert(index, item)
   }
@@ -154,11 +161,17 @@ class RealSelectableDataSource(
     left: Int,
     right: Int
   ) {
-    if (isSelectedAt(left) && !isSelectedAt(right)) {
-      deselectAt(left)
+    val leftSelected = isSelectedAt(left)
+    val rightSelected = isSelectedAt(right)
+    if (leftSelected) {
       selectAt(right)
-    } else if (isSelectedAt(right) && !isSelectedAt(left)) {
+    } else {
       deselectAt(right)
+    }
+    if (rightSelected) {
+      selectAt(left)
+    } else {
+      deselectAt(left)
     }
     super.swap(left, right)
   }
