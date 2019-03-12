@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("SpellCheckingInspection", "MemberVisibilityCanBePrivate", "unused")
+@file:Suppress("SpellCheckingInspection", "unused")
 
 package com.afollestad.recyclical
 
@@ -21,6 +21,10 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.internal.DefinitionAdapter
+import com.afollestad.recyclical.internal.onAttach
+import com.afollestad.recyclical.internal.onDetach
 
 @DslMarker
 annotation class RecyclicalMarker
@@ -30,13 +34,15 @@ annotation class RecyclicalMarker
 class RecyclicalSetup internal constructor(
   private val recyclerView: RecyclerView
 ) {
+  /** A map of item model class names to view types (layout res). */
   var itemClassToType = mutableMapOf<String, Int>()
+  /** A map of item view types (layout res) to their binding definitions. */
   var bindingsToTypes = mutableMapOf<Int, ItemDefinition<*>>()
 
   internal var emptyView: View? = null
-  internal var dataSource: DataSource? = null
   internal var globalOnClick: ItemClickListener<Any>? = null
   internal var globalOnLongClick: ItemClickListener<Any>? = null
+  internal var currentDataSource: DataSource? = null
 
   /**
    * Sets a layout manaher for the RecyclerView. The default is a vertical LinearLayoutManager,
@@ -62,7 +68,7 @@ class RecyclicalSetup internal constructor(
    * types that are added to the data source.
    */
   fun withDataSource(dataSource: DataSource): RecyclicalSetup {
-    this.dataSource = dataSource
+    this.currentDataSource = dataSource
     return this
   }
 
@@ -90,7 +96,7 @@ class RecyclicalSetup internal constructor(
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
+fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalHandle {
   val setup = RecyclicalSetup(this)
       .apply { block() }
 
@@ -104,14 +110,26 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalSetup {
   if (layoutManager == null) {
     layoutManager = LinearLayoutManager(context)
   }
+  val attached = setup.toAttached()
+      .also {
+        adapter = it.getAdapter()
+      }
+  onAttach { attached.attachDataSource() }
+  onDetach { attached.detachDataSource() }
 
-  val dataSource = setup.dataSource
+  return attached
+}
+
+private fun RecyclicalSetup.toAttached(): RecyclicalHandle {
+  val dataSource = currentDataSource
       ?: throw IllegalStateException("Must set a data source.")
-  adapter = DefinitionAdapter(setup, dataSource).also {
-    dataSource.attach(setup.emptyView, it)
-  }
-  onAttach { dataSource.attach(setup.emptyView, adapter as? DefinitionAdapter) }
-  onDetach { dataSource.detach() }
-
-  return setup
+  val attached = RecyclicalHandle(
+      emptyView = emptyView,
+      adapter = DefinitionAdapter(this),
+      dataSource = dataSource,
+      itemClassToType = itemClassToType,
+      bindingsToTypes = bindingsToTypes
+  )
+  dataSource.attach(attached)
+  return attached
 }

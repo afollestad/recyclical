@@ -22,6 +22,8 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.internal.makeBackgroundSelectable
 
 typealias ItemClickListener<IT> = (index: Int, item: IT) -> Unit
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
@@ -30,10 +32,15 @@ typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
 /** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
 class ItemDefinition<IT : Any>(
-  internal val setup: RecyclicalSetup,
+  private val setup: RecyclicalSetup,
   itemClass: Class<IT>
 ) {
+  /** The full name of the item model class this definition binds. */
   val itemClassName: String = itemClass.name
+  /** The current data source set in setup. */
+  val currentDataSource: DataSource?
+    get() = setup.currentDataSource
+
   private var itemOnClick: ItemClickListener<Any>? = null
   private var itemOnLongClick: ItemClickListener<Any>? = null
   private var creator: ViewHolderCreator<*>? = null
@@ -102,7 +109,7 @@ class ItemDefinition<IT : Any>(
   private val viewClickListener = OnClickListener { itemView ->
     val position = itemView.getTag(R.id.rec_view_item_adapter_position) as? Int
         ?: throw IllegalStateException("Didn't find viewType in itemView tag.")
-    val item = setup.dataSource?.get(position)
+    val item = setup.currentDataSource?.get(position)
         ?: throw IllegalStateException("Data source unexpectedly null.")
 
     this.itemOnClick?.invoke(position, item)
@@ -112,7 +119,7 @@ class ItemDefinition<IT : Any>(
   private val viewLongClickListener = OnLongClickListener { itemView ->
     val position = itemView.getTag(R.id.rec_view_item_adapter_position) as? Int
         ?: throw IllegalStateException("Didn't find viewType in itemView tag.")
-    val item = setup.dataSource?.get(position)
+    val item = setup.currentDataSource?.get(position)
         ?: throw IllegalStateException("Data source unexpectedly null.")
 
     this.itemOnLongClick?.invoke(position, item)
@@ -136,4 +143,9 @@ inline fun <reified IT : Any> RecyclicalSetup.withItem(
   itemClassToType[definition.itemClassName] = layoutRes
   bindingsToTypes[layoutRes] = definition
   return definition
+}
+
+/** Gets the current data source, auto casting to the type [T]. */
+inline fun <reified T : DataSource> ItemDefinition<*>.getDataSource(): T? {
+  return currentDataSource as? T
 }

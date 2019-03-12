@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.recyclical
+package com.afollestad.recyclical.internal
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -21,6 +21,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.annotation.AttrRes
+import com.afollestad.recyclical.R.attr
 
 internal fun Context.resolveDrawable(
   @AttrRes attr: Int? = null,
@@ -63,6 +64,6 @@ internal fun View?.onDetach(block: View.() -> Unit) {
 
 internal fun View?.makeBackgroundSelectable() {
   if (this != null && background == null) {
-    background = context.resolveDrawable(R.attr.selectableItemBackground)
+    background = context.resolveDrawable(attr.selectableItemBackground)
   }
 }

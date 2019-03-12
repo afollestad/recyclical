@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.recyclical
+package com.afollestad.recyclical.internal
 
 import androidx.recyclerview.widget.DiffUtil
-
-typealias LeftAndRightComparer = (left: Any, right: Any) -> Boolean
+import com.afollestad.recyclical.datasource.LeftAndRightComparer
 
 /** @author Aidan Follestad (@afollestad) */
 class ItemDiffCallback(

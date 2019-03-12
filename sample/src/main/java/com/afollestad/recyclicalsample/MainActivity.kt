@@ -21,7 +21,7 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialcab.MaterialCab
-import com.afollestad.recyclical.emptySelectableDataSource
+import com.afollestad.recyclical.datasource.emptySelectableDataSource
 import com.afollestad.recyclical.hasSelection
 import com.afollestad.recyclical.isSelectedAt
 import com.afollestad.recyclical.setup
@@ -32,7 +32,8 @@ import kotlinx.android.synthetic.main.activity_main.list
 
 class MainActivity : AppCompatActivity() {
   private var toast: Toast? = null
-  private val dataSource = emptySelectableDataSource().apply {
+  private val dataSource = emptySelectableDataSource()
+      .apply {
     onSelectionChange { invalidateCab() }
   }
 
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
   private fun invalidateCab() {
     if (dataSource.hasSelection()) {
       MaterialCab.attach(this, R.id.cab_stub) {
-        title = getString(R.string.x_items, dataSource.selectionCount())
+        title = getString(R.string.x_items, dataSource.getSelectionCount())
         onDestroy {
           dataSource.deselectAll()
           true

@@ -17,26 +17,28 @@
 
 package com.afollestad.recyclical
 
+import com.afollestad.recyclical.datasource.SelectableDataSource
+
 /**
  * Returns true if the [DataSource] is a [SelectableDataSource] and the item at the given [index]
  * is currently selected.
  */
 fun <IT : Any> ItemDefinition<IT>.isSelectedAt(index: Int): Boolean {
-  return selectableDataSource?.isSelectedAt(index) ?: false
+  return getDataSource<SelectableDataSource>()?.isSelectedAt(index) ?: false
 }
 
 /**
  * If the [DataSource] is a [SelectableDataSource], selects the item at the given [index].
  */
 fun <IT : Any> ItemDefinition<IT>.selectAt(index: Int): Boolean {
-  return selectableDataSource?.selectAt(index) ?: false
+  return getDataSource<SelectableDataSource>()?.selectAt(index) ?: false
 }
 
 /**
  * If the [DataSource] is a [SelectableDataSource], deselects the item at the given [index].
  */
 fun <IT : Any> ItemDefinition<IT>.deselectAt(index: Int): Boolean {
-  return selectableDataSource?.deselectAt(index) ?: false
+  return getDataSource<SelectableDataSource>()?.deselectAt(index) ?: false
 }
 
 /**
@@ -44,15 +46,12 @@ fun <IT : Any> ItemDefinition<IT>.deselectAt(index: Int): Boolean {
  * it is deselected. If it's not selected, then it is selected.
  */
 fun <IT : Any> ItemDefinition<IT>.toggleSelectionAt(index: Int): Boolean {
-  return selectableDataSource?.toggleSelectionAt(index) ?: false
+  return getDataSource<SelectableDataSource>()?.toggleSelectionAt(index) ?: false
 }
 
 /**
  * Returns true if the [DataSource] is a [SelectableDataSource] and at least one item is selected.
  */
 fun <IT : Any> ItemDefinition<IT>.hasSelection(): Boolean {
-  return selectableDataSource?.hasSelection() ?: false
+  return getDataSource<SelectableDataSource>()?.hasSelection() ?: false
 }
-
-private val ItemDefinition<*>.selectableDataSource: SelectableDataSource?
-  get() = setup.dataSource as? SelectableDataSource

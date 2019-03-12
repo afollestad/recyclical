@@ -15,7 +15,7 @@
  */
 @file:Suppress("unused")
 
-package com.afollestad.recyclical
+package com.afollestad.recyclical.datasource
 
 /**
  * A [DataSource] which provides an interface to manage selected items in the list.
@@ -85,10 +85,10 @@ interface SelectableDataSource : DataSource {
   }
 
   /** Returns how many items are currently selected. */
-  fun selectionCount(): Int
+  fun getSelectionCount(): Int
 
   /** Returns true if at least one item is selected. */
-  fun hasSelection(): Boolean = selectionCount() > 0
+  fun hasSelection(): Boolean = getSelectionCount() > 0
 
   /** Sets a callback that's invoked when the selection is changed. */
   fun onSelectionChange(block: (SelectableDataSource) -> Unit)
@@ -96,7 +96,8 @@ interface SelectableDataSource : DataSource {
 
 class RealSelectableDataSource(
   initialData: List<Any> = mutableListOf()
-) : RealDataSource(initialData), SelectableDataSource {
+) : RealDataSource(initialData),
+    SelectableDataSource {
   private val selectedIndices = mutableSetOf<Int>()
   private var onSelectionChange: ((SelectableDataSource) -> Unit)? = null
 
@@ -130,7 +131,7 @@ class RealSelectableDataSource(
     }
   }
 
-  override fun selectionCount(): Int = selectedIndices.size
+  override fun getSelectionCount(): Int = selectedIndices.size
 
   override fun onSelectionChange(block: (SelectableDataSource) -> Unit) {
     this.onSelectionChange = block
@@ -171,4 +172,5 @@ fun selectableDataSourceOf(vararg items: Any): SelectableDataSource =
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun emptySelectableDataSource(): SelectableDataSource = RealSelectableDataSource()
+fun emptySelectableDataSource(): SelectableDataSource =
+  RealSelectableDataSource()

@@ -15,18 +15,22 @@
  */
 @file:Suppress("UNCHECKED_CAST")
 
-package com.afollestad.recyclical
+package com.afollestad.recyclical.internal
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.afollestad.recyclical.ItemDefinition
+import com.afollestad.recyclical.RecyclicalSetup
 
 /** @author Aidan Follestad (@afollestad) */
-class DefinitionAdapter internal constructor(
-  setup: RecyclicalSetup,
-  private val dataSource: DataSource
+internal class DefinitionAdapter(
+  setup: RecyclicalSetup
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+  private val dataSource = setup.currentDataSource
+      ?: throw IllegalStateException("Must set a data source.")
   private val itemClassToType = setup.itemClassToType
   private val bindingsToTypes = setup.bindingsToTypes
 
