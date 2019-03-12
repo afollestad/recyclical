@@ -137,6 +137,53 @@ class RealSelectableDataSource(
     this.onSelectionChange = block
   }
 
+  override fun insert(
+    index: Int,
+    item: Any
+  ) {
+    val greaterIndices = selectedIndices
+        .filter { it > index }
+        .sortedByDescending { it }
+    greaterIndices.forEach { selectedIndices.remove(it) }
+    greaterIndices.map { it + 1 }
+        .forEach { selectedIndices.add(it) }
+    super.insert(index, item)
+  }
+
+  override fun swap(
+    left: Int,
+    right: Int
+  ) {
+    if (isSelectedAt(left) && !isSelectedAt(right)) {
+      deselectAt(left)
+      selectAt(right)
+    } else if (isSelectedAt(right) && !isSelectedAt(left)) {
+      deselectAt(right)
+    }
+    super.swap(left, right)
+  }
+
+  override fun move(
+    from: Int,
+    to: Int
+  ) {
+    if (isSelectedAt(from)) {
+      deselectAt(from)
+      selectAt(to)
+    }
+    super.move(from, to)
+  }
+
+  override fun removeAt(index: Int) {
+    deselectAt(index)
+    super.removeAt(index)
+  }
+
+  override fun clear() {
+    deselectAll()
+    super.clear()
+  }
+
   private fun maybeNotifyCallback(block: () -> Unit): Boolean {
     val before = selectedIndices.size
     block()
