@@ -35,7 +35,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad:recyclical:0.3.1'
+  implementation 'com.afollestad:recyclical:0.3.2'
 }
 ```
 
@@ -43,7 +43,7 @@ dependencies {
 
 ## The Basics
 
-First, declare an Item class:
+**First**, declare an Item class:
 
 ```kotlin
 data class Person(
@@ -52,7 +52,7 @@ data class Person(
 )
 ```
 
-Second, a layout and a View Holder:
+**Second**, a layout and a View Holder:
 
 ```xml
 <LinearLayout ...>
@@ -69,13 +69,13 @@ Second, a layout and a View Holder:
 ```
 
 ```kotlin
-class PersonViewHolder(itemView: View) {
+class PersonViewHolder(itemView: View) : ViewHolder {
   val name: TextView = itemView.findViewById(R.id.text_name)
   val age: TextView = itemView.findViewById(R.id.text_age)
 }
 ```
 
-Now you can begin using the DSL API:
+**Finally**, you can begin using the DSL API:
 
 ```kotlin
 class MainActivity : AppCompatActivity() {

@@ -21,9 +21,10 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.internal.makeBackgroundSelectable
+
+typealias ViewHolder = androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 typealias ItemClickListener<IT> = (index: Int, item: IT) -> Unit
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
