@@ -47,7 +47,7 @@ First, declare an Item class:
 
 ```kotlin
 data class Person(
-  var name: String,
+  var name: String,s
   var arg: Int
 )
 ```
@@ -300,10 +300,6 @@ dataSource.deselectAt(1)
 dataSource.toggleSelectionAt(1)
 val selected: Boolean = dataSource.isSelectedAt(1)
 
-// Mass operations
-dataSource.selectAll()
-dataSource.deselectAll()
-
 // Item operations, uses index operations under the hood
 val item: Any = // ...
 dataSource.select(item)
@@ -311,8 +307,12 @@ dataSource.deselect(item)
 dataSource.toggleSelection(item)
 val selected: Boolean = dataSource.isSelected(item)
 
+// Mass operations
+dataSource.selectAll()
+dataSource.deselectAll()
+
 // Misc operations
-val count: Int = dataSource.selectionCount()
+val count: Int = dataSource.getSelectionCount()
 val hasSelection: Boolean = dataSource.hasSelection()
 
 // Set a callback invoked when something is selected or deselected
