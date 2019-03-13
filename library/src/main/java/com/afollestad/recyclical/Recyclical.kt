@@ -26,6 +26,7 @@ import com.afollestad.recyclical.internal.DefinitionAdapter
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
 
+/** @author Aidan Follestad (@afollestad) */
 @DslMarker
 annotation class RecyclicalMarker
 
