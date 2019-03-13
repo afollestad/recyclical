@@ -19,6 +19,7 @@ package com.afollestad.recyclical.handle
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
 
 typealias AdapterBlock = Adapter<*>.() -> Unit
@@ -48,6 +49,15 @@ interface RecyclicalHandle {
    * based on [DataSource.isEmpty].
    */
   fun invalidateList(block: AdapterBlock)
+
+  /** Retrieves a view type for a item class. */
+  fun getViewTypeForClass(name: String): Int
+
+  /* Retrieves an [ItemDefinition] for a item class. */
+  fun getDefinitionForClass(name: String): ItemDefinition<*>
+
+  /** Retrieves an [ItemDefinition] for a view type. */
+  fun getDefinitionForType(type: Int): ItemDefinition<*>
 }
 
 /** Gets the current data source, auto casting it to [T]. */

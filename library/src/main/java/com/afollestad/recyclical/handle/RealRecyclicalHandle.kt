@@ -18,14 +18,19 @@ package com.afollestad.recyclical.handle
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.internal.DefinitionAdapter
 
 /** @author Aidan Follestad (@afollestad) */
 class RealRecyclicalHandle internal constructor(
   private val emptyView: View?,
-  private val adapter: RecyclerView.Adapter<*>,
+  private val adapter: DefinitionAdapter,
+  private val itemClassToType: MutableMap<String, Int>,
+  private val bindingsToTypes: MutableMap<Int, ItemDefinition<*>>,
   val dataSource: DataSource
 ) : RecyclicalHandle {
+
   override fun showEmptyView() {
     emptyView?.visibility = View.VISIBLE
   }
@@ -45,7 +50,30 @@ class RealRecyclicalHandle internal constructor(
     showOrHideEmptyView(dataSource.isEmpty())
   }
 
-  internal fun attachDataSource() = dataSource.attach(this)
+  override fun getViewTypeForClass(name: String): Int {
+    return itemClassToType[name] ?: throw IllegalStateException(
+        "Didn't find type for class $name"
+    )
+  }
 
-  internal fun detachDataSource() = dataSource.detach()
+  override fun getDefinitionForClass(name: String): ItemDefinition<*> {
+    val viewType = getViewTypeForClass(name)
+    return getDefinitionForType(viewType)
+  }
+
+  override fun getDefinitionForType(type: Int): ItemDefinition<*> {
+    return bindingsToTypes[type] ?: throw IllegalStateException(
+        "Unable to view item definition for viewType $this"
+    )
+  }
+
+  internal fun attachDataSource() {
+    dataSource.attach(this)
+    adapter.attach(this)
+  }
+
+  internal fun detachDataSource() {
+    dataSource.detach()
+    adapter.detach()
+  }
 }

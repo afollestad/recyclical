@@ -18,6 +18,8 @@
 package com.afollestad.recyclical
 
 import android.view.View
+import androidx.annotation.RestrictTo
+import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -37,12 +39,10 @@ annotation class RecyclicalMarker
 class RecyclicalSetup internal constructor(
   private val recyclerView: RecyclerView
 ) {
-  /** A map of item model class names to view types (layout res). */
-  var itemClassToType = mutableMapOf<String, Int>()
-  /** A map of item view types (layout res) to their binding definitions. */
-  var bindingsToTypes = mutableMapOf<Int, ItemDefinition<*>>()
+  private var itemClassToType = mutableMapOf<String, Int>()
+  private var bindingsToTypes = mutableMapOf<Int, ItemDefinition<*>>()
+  private var emptyView: View? = null
 
-  internal var emptyView: View? = null
   internal var globalOnClick: ItemClickListener<Any>? = null
   internal var globalOnLongClick: ItemClickListener<Any>? = null
   internal var currentDataSource: DataSource? = null
@@ -92,6 +92,35 @@ class RecyclicalSetup internal constructor(
     this.globalOnLongClick = block
     return this
   }
+
+  /** This should not be called directly. */
+  @RestrictTo(LIBRARY) fun registerItemDefinition(
+    className: String,
+    viewType: Int,
+    definition: ItemDefinition<*>
+  ) {
+    itemClassToType[className] = viewType
+    bindingsToTypes[viewType] = definition
+  }
+
+  internal fun toAttached(): RecyclicalHandle {
+    check(itemClassToType.isNotEmpty()) { "No bindings defined." }
+    check(bindingsToTypes.size == itemClassToType.size) {
+      "Something is very wrong - binding maps don't have matching sizes."
+    }
+
+    val dataSource = currentDataSource
+        ?: throw IllegalStateException("Must set a data source.")
+    val attached = RealRecyclicalHandle(
+        emptyView = emptyView,
+        adapter = DefinitionAdapter(),
+        itemClassToType = itemClassToType,
+        bindingsToTypes = bindingsToTypes,
+        dataSource = dataSource
+    )
+    dataSource.attach(attached)
+    return attached
+  }
 }
 
 /**
@@ -102,13 +131,6 @@ class RecyclicalSetup internal constructor(
 fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalHandle {
   val setup = RecyclicalSetup(this)
       .apply { block() }
-
-  setup.apply {
-    check(itemClassToType.isNotEmpty()) { "No bindings defined." }
-    check(bindingsToTypes.size == itemClassToType.size) {
-      "Something is very wrong - binding maps don't have matching sizes."
-    }
-  }
 
   if (layoutManager == null) {
     layoutManager = LinearLayoutManager(context)
@@ -122,17 +144,5 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalHandle {
     onDetach { attached.detachDataSource() }
   }
 
-  return attached
-}
-
-private fun RecyclicalSetup.toAttached(): RecyclicalHandle {
-  val dataSource = currentDataSource
-      ?: throw IllegalStateException("Must set a data source.")
-  val attached = RealRecyclicalHandle(
-      emptyView = emptyView,
-      adapter = DefinitionAdapter(this),
-      dataSource = dataSource
-  )
-  dataSource.attach(attached)
   return attached
 }

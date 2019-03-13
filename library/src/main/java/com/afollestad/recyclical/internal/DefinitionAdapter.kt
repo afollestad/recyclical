@@ -22,19 +22,32 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.afollestad.recyclical.ItemDefinition
-import com.afollestad.recyclical.RecyclicalSetup
+import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.handle.RecyclicalHandle
+import com.afollestad.recyclical.handle.getDataSource
 
 /** @author Aidan Follestad (@afollestad) */
-internal class DefinitionAdapter(
-  setup: RecyclicalSetup
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-  private val dataSource = setup.currentDataSource
-      ?: throw IllegalStateException("Must set a data source.")
-  private val itemClassToType = setup.itemClassToType
-  private val bindingsToTypes = setup.bindingsToTypes
+internal class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+  private var handle: RecyclicalHandle? = null
+  private var dataSource: DataSource? = null
+
+  /** Attaches the adapter to a handle which provides a data source, etc. */
+  fun attach(handle: RecyclicalHandle) {
+    this.handle = handle.also {
+      this.dataSource = it.getDataSource()
+    }
+  }
+
+  /** Clears references to avoid memory leaks. */
+  fun detach() {
+    this.dataSource = null
+    this.handle = null
+  }
 
   override fun getItemViewType(position: Int): Int {
-    return dataSource[position].getItemType()
+    return dataSource?.get(position)?.getItemType() ?: throw IllegalStateException(
+        "No data source available."
+    )
   }
 
   override fun onCreateViewHolder(
@@ -47,13 +60,13 @@ internal class DefinitionAdapter(
         .createViewHolder(view)
   }
 
-  override fun getItemCount() = dataSource.size()
+  override fun getItemCount() = dataSource?.size() ?: 0
 
   override fun onBindViewHolder(
     holder: ViewHolder,
     position: Int
   ) {
-    val item = dataSource[position]
+    val item = dataSource!![position]
     val viewType = item.getItemType()
     viewType.getItemDefinition()
         .bindViewHolder(holder, item, position)
@@ -61,14 +74,14 @@ internal class DefinitionAdapter(
 
   private fun Any.getItemType(): Int {
     val itemClassName = this::class.java.name
-    return itemClassToType[itemClassName] ?: throw IllegalStateException(
-        "Didn't find type for class $itemClassName"
+    return handle?.getViewTypeForClass(itemClassName) ?: throw IllegalStateException(
+        "Not attached!"
     )
   }
 
   private fun Int.getItemDefinition(): ItemDefinition<*> {
-    return bindingsToTypes[this] ?: throw IllegalStateException(
-        "Unable to view item definition for viewType $this"
+    return handle?.getDefinitionForType(this) ?: throw IllegalStateException(
+        "Not attached!"
     )
   }
 }

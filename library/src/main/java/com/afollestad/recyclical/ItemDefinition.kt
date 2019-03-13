@@ -138,12 +138,15 @@ inline fun <reified IT : Any> RecyclicalSetup.withItem(
   @LayoutRes layoutRes: Int,
   noinline block: ItemDefinition<IT>.() -> Unit
 ): ItemDefinition<IT> {
-  val definition = ItemDefinition(this, IT::class.java)
+  return ItemDefinition(this, IT::class.java)
       .apply { block() }
-
-  itemClassToType[definition.itemClassName] = layoutRes
-  bindingsToTypes[layoutRes] = definition
-  return definition
+      .also { definition ->
+        registerItemDefinition(
+            className = definition.itemClassName,
+            viewType = layoutRes,
+            definition = definition
+        )
+      }
 }
 
 /** Gets the current data source, auto casting to the type [T]. */
