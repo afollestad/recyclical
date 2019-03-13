@@ -22,10 +22,8 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialcab.MaterialCab
 import com.afollestad.recyclical.datasource.emptySelectableDataSource
-import com.afollestad.recyclical.hasSelection
-import com.afollestad.recyclical.isSelectedAt
 import com.afollestad.recyclical.setup
-import com.afollestad.recyclical.toggleSelectionAt
+import com.afollestad.recyclical.viewholder.isSelected
 import com.afollestad.recyclical.withItem
 import kotlinx.android.synthetic.main.activity_main.emptyView
 import kotlinx.android.synthetic.main.activity_main.list
@@ -34,8 +32,8 @@ class MainActivity : AppCompatActivity() {
   private var toast: Toast? = null
   private val dataSource = emptySelectableDataSource()
       .apply {
-    onSelectionChange { invalidateCab() }
-  }
+        onSelectionChange { invalidateCab() }
+      }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -57,9 +55,9 @@ class MainActivity : AppCompatActivity() {
       withDataSource(dataSource)
 
       withItem<MyListItem>(R.layout.my_list_item) {
-        onBind(::MyViewHolder) { index, item ->
+        onBind(::MyViewHolder) { _, item ->
           icon.setImageResource(
-              if (isSelectedAt(index)) {
+              if (isSelected()) {
                 R.drawable.check_circle
               } else {
                 R.drawable.person
@@ -72,16 +70,16 @@ class MainActivity : AppCompatActivity() {
         onClick { index, item ->
           if (hasSelection()) {
             // If we are in selection mode, click should toggle selection
-            toggleSelectionAt(index)
+            toggleSelection()
           } else {
             // Else just show a toast
             toast("Clicked $index: ${item.title} / ${item.body}")
           }
         }
 
-        onLongClick { index, _ ->
+        onLongClick { _, _ ->
           // Long clicking starts selection mode, or ends it
-          toggleSelectionAt(index)
+          toggleSelection()
         }
       }
     }

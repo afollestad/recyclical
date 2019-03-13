@@ -22,11 +22,15 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import androidx.annotation.LayoutRes
 import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.datasource.SelectableDataSource
 import com.afollestad.recyclical.internal.makeBackgroundSelectable
+import com.afollestad.recyclical.viewholder.NoOpSelectionStateProvider
+import com.afollestad.recyclical.viewholder.RealSelectionStateProvider
+import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 typealias ViewHolder = androidx.recyclerview.widget.RecyclerView.ViewHolder
 
-typealias ItemClickListener<IT> = (index: Int, item: IT) -> Unit
+typealias ItemClickListener<IT> = SelectionStateProvider.(index: Int, item: IT) -> Unit
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
 typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
 
@@ -64,7 +68,7 @@ class ItemDefinition<IT : Any>(
    * Sets a callback that's invoked when items of this type are clicked.
    */
   fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT> {
-    this.itemOnClick = (block as (Int, Any) -> Unit)
+    this.itemOnClick = (block as SelectionStateProvider.(Int, Any) -> Unit)
     return this
   }
 
@@ -72,7 +76,7 @@ class ItemDefinition<IT : Any>(
    * Sets a callback that's invoked when items of this type are long clicked.
    */
   fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT> {
-    this.itemOnLongClick = (block as (Int, Any) -> Unit)
+    this.itemOnLongClick = (block as SelectionStateProvider.(Int, Any) -> Unit)
     return this
   }
 
@@ -101,10 +105,16 @@ class ItemDefinition<IT : Any>(
     val castedItem = item as? IT ?: throw IllegalStateException(
         "Unable to cast ${item.javaClass.name} to $itemClassName"
     )
-    viewHolder.itemView.setTag(R.id.rec_view_item_adapter_position, position)
+    viewHolder.itemView.run {
+      setTag(R.id.rec_view_item_adapter_position, position)
+      setTag(R.id.rec_view_item_selectable_data_source, currentDataSource)
+    }
 
     val viewHolderBinder = binder as? ViewHolderBinder<ViewHolder, Any>
     viewHolderBinder?.invoke(viewHolder, position, castedItem)
+
+    // Make sure we cleanup this reference, the data source shouldn't be held onto in views
+    viewHolder.itemView.setTag(R.id.rec_view_item_selectable_data_source, null)
   }
 
   private val viewClickListener = OnClickListener { itemView ->
@@ -113,8 +123,10 @@ class ItemDefinition<IT : Any>(
     val item = setup.currentDataSource?.get(position)
         ?: throw IllegalStateException("Data source unexpectedly null.")
 
-    this.itemOnClick?.invoke(position, item)
-    setup.globalOnClick?.invoke(position, item)
+    getSelectionStateProvider(position).use {
+      this.itemOnClick?.invoke(it, position, item)
+      setup.globalOnClick?.invoke(it, position, item)
+    }
   }
 
   private val viewLongClickListener = OnLongClickListener { itemView ->
@@ -123,8 +135,10 @@ class ItemDefinition<IT : Any>(
     val item = setup.currentDataSource?.get(position)
         ?: throw IllegalStateException("Data source unexpectedly null.")
 
-    this.itemOnLongClick?.invoke(position, item)
-    setup.globalOnLongClick?.invoke(position, item)
+    getSelectionStateProvider(position).use {
+      this.itemOnLongClick?.invoke(it, position, item)
+      setup.globalOnLongClick?.invoke(it, position, item)
+    }
     true
   }
 }
@@ -152,4 +166,13 @@ inline fun <reified IT : Any> RecyclicalSetup.withItem(
 /** Gets the current data source, auto casting to the type [T]. */
 inline fun <reified T : DataSource> ItemDefinition<*>.getDataSource(): T? {
   return currentDataSource as? T
+}
+
+private fun ItemDefinition<*>.getSelectionStateProvider(position: Int): SelectionStateProvider {
+  val dataSourceToUse = currentDataSource as? SelectableDataSource
+  return if (dataSourceToUse != null) {
+    RealSelectionStateProvider(dataSourceToUse, position)
+  } else {
+    NoOpSelectionStateProvider()
+  }
 }
