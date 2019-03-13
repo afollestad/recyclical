@@ -47,7 +47,7 @@ dependencies {
 
 ```kotlin
 data class Person(
-  var name: String,s
+  var name: String,
   var arg: Int
 )
 ```
