@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.handle.RealRecyclicalHandle
+import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.internal.DefinitionAdapter
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
@@ -129,9 +131,7 @@ private fun RecyclicalSetup.toAttached(): RecyclicalHandle {
   val attached = RealRecyclicalHandle(
       emptyView = emptyView,
       adapter = DefinitionAdapter(this),
-      dataSource = dataSource,
-      itemClassToType = itemClassToType,
-      bindingsToTypes = bindingsToTypes
+      dataSource = dataSource
   )
   dataSource.attach(attached)
   return attached

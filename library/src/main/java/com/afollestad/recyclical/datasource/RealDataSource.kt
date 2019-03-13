@@ -16,7 +16,7 @@
 package com.afollestad.recyclical.datasource
 
 import androidx.recyclerview.widget.DiffUtil
-import com.afollestad.recyclical.RecyclicalHandle
+import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.internal.ItemDiffCallback
 
 /** @author Aidan Follestad (@afollestad) */

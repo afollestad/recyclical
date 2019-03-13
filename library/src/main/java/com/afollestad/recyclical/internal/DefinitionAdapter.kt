@@ -28,7 +28,6 @@ import com.afollestad.recyclical.RecyclicalSetup
 internal class DefinitionAdapter(
   setup: RecyclicalSetup
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
   private val dataSource = setup.currentDataSource
       ?: throw IllegalStateException("Must set a data source.")
   private val itemClassToType = setup.itemClassToType

@@ -16,8 +16,8 @@
 package com.afollestad.recyclical.datasource
 
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.recyclical.AdapterBlock
-import com.afollestad.recyclical.RecyclicalHandle
+import com.afollestad.recyclical.handle.AdapterBlock
+import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock

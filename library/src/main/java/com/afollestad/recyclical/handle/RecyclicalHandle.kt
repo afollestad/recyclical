@@ -15,13 +15,11 @@
  */
 @file:Suppress("MemberVisibilityCanBePrivate", "unused")
 
-package com.afollestad.recyclical
+package com.afollestad.recyclical.handle
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.afollestad.recyclical.datasource.DataSource
-import com.afollestad.recyclical.internal.showOrHide
 
 typealias AdapterBlock = Adapter<*>.() -> Unit
 
@@ -50,31 +48,6 @@ interface RecyclicalHandle {
    * based on [DataSource.isEmpty].
    */
   fun invalidateList(block: AdapterBlock)
-}
-
-class RealRecyclicalHandle internal constructor(
-  private val emptyView: View?,
-  private val adapter: RecyclerView.Adapter<*>,
-  val dataSource: DataSource,
-  val itemClassToType: Map<String, Int>,
-  val bindingsToTypes: Map<Int, ItemDefinition<*>>
-) : RecyclicalHandle {
-  override fun showEmptyView() = emptyView.showOrHide(true)
-
-  override fun hideEmptyView() = emptyView.showOrHide(true)
-
-  override fun showOrHideEmptyView(show: Boolean) = emptyView.showOrHide(show)
-
-  override fun getAdapter(): RecyclerView.Adapter<*> = adapter
-
-  override fun invalidateList(block: Adapter<*>.() -> Unit) {
-    getAdapter().block()
-    showOrHideEmptyView(dataSource.isEmpty())
-  }
-
-  internal fun attachDataSource() = dataSource.attach(this)
-
-  internal fun detachDataSource() = dataSource.detach()
 }
 
 /** Gets the current data source, auto casting it to [T]. */

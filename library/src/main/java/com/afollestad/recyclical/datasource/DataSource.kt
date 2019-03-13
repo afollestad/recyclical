@@ -20,7 +20,7 @@ package com.afollestad.recyclical.datasource
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.DiffUtil
-import com.afollestad.recyclical.RecyclicalHandle
+import com.afollestad.recyclical.handle.RecyclicalHandle
 
 typealias LeftAndRightComparer = (left: Any, right: Any) -> Boolean
 
