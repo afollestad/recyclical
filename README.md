@@ -323,12 +323,13 @@ dataSource.onSelectionChange { dataSource -> }
 ### Use in Binding
 
 During binding of your items, you can access selection states *even if you don't have a direct 
-reference to your `DataSource`. 
+reference to your `DataSource`.*
 
 In `onBind` blocks, this is done with extensions in `ViewHolder` which provide functions to check 
-selection state and select/deselect the current item that is being bound. In `onClick` and `onLongClick` 
-blocks, this is done using a type that is passed as `this` which provides the same set of 
-functions to check selection state and select/deselect the current item that is being clicked.
+selection state and select/deselect the current item that is being bound. 
+
+In `onClick` and `onLongClick` blocks, this is done using a type that is passed as `this` which provides the same set 
+of functions.
 
 ```kotlin
 recyclerView.setup {
