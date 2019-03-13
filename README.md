@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
       // setup{} is an extension method on RecyclerView
       recyclerView.setup {
           withDataSource(dataSource)
+          
           withItem<Person>(R.layout.person_item_layout) {
             onBind(::PersonViewHolder) { index, item ->
               name.text = item.name
@@ -179,14 +180,14 @@ The included implementation of data source operates on a List of objects (of any
 
 ```kotlin
 // Empty by default, but can still add, insert, etc.
-val dataSource = emptyDataSource()
+val dataSource: DataSource = emptyDataSource()
 
 // Initial data set of items from a vararg list
-val dataSource = dataSourceOf(item1, item2)
+val dataSource: DataSource = dataSourceOf(item1, item2)
 
 // Initial data set of items from an existing list
 val items = listOf(item1, item2)
-val dataSource = dataSourceOf(items)
+val dataSource: DataSource = dataSourceOf(items)
 ```
 
 ### Manipulation
@@ -277,14 +278,14 @@ include `selectable` in their names.
 
 ```kotlin
 // Empty by default, but can still add, insert, etc.
-val dataSource = emptySelectableDataSource()
+val dataSource: SelectableDataSource = emptySelectableDataSource()
 
 // Initial data set of items from a vararg list
-val dataSource = selectableDataSourceOf(item1, item2)
+val dataSource: SelectableDataSource = selectableDataSourceOf(item1, item2)
 
 // Initial data set of items from an existing list
 val items = listOf(item1, item2)
-val dataSource = selectableDataSourceOf(items)
+val dataSource: SelectableDataSource = selectableDataSourceOf(items)
 ```
 
 ### Manipulation
