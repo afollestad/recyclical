@@ -27,6 +27,7 @@ import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.internal.DefinitionAdapter
+import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
 
@@ -109,17 +110,16 @@ class RecyclicalSetup internal constructor(
       "Something is very wrong - binding maps don't have matching sizes."
     }
 
-    val dataSource = currentDataSource
-        ?: throw IllegalStateException("Must set a data source.")
-    val attached = RealRecyclicalHandle(
+    val dataSource = currentDataSource ?: blowUp("Must set a data source.")
+    return RealRecyclicalHandle(
         emptyView = emptyView,
         adapter = DefinitionAdapter(),
         itemClassToType = itemClassToType,
         bindingsToTypes = bindingsToTypes,
         dataSource = dataSource
-    )
-    dataSource.attach(attached)
-    return attached
+    ).also {
+      dataSource.attach(it)
+    }
   }
 }
 
@@ -135,14 +135,14 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalHandle {
   if (layoutManager == null) {
     layoutManager = LinearLayoutManager(context)
   }
-  val attached = setup.toAttached()
+
+  return setup.toAttached()
       .also {
         adapter = it.getAdapter()
-      }
-  if (attached is RealRecyclicalHandle) {
-    onAttach { attached.attachDataSource() }
-    onDetach { attached.detachDataSource() }
-  }
 
-  return attached
+        if (it is RealRecyclicalHandle) {
+          onAttach { it.attachDataSource() }
+          onDetach { it.detachDataSource() }
+        }
+      }
 }

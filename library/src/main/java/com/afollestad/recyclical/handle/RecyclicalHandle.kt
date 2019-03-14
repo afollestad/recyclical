@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.internal.blowUp
 
 typealias AdapterBlock = Adapter<*>.() -> Unit
 
@@ -31,12 +32,6 @@ typealias AdapterBlock = Adapter<*>.() -> Unit
  * @author Aidan Follestad (@afollestad)
  */
 interface RecyclicalHandle {
-  /** Shows the empty view. */
-  fun showEmptyView()
-
-  /** Hides the empty view. */
-  fun hideEmptyView()
-
   /** Shows the empty view if [show] is true, else hides it. */
   fun showOrHideEmptyView(show: Boolean)
 
@@ -63,8 +58,8 @@ interface RecyclicalHandle {
 /** Gets the current data source, auto casting it to [T]. */
 inline fun <reified T : DataSource> RecyclicalHandle.getDataSource(): T {
   return if (this is RealRecyclicalHandle) {
-    dataSource as T
+    dataSource as? T ?: blowUp("$dataSource is not a ${T::class.java.name}")
   } else {
-    throw IllegalStateException("Handle is not a real implementation.")
+    blowUp("Handle is not a real implementation.")
   }
 }

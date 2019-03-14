@@ -16,6 +16,7 @@
 package com.afollestad.recyclical.viewholder
 
 import com.afollestad.recyclical.datasource.SelectableDataSource
+import com.afollestad.recyclical.internal.blowUp
 import java.io.Closeable
 
 /**
@@ -92,6 +93,6 @@ class RealSelectionStateProvider(
   }
 
   private fun ensureActive(): SelectableDataSource {
-    return selectableDataSource ?: throw IllegalStateException("Already disposed.")
+    return selectableDataSource ?: blowUp("Already disposed.")
   }
 }

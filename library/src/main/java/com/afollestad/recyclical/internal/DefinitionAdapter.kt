@@ -22,32 +22,32 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.afollestad.recyclical.ItemDefinition
+import com.afollestad.recyclical.bindViewHolder
+import com.afollestad.recyclical.createViewHolder
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
 
 /** @author Aidan Follestad (@afollestad) */
-internal class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+internal open class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
   private var handle: RecyclicalHandle? = null
   private var dataSource: DataSource? = null
 
   /** Attaches the adapter to a handle which provides a data source, etc. */
-  fun attach(handle: RecyclicalHandle) {
+  open fun attach(handle: RecyclicalHandle) {
     this.handle = handle.also {
       this.dataSource = it.getDataSource()
     }
   }
 
   /** Clears references to avoid memory leaks. */
-  fun detach() {
+  open fun detach() {
     this.dataSource = null
     this.handle = null
   }
 
   override fun getItemViewType(position: Int): Int {
-    return dataSource?.get(position)?.getItemType() ?: throw IllegalStateException(
-        "No data source available."
-    )
+    return dataSource?.get(position)?.getItemType() ?: blowUp("No data source available.")
   }
 
   override fun onCreateViewHolder(
@@ -74,14 +74,10 @@ internal class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>
 
   private fun Any.getItemType(): Int {
     val itemClassName = this::class.java.name
-    return handle?.getViewTypeForClass(itemClassName) ?: throw IllegalStateException(
-        "Not attached!"
-    )
+    return handle?.getViewTypeForClass(itemClassName) ?: blowUp("Not attached!")
   }
 
   private fun Int.getItemDefinition(): ItemDefinition<*> {
-    return handle?.getDefinitionForType(this) ?: throw IllegalStateException(
-        "Not attached!"
-    )
+    return handle?.getDefinitionForType(this) ?: blowUp("Not attached!")
   }
 }

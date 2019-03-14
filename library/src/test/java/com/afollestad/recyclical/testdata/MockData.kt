@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.recyclical.datasource
+package com.afollestad.recyclical.testdata
 
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.recyclical.handle.AdapterBlock

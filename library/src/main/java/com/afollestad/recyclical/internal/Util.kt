@@ -19,6 +19,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.AttrRes
+import androidx.annotation.RestrictTo
 import com.afollestad.recyclical.R.attr
 
 internal fun Context.resolveDrawable(
@@ -57,7 +58,15 @@ internal fun View?.onDetach(block: View.() -> Unit) {
 }
 
 internal fun View?.makeBackgroundSelectable() {
-  if (this != null && background == null) {
+  if (this != null && background == null && context != null) {
     background = context.resolveDrawable(attr.selectableItemBackground)
   }
+}
+
+/** For internal use. Just throws an exception with an optional custom message. */
+@Suppress("NOTHING_TO_INLINE")
+@Throws(IllegalStateException::class)
+@RestrictTo(RestrictTo.Scope.LIBRARY)
+inline fun <T> blowUp(message: String = "Something is very, very wrong"): T {
+  throw IllegalStateException(message)
 }

@@ -16,11 +16,13 @@
 package com.afollestad.recyclical.datasource
 
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.recyclical.NoManifestTestRunner
-import com.afollestad.recyclical.assertEqualTo
-import com.afollestad.recyclical.assertFalse
-import com.afollestad.recyclical.assertSameAs
-import com.afollestad.recyclical.assertTrue
+import com.afollestad.recyclical.testdata.TestItem
+import com.afollestad.recyclical.testdata.mockRecyclicalHandle
+import com.afollestad.recyclical.testutil.NoManifestTestRunner
+import com.afollestad.recyclical.testutil.assertEqualTo
+import com.afollestad.recyclical.testutil.assertFalse
+import com.afollestad.recyclical.testutil.assertSameAs
+import com.afollestad.recyclical.testutil.assertTrue
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify

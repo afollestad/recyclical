@@ -15,7 +15,7 @@
  */
 @file:Suppress("unused")
 
-package com.afollestad.recyclical
+package com.afollestad.recyclical.testutil
 
 fun <T : Any?> T.assertNull() {
   if (this != null) {
@@ -138,5 +138,39 @@ fun CharSequence.assertEmpty() {
 fun CharSequence.assertNotEmpty() {
   if (isEmpty()) {
     throw AssertionError("Expected string to be not empty but it is")
+  }
+}
+
+inline fun <reified T : Any> Any?.assertIsA(noinline actOn: (T.() -> Unit)? = null) {
+  if (this == null) {
+    throw AssertionError("Receiver is null, not a ${T::class.java.name}.")
+  } else if (this !is T) {
+    throw AssertionError("Object of ${this::class} is NOT an instance of ${T::class}")
+  }
+  actOn?.invoke(this)
+}
+
+inline fun <reified T : Any> Any?.assertIsNotA() {
+  if (this == null) {
+    throw AssertionError("Receiver is null.")
+  } else if (this !is T) {
+    throw AssertionError("Object of ${this::class} IS an instance of ${T::class}")
+  }
+}
+
+inline fun <reified T : Exception> expectException(
+  message: String? = null,
+  block: () -> Unit
+) {
+  try {
+    block()
+    throw AssertionError("Expected exception of ${T::class}, but nothing was thrown!")
+  } catch (e: Exception) {
+    if (e !is T) {
+      throw AssertionError("Expected exception of ${T::class}, but got ${e::class}")
+    }
+    if (message != null && message != e.message) {
+      throw AssertionError("Expected exception message: \"$message\"\nActual: ${e.message}")
+    }
   }
 }
