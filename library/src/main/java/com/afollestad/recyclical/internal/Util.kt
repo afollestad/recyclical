@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.RestrictTo
+import androidx.core.view.ViewCompat
 import com.afollestad.recyclical.R.attr
 
 internal fun Context.resolveDrawable(
@@ -47,6 +48,9 @@ internal fun View?.onAttach(block: View.() -> Unit) {
 
     override fun onViewAttachedToWindow(v: View) = v.block()
   })
+  if (isAttachedToWindowCompat && this != null) {
+    block.invoke(this)
+  }
 }
 
 internal fun View?.onDetach(block: View.() -> Unit) {
@@ -55,7 +59,19 @@ internal fun View?.onDetach(block: View.() -> Unit) {
 
     override fun onViewAttachedToWindow(v: View) = Unit
   })
+  if (!isAttachedToWindowCompat && this != null) {
+    block.invoke(this)
+  }
 }
+
+internal val View?.isAttachedToWindowCompat: Boolean
+  get() {
+    return if (this == null) {
+      false
+    } else {
+      ViewCompat.isAttachedToWindow(this)
+    }
+  }
 
 internal fun View?.makeBackgroundSelectable() {
   if (this != null && background == null && context != null) {

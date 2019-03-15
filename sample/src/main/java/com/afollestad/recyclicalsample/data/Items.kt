@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.recyclicalsample
+package com.afollestad.recyclicalsample.data
 
 data class MyListItem(
   val title: String,

@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.recyclicalsample
+package com.afollestad.recyclicalsample.util
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import com.afollestad.recyclical.ViewHolder
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 
-class MyViewHolder(itemView: View) : ViewHolder(itemView) {
-  val icon: ImageView = itemView.findViewById(R.id.icon)
-  val title: TextView = itemView.findViewById(R.id.title)
-  val body: TextView = itemView.findViewById(R.id.body)
+fun FragmentActivity.transact(block: FragmentTransaction.() -> Unit) {
+  supportFragmentManager.beginTransaction()
+      .apply(block)
+      .commit()
 }

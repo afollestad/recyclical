@@ -17,19 +17,22 @@ package com.afollestad.recyclicalsample
 
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialcab.MaterialCab
 import com.afollestad.recyclical.datasource.emptySelectableDataSource
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.viewholder.isSelected
 import com.afollestad.recyclical.withItem
+import com.afollestad.recyclicalsample.data.MyListItem
+import com.afollestad.recyclicalsample.data.MyViewHolder
+import com.afollestad.recyclicalsample.fragment.FragmentSampleActivity
+import com.afollestad.recyclicalsample.util.startActivity
+import com.afollestad.recyclicalsample.util.toast
 import kotlinx.android.synthetic.main.activity_main.emptyView
 import kotlinx.android.synthetic.main.activity_main.list
+import kotlinx.android.synthetic.main.activity_main.toolbar
 
 class MainActivity : AppCompatActivity() {
-  private var toast: Toast? = null
   private val dataSource = emptySelectableDataSource()
       .apply {
         onSelectionChange { invalidateCab() }
@@ -39,6 +42,16 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
     MaterialCab.tryRestore(this, savedInstanceState)
+
+    toolbar.run {
+      inflateMenu(R.menu.main)
+      setOnMenuItemClickListener {
+        if (it.itemId == R.id.fragment) {
+          startActivity<FragmentSampleActivity>()
+        }
+        true
+      }
+    }
 
     dataSource.set(
         IntArray(1000) { it + 1 }
@@ -113,11 +126,5 @@ class MainActivity : AppCompatActivity() {
     } else {
       super.onBackPressed()
     }
-  }
-
-  private fun toast(message: String) {
-    toast?.cancel()
-    toast = Toast.makeText(this, message, LENGTH_LONG)
-        .apply { show() }
   }
 }
