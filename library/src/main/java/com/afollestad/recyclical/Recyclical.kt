@@ -129,9 +129,7 @@ class RecyclicalSetup internal constructor(
  * @author Aidan Follestad (@afollestad)
  */
 fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalHandle {
-  val setup = RecyclicalSetup(this)
-      .apply { block() }
-
+  val setup = RecyclicalSetup(this).apply(block)
   if (layoutManager == null) {
     layoutManager = LinearLayoutManager(context)
   }

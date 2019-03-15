@@ -67,7 +67,7 @@ inline fun <reified IT : Any> RecyclicalSetup.withItem(
   noinline block: ItemDefinition<IT>.() -> Unit
 ): ItemDefinition<IT> {
   return RealItemDefinition(this, IT::class.java)
-      .apply { block() }
+      .apply(block)
       .also { definition ->
         registerItemDefinition(
             className = definition.itemClassName,
