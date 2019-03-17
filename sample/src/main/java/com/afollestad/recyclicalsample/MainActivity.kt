@@ -16,9 +16,11 @@
 package com.afollestad.recyclicalsample
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
-import com.afollestad.materialcab.MaterialCab
+import com.afollestad.materialcab.attached.AttachedCab
+import com.afollestad.materialcab.attached.destroy
+import com.afollestad.materialcab.attached.isActive
+import com.afollestad.materialcab.createCab
 import com.afollestad.recyclical.datasource.emptySelectableDataSource
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.viewholder.isSelected
@@ -33,6 +35,7 @@ import kotlinx.android.synthetic.main.activity_main.list
 import kotlinx.android.synthetic.main.activity_main.toolbar
 
 class MainActivity : AppCompatActivity() {
+  private var cab: AttachedCab? = null
   private val dataSource = emptySelectableDataSource()
       .apply {
         onSelectionChange { invalidateCab() }
@@ -41,7 +44,6 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    MaterialCab.tryRestore(this, savedInstanceState)
 
     toolbar.run {
       inflateMenu(R.menu.main)
@@ -100,24 +102,23 @@ class MainActivity : AppCompatActivity() {
 
   private fun invalidateCab() {
     if (dataSource.hasSelection()) {
-      MaterialCab.attach(this, R.id.cab_stub) {
-        title = getString(R.string.x_items, dataSource.getSelectionCount())
-        onDestroy {
-          dataSource.deselectAll()
-          true
+      if (cab.isActive()) {
+        cab?.apply {
+          title(literal = getString(R.string.x_items, dataSource.getSelectionCount()))
+        }
+      } else {
+        cab = createCab(R.id.cab_stub) {
+          title(literal = getString(R.string.x_items, dataSource.getSelectionCount()))
+          slideDown()
+          onDestroy {
+            dataSource.deselectAll()
+            true
+          }
         }
       }
     } else {
-      MaterialCab.destroy()
+      cab.destroy()
     }
-  }
-
-  override fun onSaveInstanceState(
-    outState: Bundle?,
-    outPersistentState: PersistableBundle?
-  ) {
-    MaterialCab.saveState(outState)
-    super.onSaveInstanceState(outState, outPersistentState)
   }
 
   override fun onBackPressed() {

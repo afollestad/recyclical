@@ -13,7 +13,7 @@ ext.versions = [
 
     androidx            : '1.0.2',
     androidxRecyclerView: '1.0.0',
-    materialCab         : '1.3.1',
+    materialCab         : '2.0.0',
 
     // Unit testing
     junit               : '4.12',
