@@ -114,9 +114,9 @@ class RecyclicalSetup internal constructor(
 
     val definitions = bindingsToTypes.values
     val shouldHaveStableIds = definitions.any {
-      (it as RealItemDefinition).idGetter != null
+      (it as? RealItemDefinition)?.idGetter != null
     }
-    if (shouldHaveStableIds && !definitions.all { (it as RealItemDefinition).idGetter != null }) {
+    if (shouldHaveStableIds && !definitions.all { (it as? RealItemDefinition)?.idGetter != null }) {
       throw IllegalStateException(
           "If you specify that one item type has stable IDs, all item types must."
       )
