@@ -25,6 +25,7 @@
     1. [Construction](#construction-1)
     2. [Manipulation](#manipulation-1)
     3. [Use in Binding](#use-in-binding)
+7. [Stable IDs](#stable-ids)
 
 ---
 
@@ -35,7 +36,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad:recyclical:0.5.1'
+  implementation 'com.afollestad:recyclical:0.5.2'
 }
 ```
 
@@ -361,3 +362,30 @@ recyclerView.setup {
     }
 }  
 ```
+
+---
+
+## Stable IDs
+
+Stable IDs are an optimization hint for `RecyclerView`. When using stable IDs, you're telling 
+the view that each ViewHolder ID is unique and will not change. In Recyclical, to can use stable IDs
+by having *all* of your items provide a unique ID for themselves.
+
+```kotlin
+data class AnItemWithAnId(
+  val id: Int,
+  val name: String
+)
+
+recyclerView.setup {
+  withDataSource(dataSource)
+    
+  withItem<AnItemWithAnId>(R.layout.my_item_layout) {
+     onBind(::MyViewHolder) { index, item -> ... }
+     // The key is this, which says the `id` field of your item represents a unique ID.
+     hasStableIds { it.id }
+  }
+}
+```
+
+If you have more than one item that your RecyclerView can hold, *all* need to define `hasStableIds`.
