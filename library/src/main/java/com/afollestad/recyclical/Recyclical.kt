@@ -47,6 +47,7 @@ class RecyclicalSetup internal constructor(
   internal var globalOnClick: ItemClickListener<Any>? = null
   internal var globalOnLongClick: ItemClickListener<Any>? = null
   internal var currentDataSource: DataSource? = null
+  internal var adapterCreator: () -> DefinitionAdapter = { DefinitionAdapter() }
 
   /**
    * Sets a layout manaher for the RecyclerView. The default is a vertical LinearLayoutManager,
@@ -124,7 +125,7 @@ class RecyclicalSetup internal constructor(
     val dataSource = currentDataSource ?: blowUp("Must set a data source.")
     return RealRecyclicalHandle(
         emptyView = emptyView,
-        adapter = DefinitionAdapter(),
+        adapter = adapterCreator(),
         itemClassToType = itemClassToType,
         bindingsToTypes = bindingsToTypes,
         dataSource = dataSource

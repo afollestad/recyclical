@@ -60,7 +60,7 @@ class MainFragment : Fragment() {
       withDataSource(dataSource)
 
       withItem<MyListItem>(R.layout.my_list_item) {
-        hasStableIds { it.id.toLong() }
+        hasStableIds { it.id }
 
         onBind(::MyViewHolder) { _, item ->
           icon.setImageResource(R.drawable.person)

@@ -25,3 +25,7 @@ import com.afollestad.recyclical.ViewHolder
 class TestViewHolder(itemView: View) : ViewHolder(itemView) {
   val title: TextView = itemView.findViewById(R.id.title)
 }
+
+class TestViewHolder2(itemView: View) : ViewHolder(itemView) {
+  val title: TextView = itemView.findViewById(R.id.title)
+}

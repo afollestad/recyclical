@@ -28,7 +28,7 @@ typealias ViewHolder = androidx.recyclerview.widget.RecyclerView.ViewHolder
 typealias ItemClickListener<IT> = SelectionStateProvider.(index: Int, item: IT) -> Unit
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
 typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
-typealias IdGetter<IT> = (item: IT) -> Long
+typealias IdGetter<IT> = (item: IT) -> Number
 
 /**
  * Represents the association of a model class to a layout and view model. Also responsible for

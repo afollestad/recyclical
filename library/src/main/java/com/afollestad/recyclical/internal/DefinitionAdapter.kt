@@ -52,7 +52,7 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
     val viewType = item.getItemType()
     val definition = viewType.getItemDefinition()
     val idGetter = (definition as? RealItemDefinition)?.idGetter
-    return idGetter?.invoke(item) ?: super.getItemId(position)
+    return idGetter?.invoke(item)?.toLong() ?: super.getItemId(position)
   }
 
   override fun getItemViewType(position: Int): Int {

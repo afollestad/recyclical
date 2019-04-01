@@ -19,3 +19,8 @@ data class TestItem(
   val id: Int,
   val title: String
 )
+
+data class TestItem2(
+  val id: Int,
+  val title: String
+)

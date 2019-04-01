@@ -24,14 +24,18 @@ import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
 import com.afollestad.recyclical.testdata.TestItem
+import com.afollestad.recyclical.testdata.TestItem2
 import com.afollestad.recyclical.testdata.TestViewHolder
+import com.afollestad.recyclical.testdata.TestViewHolder2
 import com.afollestad.recyclical.testutil.assertEqualTo
 import com.afollestad.recyclical.testutil.assertIsA
 import com.afollestad.recyclical.testutil.assertSameAs
 import com.afollestad.recyclical.testutil.expectException
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.isA
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.same
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
@@ -39,9 +43,11 @@ import org.junit.Test
 const val EMPTY_VIEW_ID = 2
 const val RECYCLER_VIEW_ID = 3
 const val INFLATE_ITEM_LAYOUT_RES = 10
+const val INFLATE_ITEM_LAYOUT_RES_2 = 11
 
 class RecyclicalTest {
   private val binder = mock<ViewHolderBinder<TestViewHolder, TestItem>>()
+  private val binder2 = mock<ViewHolderBinder<TestViewHolder2, TestItem2>>()
   private val testGlobalClickListener = mock<ItemClickListener<Any>>()
   private val testGlobalLongClickListener = mock<ItemClickListener<Any>>()
   private val testItemClickListener = mock<ItemClickListener<Any>>()
@@ -55,12 +61,14 @@ class RecyclicalTest {
   private val recyclerView = mock<RecyclerView> {
     on { id } doReturn RECYCLER_VIEW_ID
   }
+  private val adapter = mock<DefinitionAdapter>()
 
-  @Test fun no_bindings_defined() {
+  @Test fun `no bindings defined throws exception`() {
     expectException<IllegalStateException>(
         "No bindings defined."
     ) {
       recyclerView.setup {
+        adapterCreator = { adapter }
         withEmptyView(emptyView)
         withDataSource(dataSource)
         withClickListener(testGlobalClickListener)
@@ -69,11 +77,12 @@ class RecyclicalTest {
     }
   }
 
-  @Test fun no_data_source_defined() {
+  @Test fun `no data source provided throws exception`() {
     expectException<IllegalStateException>(
         "Must set a data source."
     ) {
       recyclerView.setup {
+        adapterCreator = { adapter }
         withEmptyView(emptyView)
 
         val testLayoutManager = mock<LayoutManager>()
@@ -89,10 +98,10 @@ class RecyclicalTest {
     }
   }
 
-  @Test
-  fun normal_setup() {
+  @Test fun `setup succeeds with required information`() {
     var itemDefinition: ItemDefinition<*>? = null
     val handle = recyclerView.setup {
+      adapterCreator = { adapter }
       withEmptyView(emptyView)
       withDataSource(dataSource)
       withClickListener(testGlobalClickListener)
@@ -111,6 +120,7 @@ class RecyclicalTest {
 
     verify(recyclerView).adapter = isA<DefinitionAdapter>()
     verify(recyclerView).layoutManager = isA<LinearLayoutManager>()
+    verify(adapter).setHasStableIds(false)
 
     handle.assertIsA<RealRecyclicalHandle> {
       emptyView.assertSameAs(emptyView)
@@ -125,5 +135,43 @@ class RecyclicalTest {
         .assertSameAs(dataSource)
 
     verify(dataSource).attach(handle)
+  }
+
+  @Test fun `has stable IDs when provided for item definitions`() {
+    val handle = recyclerView.setup {
+      adapterCreator = { adapter }
+      withDataSource(dataSource)
+
+      withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+        hasStableIds { it.id }
+        onBind(::TestViewHolder, binder)
+      }
+    }
+
+    verify(adapter).setHasStableIds(true)
+    verify(dataSource).attach(handle)
+  }
+
+  @Test fun `only some items having stable IDs throws exception`() {
+    expectException<IllegalStateException>(
+        "If you specify that one item type has stable IDs, all item types must."
+    ) {
+      recyclerView.setup {
+        adapterCreator = { adapter }
+        withDataSource(dataSource)
+
+        withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+          onBind(::TestViewHolder, binder)
+        }
+
+        withItem<TestItem2>(INFLATE_ITEM_LAYOUT_RES_2) {
+          hasStableIds { it.id }
+          onBind(::TestViewHolder2, binder2)
+        }
+      }
+    }
+
+    verify(dataSource, never()).attach(any())
+    verify(adapter, never()).setHasStableIds(any())
   }
 }
