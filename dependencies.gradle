@@ -7,18 +7,18 @@ ext.versions = [
 
     gradlePlugin        : '3.3.2',
     kotlin              : '1.3.21',
-    spotlessPlugin      : '3.19.0',
+    spotlessPlugin      : '3.21.1',
     versionsPlugin      : '0.21.0',
     bintrayRelease      : '0.9',
 
     androidx            : '1.0.2',
     androidxRecyclerView: '1.0.0',
-    materialCab         : '2.0.0',
+    materialCab         : '2.0.1',
 
     // Unit testing
     junit               : '4.12',
-    robolectric         : '4.2',
+    robolectric         : '4.2.1',
     androidxTest        : '1.1.0',
-    mockito             : '2.25.0',
+    mockito             : '2.25.1',
     mockitoKotlin       : '2.1.0',
 ]

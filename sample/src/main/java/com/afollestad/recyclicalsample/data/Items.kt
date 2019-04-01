@@ -16,6 +16,7 @@
 package com.afollestad.recyclicalsample.data
 
 data class MyListItem(
+  val id: Int,
   val title: String,
   val body: String
 )

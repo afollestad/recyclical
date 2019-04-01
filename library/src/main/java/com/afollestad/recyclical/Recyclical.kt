@@ -107,7 +107,18 @@ class RecyclicalSetup internal constructor(
   internal fun toAttached(): RecyclicalHandle {
     check(itemClassToType.isNotEmpty()) { "No bindings defined." }
     check(bindingsToTypes.size == itemClassToType.size) {
-      "Something is very wrong - binding maps don't have matching sizes."
+      "Something is very wrong - binding maps don't have matching sizes. " +
+          "Make sure you aren't using the same layout for multiple item classes."
+    }
+
+    val definitions = bindingsToTypes.values
+    val shouldHaveStableIds = definitions.any {
+      (it as RealItemDefinition).idGetter != null
+    }
+    if (shouldHaveStableIds && !definitions.all { (it as RealItemDefinition).idGetter != null }) {
+      throw IllegalStateException(
+          "If you specify that one item type has stable IDs, all item types must."
+      )
     }
 
     val dataSource = currentDataSource ?: blowUp("Must set a data source.")
@@ -118,6 +129,8 @@ class RecyclicalSetup internal constructor(
         bindingsToTypes = bindingsToTypes,
         dataSource = dataSource
     ).also {
+      it.getAdapter()
+          .setHasStableIds(shouldHaveStableIds)
       dataSource.attach(it)
     }
   }

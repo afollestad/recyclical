@@ -46,6 +46,7 @@ class RealItemDefinition<IT : Any>(
 
   internal var creator: ViewHolderCreator<*>? = null
   internal var binder: ViewHolderBinder<*, *>? = null
+  internal var idGetter: IdGetter<Any>? = null
 
   override fun <VH : ViewHolder> onBind(
     viewHolderCreator: ViewHolderCreator<VH>,
@@ -63,6 +64,11 @@ class RealItemDefinition<IT : Any>(
 
   override fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT> {
     this.itemOnLongClick = (block as SelectionStateProvider.(Int, Any) -> Unit)
+    return this
+  }
+
+  override fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT> {
+    this.idGetter = idGetter as IdGetter<Any>
     return this
   }
 

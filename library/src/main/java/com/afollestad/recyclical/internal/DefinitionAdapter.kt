@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.afollestad.recyclical.ItemDefinition
+import com.afollestad.recyclical.RealItemDefinition
 import com.afollestad.recyclical.bindViewHolder
 import com.afollestad.recyclical.createViewHolder
 import com.afollestad.recyclical.datasource.DataSource
@@ -44,6 +45,14 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
   open fun detach() {
     this.dataSource = null
     this.handle = null
+  }
+
+  override fun getItemId(position: Int): Long {
+    val item = dataSource!![position]
+    val viewType = item.getItemType()
+    val definition = viewType.getItemDefinition()
+    val idGetter = (definition as? RealItemDefinition)?.idGetter
+    return idGetter?.invoke(item) ?: super.getItemId(position)
   }
 
   override fun getItemViewType(position: Int): Int {

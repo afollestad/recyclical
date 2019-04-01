@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         IntArray(1000) { it + 1 }
             .map {
               MyListItem(
+                  id = it,
                   title = "#$it",
                   body = "Hello, world! #$it"
               )
@@ -70,6 +71,8 @@ class MainActivity : AppCompatActivity() {
       withDataSource(dataSource)
 
       withItem<MyListItem>(R.layout.my_list_item) {
+        hasStableIds { it.id.toLong() }
+
         onBind(::MyViewHolder) { _, item ->
           icon.setImageResource(
               if (isSelected()) {

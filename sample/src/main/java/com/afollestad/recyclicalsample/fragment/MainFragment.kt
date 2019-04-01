@@ -50,7 +50,7 @@ class MainFragment : Fragment() {
     addItem.setOnClickListener {
       val newIndex = dataSource.size() + 1
       val title = "Item #$newIndex"
-      dataSource.add(MyListItem(title, "Hello world #$newIndex"))
+      dataSource.add(MyListItem(newIndex, title, "Hello world #$newIndex"))
     }
 
     dataSource = emptyDataSource()
@@ -60,6 +60,8 @@ class MainFragment : Fragment() {
       withDataSource(dataSource)
 
       withItem<MyListItem>(R.layout.my_list_item) {
+        hasStableIds { it.id.toLong() }
+
         onBind(::MyViewHolder) { _, item ->
           icon.setImageResource(R.drawable.person)
           title.text = item.title

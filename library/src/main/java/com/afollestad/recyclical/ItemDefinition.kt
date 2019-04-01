@@ -28,6 +28,7 @@ typealias ViewHolder = androidx.recyclerview.widget.RecyclerView.ViewHolder
 typealias ItemClickListener<IT> = SelectionStateProvider.(index: Int, item: IT) -> Unit
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
 typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
+typealias IdGetter<IT> = (item: IT) -> Long
 
 /**
  * Represents the association of a model class to a layout and view model. Also responsible for
@@ -55,6 +56,11 @@ interface ItemDefinition<IT : Any> {
    * Sets a callback that's invoked when items of this type are long clicked.
    */
   fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT>
+
+  /**
+   * Sets a callback that gets a unique ID for each item of this type.
+   */
+  fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT>
 }
 
 /**
