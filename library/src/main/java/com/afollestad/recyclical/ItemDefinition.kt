@@ -21,11 +21,13 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.internal.blowUp
+import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 typealias ViewHolder = androidx.recyclerview.widget.RecyclerView.ViewHolder
 
-typealias ItemClickListener<IT> = SelectionStateProvider.(index: Int, item: IT) -> Unit
+typealias ItemClickListener<IT> = SelectionStateProvider<IT>.(index: Int) -> Unit
+typealias ChildViewClickListener<IT, VT> = SelectionStateProvider<IT>.(index: Int, view: VT) -> Unit
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
 typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
 typealias IdGetter<IT> = (item: IT) -> Number

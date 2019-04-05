@@ -21,6 +21,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.itemdefinition.RealItemDefinition
+import com.afollestad.recyclical.itemdefinition.bindViewHolder
+import com.afollestad.recyclical.itemdefinition.createViewHolder
 import com.afollestad.recyclical.testdata.TestClickListener
 import com.afollestad.recyclical.testdata.TestItem
 import com.afollestad.recyclical.testdata.TestViewHolder

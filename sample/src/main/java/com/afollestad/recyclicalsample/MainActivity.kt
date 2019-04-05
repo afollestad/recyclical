@@ -22,6 +22,7 @@ import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
 import com.afollestad.materialcab.createCab
 import com.afollestad.recyclical.datasource.emptySelectableDataSource
+import com.afollestad.recyclical.itemdefinition.onChildViewClick
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.viewholder.isSelected
 import com.afollestad.recyclical.withItem
@@ -85,7 +86,12 @@ class MainActivity : AppCompatActivity() {
           body.text = item.body
         }
 
-        onClick { index, item ->
+        onChildViewClick(MyViewHolder::icon) { _, _ ->
+          toast("Clicked icon of ${item.title}!")
+          toggleSelection()
+        }
+
+        onClick { index ->
           if (hasSelection()) {
             // If we are in selection mode, click should toggle selection
             toggleSelection()
@@ -95,7 +101,7 @@ class MainActivity : AppCompatActivity() {
           }
         }
 
-        onLongClick { _, _ ->
+        onLongClick {
           // Long clicking starts selection mode, or ends it
           toggleSelection()
         }

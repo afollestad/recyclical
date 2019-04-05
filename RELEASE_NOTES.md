@@ -1,4 +1,3 @@
-0.5.2
+0.6.0
 
-1. Use Kotlin's JDK 8 dependency instead of JDK 7.
-2. You can now use stable IDs by providing `hasStableIds { }` on all of your item definitions - see the README for details.
+1. Add `onChildViewClick` method to DSL when defining an item definition. See the README for examples.

@@ -30,6 +30,7 @@ import com.afollestad.recyclical.internal.DefinitionAdapter
 import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
+import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 
 /** @author Aidan Follestad (@afollestad) */
 @DslMarker

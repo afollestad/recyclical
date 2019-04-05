@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("UNCHECKED_CAST")
+
 package com.afollestad.recyclical.viewholder
 
 import com.afollestad.recyclical.datasource.SelectableDataSource
@@ -25,7 +27,13 @@ import java.io.Closeable
  *
  * @author Aidan Follestad (@afollestad)
  */
-interface SelectionStateProvider : Closeable {
+interface SelectionStateProvider<out IT> : Closeable {
+
+  /**
+   * Gets the item at the current position.
+   */
+  val item: IT
+
   /**
    * Must be called from within an onBind block. Returns true if the item is
    * currently selected.
@@ -39,8 +47,7 @@ interface SelectionStateProvider : Closeable {
   fun select(): Boolean
 
   /**
-   * Deselects the current item if it is
-   * currently selected.
+   * Deselects the current item if it is currently selected.
    */
   fun deselect(): Boolean
 
@@ -57,7 +64,10 @@ interface SelectionStateProvider : Closeable {
 }
 
 /** @author Aidan Follestad (@afollestad) */
-class NoOpSelectionStateProvider : SelectionStateProvider {
+class NoOpSelectionStateProvider<out IT> : SelectionStateProvider<IT> {
+  override val item: IT
+    get() = Any() as IT
+
   override fun isSelected(): Boolean = false
 
   override fun select(): Boolean = false
@@ -72,11 +82,13 @@ class NoOpSelectionStateProvider : SelectionStateProvider {
 }
 
 /** @author Aidan Follestad (@afollestad) */
-class RealSelectionStateProvider(
+class RealSelectionStateProvider<out IT>(
   dataSource: SelectableDataSource,
   private val index: Int
-) : SelectionStateProvider {
+) : SelectionStateProvider<IT> {
   private var selectableDataSource: SelectableDataSource? = dataSource
+
+  override val item: IT get() = ensureActive()[index] as IT
 
   override fun isSelected(): Boolean = ensureActive().isSelectedAt(index)
 

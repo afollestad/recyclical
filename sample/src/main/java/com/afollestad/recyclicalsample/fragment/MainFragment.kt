@@ -68,7 +68,7 @@ class MainFragment : Fragment() {
           body.text = item.body
         }
 
-        onClick { index, item ->
+        onClick { index ->
           toast("Clicked $index: ${item.title} / ${item.body}")
         }
       }
