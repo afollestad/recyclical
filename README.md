@@ -16,16 +16,17 @@
 1. [Gradle Dependency](#gradle-dependency)
 2. [The Basics](#the-basics)
 3. [More Options](#more-options)
-4. [Multiple Item Types](#multiple-item-types)
-5. [DataSource](#datasource)
+4. [Child View Clicks](#child-view-clicks)
+5. [Multiple Item Types](#multiple-item-types)
+6. [DataSource](#datasource)
     1. [Construction](#construction)
     2. [Manipulation](#manipulation)
     4. [Diffing](#diffing)
-6. [SelectableDataSource](#selectabledatasource)
+7. [SelectableDataSource](#selectabledatasource)
     1. [Construction](#construction-1)
     2. [Manipulation](#manipulation-1)
     3. [Use in Binding](#use-in-binding)
-7. [Stable IDs](#stable-ids)
+8. [Stable IDs](#stable-ids)
 
 ---
 
@@ -36,7 +37,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad:recyclical:0.5.2'
+  implementation 'com.afollestad:recyclical:0.6.0'
 }
 ```
 
@@ -95,13 +96,16 @@ class MainActivity : AppCompatActivity() {
           
           withItem<Person>(R.layout.person_item_layout) {
             onBind(::PersonViewHolder) { index, item ->
+              // PersonViewHolder is `this` here
               name.text = item.name
               age.text = "${item.age}"
             }
-            onClick { index, item ->
+            onClick { index ->
+              // item is a `val` in `this` here
               toast("Clicked $index: ${item.name}")
             }
-            onLongClick { index, item -> 
+            onLongClick { index ->
+              // item is a `val` in `this` here 
               toast("Long clicked $index: ${item.name}")
             }
          }
@@ -126,6 +130,30 @@ recyclerView.setup {
   withClickListener { index, item -> }
   // Global long click listener for any item type. Individual item long click listeners are called first.
   withLongClickListener { index, item -> }
+}
+```
+
+---
+
+## Child View Clicks
+
+There are many cases in which you'd want to get callbacks for a child view in your list items 
+getting clicked, such as the sender icon in a list of emails.
+
+```kotlin
+class EmailViewHolder(itemView: View) : ViewHolder(itemView) {
+  val icon = itemView.findViewById<ImageView>(R.id.icon)
+}
+
+recyclerView.setup {
+  ...
+  withItem<EmailViewHolder>(R.layout.person_item_layout) {
+    ...
+    onChildViewClick(EmailViewHolder::icon) { index, view ->
+      val item = this.item
+      // `view` argument here is automatically an `ImageView`
+    }
+  }
 }
 ```
 
@@ -347,7 +375,7 @@ recyclerView.setup {
           hasSelection()
       }
       
-      onClick { index, item ->
+      onClick { index ->
           // Selection-related methods that can be used here:
           isSelected()
           select()
@@ -356,7 +384,11 @@ recyclerView.setup {
           hasSelection()
       }
       
-      onLongClick { index, _ ->
+      onChildViewClick(MyViewHolder::someView) { index, view ->
+          // The same methods used in onClick can be used here as well
+      }
+      
+      onLongClick { index ->
           // The same methods used in onClick can be used here as well
       }
     }

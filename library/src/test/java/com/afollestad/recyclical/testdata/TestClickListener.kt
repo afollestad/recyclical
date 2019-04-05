@@ -20,12 +20,12 @@ import com.afollestad.recyclical.testutil.assertEqualTo
 import com.afollestad.recyclical.testutil.assertSameAs
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
-class TestClickListener<in IT : Any> {
-  private var selectionStateProvider: SelectionStateProvider? = null
+class TestClickListener<IT : Any> {
+  private var selectionStateProvider: SelectionStateProvider<IT>? = null
   private var actualIndex: Int? = null
   private var actualItem: IT? = null
 
-  fun capture(): ItemClickListener<IT> = { index, item ->
+  fun capture(): ItemClickListener<IT> = { index ->
     selectionStateProvider = this
     actualIndex = index
     actualItem = item
@@ -34,7 +34,7 @@ class TestClickListener<in IT : Any> {
   fun expect(
     index: Int,
     item: IT,
-    selectionState: (SelectionStateProvider.() -> Unit)? = null
+    selectionState: (SelectionStateProvider<IT>.() -> Unit)? = null
   ) {
     actualIndex.assertEqualTo(index)
     actualItem.assertSameAs(item)

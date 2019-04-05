@@ -101,11 +101,11 @@ internal fun ItemDefinition<*>.bindViewHolder(
 internal fun <IT : Any> ItemDefinition<IT>.getSelectionStateProvider(
   position: Int
 ): SelectionStateProvider<IT> {
-  val dataSourceToUse = getDataSource<SelectableDataSource>()
-  return if (dataSourceToUse != null) {
-    RealSelectionStateProvider(dataSourceToUse, position)
+  val selectableSource = getDataSource<SelectableDataSource>()
+  return if (selectableSource != null) {
+    RealSelectionStateProvider(selectableSource, position)
   } else {
-    NoOpSelectionStateProvider()
+    NoOpSelectionStateProvider(getDataSource(), position)
   }
 }
 

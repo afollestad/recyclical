@@ -17,6 +17,7 @@
 
 package com.afollestad.recyclical.viewholder
 
+import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.SelectableDataSource
 import com.afollestad.recyclical.internal.blowUp
 import java.io.Closeable
@@ -64,9 +65,13 @@ interface SelectionStateProvider<out IT> : Closeable {
 }
 
 /** @author Aidan Follestad (@afollestad) */
-class NoOpSelectionStateProvider<out IT> : SelectionStateProvider<IT> {
+class NoOpSelectionStateProvider<out IT>(
+  private var dataSource: DataSource?,
+  private val index: Int
+) : SelectionStateProvider<IT> {
+
   override val item: IT
-    get() = Any() as IT
+    get() = dataSource?.get(index) as IT ?: blowUp("Already disposed.")
 
   override fun isSelected(): Boolean = false
 
@@ -78,7 +83,9 @@ class NoOpSelectionStateProvider<out IT> : SelectionStateProvider<IT> {
 
   override fun hasSelection(): Boolean = false
 
-  override fun close() = Unit
+  override fun close() {
+    dataSource = null
+  }
 }
 
 /** @author Aidan Follestad (@afollestad) */
