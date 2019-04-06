@@ -146,11 +146,11 @@ class EmailViewHolder(itemView: View) : ViewHolder(itemView) {
 }
 
 recyclerView.setup {
-  ...
-  withItem<EmailViewHolder>(R.layout.person_item_layout) {
-    ...
+  
+  withItem<EmailViewHolder>(R.layout.email_item_layout) {
+        
     onChildViewClick(EmailViewHolder::icon) { index, view ->
-      val item = this.item
+      // `this` includes `item` along with selection-related methods discussed below in SelectableDataSource
       // `view` argument here is automatically an `ImageView`
     }
   }
