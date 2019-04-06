@@ -17,6 +17,7 @@
 
 package com.afollestad.recyclical.itemdefinition
 
+import android.util.Log
 import android.view.View
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
@@ -30,7 +31,7 @@ import com.afollestad.recyclical.datasource.SelectableDataSource
 import com.afollestad.recyclical.getDataSource
 import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.internal.makeBackgroundSelectable
-import com.afollestad.recyclical.viewholder.NoOpSelectionStateProvider
+import com.afollestad.recyclical.viewholder.NoSelectionStateProvider
 import com.afollestad.recyclical.viewholder.RealSelectionStateProvider
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
@@ -72,10 +73,11 @@ private fun ItemDefinition<*>.setChildClickListeners(viewHolder: ViewHolder) {
     val childView = viewGetter(viewHolder)
 
     childView.setOnClickListener {
-      val index = viewHolder.adapterPosition
+      val index = viewHolder.itemView.positionTag()
       getSelectionStateProvider(index).use {
         callback(it, index, childView)
       }
+      Log.d("IDK", "After")
     }
   }
 }
@@ -105,7 +107,7 @@ internal fun <IT : Any> ItemDefinition<IT>.getSelectionStateProvider(
   return if (selectableSource != null) {
     RealSelectionStateProvider(selectableSource, position)
   } else {
-    NoOpSelectionStateProvider(getDataSource(), position)
+    NoSelectionStateProvider(getDataSource(), position)
   }
 }
 

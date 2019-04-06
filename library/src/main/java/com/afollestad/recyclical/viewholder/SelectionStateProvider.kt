@@ -65,13 +65,19 @@ interface SelectionStateProvider<out IT> : Closeable {
 }
 
 /** @author Aidan Follestad (@afollestad) */
-class NoOpSelectionStateProvider<out IT>(
+class NoSelectionStateProvider<out IT>(
   private var dataSource: DataSource?,
   private val index: Int
 ) : SelectionStateProvider<IT> {
 
   override val item: IT
-    get() = dataSource?.get(index) as IT ?: blowUp("Already disposed.")
+    get() {
+      return if (dataSource == null) {
+        blowUp("Already disposed")
+      } else {
+        dataSource!![index] as IT
+      }
+    }
 
   override fun isSelected(): Boolean = false
 

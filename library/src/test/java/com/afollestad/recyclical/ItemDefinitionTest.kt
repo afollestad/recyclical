@@ -24,6 +24,8 @@ import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 import com.afollestad.recyclical.itemdefinition.bindViewHolder
 import com.afollestad.recyclical.itemdefinition.createViewHolder
+import com.afollestad.recyclical.itemdefinition.onChildViewClick
+import com.afollestad.recyclical.testdata.TestChildClickListener
 import com.afollestad.recyclical.testdata.TestClickListener
 import com.afollestad.recyclical.testdata.TestItem
 import com.afollestad.recyclical.testdata.TestViewHolder
@@ -139,5 +141,26 @@ class ItemDefinitionTest {
     rootView.performLongClick()
     listener.expect(TEST_ITEM_INDEX, testItem)
     globalLongClickListener.expect(TEST_ITEM_INDEX, testItem)
+  }
+
+  @Test fun onChildViewClick() {
+    val listener = TestChildClickListener<TestItem, TextView>()
+    definition.onChildViewClick(TestViewHolder::title, listener.capture())
+
+    val creator = ::TestViewHolder
+    val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
+    definition.onBind(creator, binder)
+
+    val viewHolder = definition.createViewHolder(rootView) as TestViewHolder
+    definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)
+
+    rootView.performClick()
+    listener.expectNothing()
+
+    rootView.performLongClick()
+    listener.expectNothing()
+
+    viewHolder.title.performClick()
+    listener.expect(TEST_ITEM_INDEX, viewHolder.title, testItem)
   }
 }
