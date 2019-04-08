@@ -103,20 +103,3 @@ class RealItemDefinition<IT : Any>(
     val callback: ChildViewClickListener<IT, VT>
   )
 }
-
-/**
- * Sets a callback that's invoked when a child view in a item is clicked.
- */
-inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT>.onChildViewClick(
-  noinline view: VH.() -> VT,
-  noinline block: ChildViewClickListener<IT, VT>
-): ItemDefinition<IT> {
-  realDefinition().childClickDatas.add(
-      ChildClickData(
-          viewHolderType = VH::class.java,
-          child = view,
-          callback = block
-      )
-  )
-  return this
-}

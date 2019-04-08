@@ -22,6 +22,7 @@ import androidx.annotation.LayoutRes
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
+import com.afollestad.recyclical.itemdefinition.realDefinition
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 typealias ViewHolder = androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -83,6 +84,26 @@ inline fun <reified IT : Any> RecyclicalSetup.withItem(
             definition = definition
         )
       }
+}
+
+/**
+ * Sets a callback that's invoked when a child view in a item is clicked.
+ *
+ * @param view A lambda that provides the view we are attaching to in each view holder.
+ * @param block A lambda executed when the view is clicked.
+ */
+inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT>.onChildViewClick(
+  noinline view: VH.() -> VT,
+  noinline block: ChildViewClickListener<IT, VT>
+): ItemDefinition<IT> {
+  realDefinition().childClickDatas.add(
+      RealItemDefinition.ChildClickData(
+          viewHolderType = VH::class.java,
+          child = view,
+          callback = block
+      )
+  )
+  return this
 }
 
 /** Gets the current data source, auto casting to the type [T]. */
