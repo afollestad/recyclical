@@ -64,7 +64,7 @@ class SwipeAction(private val context: Context) {
     @DrawableRes res: Int? = null,
     literal: Drawable? = null
   ): SwipeAction {
-    check(res != null || literal != null) {
+    require(res != null || literal != null) {
       "Must provide a res or literal value to icon()"
     }
     iconDrawable = literal ?: ContextCompat.getDrawable(context, res!!)
@@ -76,7 +76,7 @@ class SwipeAction(private val context: Context) {
     @ColorRes res: Int? = null,
     @ColorInt literal: Int? = null
   ): SwipeAction {
-    check(res != null || literal != null) {
+    require(res != null || literal != null) {
       "Must provide a res or literal value to color()"
     }
     val colorValue = literal ?: ContextCompat.getColor(context, res!!)
@@ -93,7 +93,7 @@ class SwipeAction(private val context: Context) {
     typeface: Typeface? = null,
     @FontRes typefaceRes: Int? = null
   ) {
-    check(res != null || literal != null) {
+    require(res != null || literal != null) {
       "Must provide a res or literal value to text()"
     }
     text = literal ?: context.getString(res!!)
@@ -126,6 +126,7 @@ class SwipeAction(private val context: Context) {
   internal fun getTextHeight(): Int = getTextBounds().height()
 
   private fun getTextBounds(): Rect {
+    require(text != null) { "text is null" }
     if (textBounds == null) {
       textBounds = Rect()
       textPaint!!.getTextBounds(text, 0, text!!.length, textBounds!!)
