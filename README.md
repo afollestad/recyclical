@@ -1,4 +1,4 @@
-## Recyclical
+# Recyclical
 
 *recyclical*, an easy-to-use Kotlin DSL API for setting up and manipulating RecyclerViews.
 
@@ -11,7 +11,9 @@
 
 ---
 
-## Table of Contents
+# Table of Contents
+
+## Core
 
 1. [Gradle Dependency](#gradle-dependency)
 2. [The Basics](#the-basics)
@@ -28,7 +30,16 @@
     3. [Use in Binding](#use-in-binding)
 8. [Stable IDs](#stable-ids)
 
+## Swipe
+
+1. [Gradle Dependency](#gradle-dependency-1)
+2. [The Basics](#the-basics-1)
+3. [Long Swipes](#long-swipes)
+4. [Customization](#customization)
+
 ---
+
+# Core
 
 ## Gradle Dependency
 
@@ -421,3 +432,85 @@ recyclerView.setup {
 ```
 
 If you have more than one item that your RecyclerView can hold, *all* need to define `hasStableIds`.
+
+---
+
+# Swipe
+
+The swipe module provides extensions to setup swipe actions, like swipe to delete.
+
+## Gradle Dependency
+
+Add this to your module's `build.gradle` file:
+
+```gradle
+dependencies {
+
+  implementation 'com.afollestad:recyclical-swipe:0.6.0'
+}
+```
+
+## The Basics
+
+This example below sets up swipe to delete, so that it works if you swipe either right or left.
+A delete icon and delete text would be shown over a red gutter. *The callback returning true means 
+that the item should be removed from the `DataSource` when the action triggers.*
+
+```kotlin
+list.setup {
+  ...
+  withSwipeAction(LEFT, RIGHT) {
+    icon(R.drawable.ic_delete)
+    text(R.string.delete)
+    color(R.color.md_red)
+    callback { index, item -> true }
+  }
+}
+```
+
+## Long Swipes
+
+You can set long swipe actions. These actions require you to swipe an item further before releasing 
+to trigger. Take this block:
+
+```kotlin
+list.setup {
+  ...
+  withSwipeAction(LEFT) {
+    icon(R.drawable.ic_archive)
+    text(R.string.archive)
+    color(R.color.md_green)
+    callback { index, item -> true }
+  }
+  withSwipeAction(LEFT_LONG) {
+    icon(R.drawable.ic_delete)
+    text(R.string.delete)
+    color(R.color.md_red)
+    callback { index, item -> true }
+  }
+}
+```
+
+If you swipe just a little bit and release, the item is archived. If you swipe further, the item is 
+deleted. You can use `RIGHT_LONG` as well.
+
+## Customization
+
+As you saw above, you can use icons, text, and background colors easily. There are more details 
+you can customize about your swipe actions, mainly around text:
+
+### Text
+
+```kotlin
+list.setup {
+  ...
+  withSwipeAction(LEFT, RIGHT) {
+    text(
+      res = R.string.delete,
+      color = R.color.black,
+      size = R.dimen.small_text_size,
+      typefaceRes = R.font.roboto_mono
+    )
+  }
+}
+```

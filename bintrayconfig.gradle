@@ -44,5 +44,5 @@ publish {
   desc =
       'A Kotlin DSL API to make RecyclerViews easier to use and faster to setup.'
   website = 'https://github.com/afollestad/recyclical'
-  dryRun = false
+  dryRun = useDryRun
 }

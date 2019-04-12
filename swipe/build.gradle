@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply from: '../dependencies.gradle'
 
 ext.artifactName = 'recyclical-swipe'
+ext.useDryRun = false
 apply from: '../bintrayconfig.gradle'
 
 android {
