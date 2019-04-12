@@ -23,9 +23,12 @@ import android.graphics.drawable.Drawable
 import android.text.TextPaint
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.FontRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.afollestad.recyclical.RecyclicalMarker
 
 /**
@@ -86,17 +89,24 @@ class SwipeAction(private val context: Context) {
     @StringRes res: Int? = null,
     literal: String? = null,
     @ColorRes color: Int = android.R.color.white,
-    size: Int = R.dimen.swipe_default_text_size,
-    typeface: Typeface = Typeface.DEFAULT
+    @DimenRes size: Int = R.dimen.swipe_default_text_size,
+    typeface: Typeface? = null,
+    @FontRes typefaceRes: Int? = null
   ) {
     check(res != null || literal != null) {
       "Must provide a res or literal value to text()"
     }
     text = literal ?: context.getString(res!!)
+
+    val actualTypeface = when {
+      typefaceRes != null -> ResourcesCompat.getFont(context, typefaceRes)
+      typeface != null -> typeface
+      else -> Typeface.SANS_SERIF
+    }
     textPaint = TextPaint().apply {
       this.isAntiAlias = true
       this.color = ContextCompat.getColor(context, color)
-      this.typeface = typeface
+      this.typeface = actualTypeface
       this.textSize = context.resources.getDimension(size)
     }
   }
