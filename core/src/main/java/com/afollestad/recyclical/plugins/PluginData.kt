@@ -26,6 +26,11 @@ import com.afollestad.recyclical.datasource.DataSource
  */
 abstract class PluginData {
 
+  /**
+   * Invoked when the setup extension method on [RecyclerView] is exiting, so the consumer
+   * has completed setting everything up. This is the optimal time for your plugin to attach
+   * to the RecyclerView.
+   */
   abstract fun attach(
     toView: RecyclerView,
     dataSource: DataSource

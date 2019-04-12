@@ -45,6 +45,7 @@ enum class SwipeLocation {
   RIGHT_LONG
 }
 
+/** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
 class SwipeAction(private val context: Context) {
   internal var iconDrawable: Drawable? = null
@@ -55,6 +56,7 @@ class SwipeAction(private val context: Context) {
   internal var textPaint: TextPaint? = null
   private var textBounds: Rect? = null
 
+  /** Sets an optional icon that is shown in the swipe gutter. */
   fun icon(
     @DrawableRes res: Int? = null,
     literal: Drawable? = null
@@ -66,6 +68,7 @@ class SwipeAction(private val context: Context) {
     return this
   }
 
+  /** Sets the color of the swipe gutter. */
   fun color(
     @ColorRes res: Int? = null,
     @ColorInt literal: Int? = null
@@ -78,6 +81,7 @@ class SwipeAction(private val context: Context) {
     return this
   }
 
+  /** Sets optional text that is shown in the swipe gutter. */
   fun text(
     @StringRes res: Int? = null,
     literal: String? = null,
@@ -97,6 +101,11 @@ class SwipeAction(private val context: Context) {
     }
   }
 
+  /**
+   * Sets a callback that is invoked when the swipe action is fired. Return true in the callback
+   * to remove the swiped item from the data source automatically. Returning false will animate
+   * the item back in place.
+   */
   fun callback(block: SwipedCallback): SwipeAction {
     this.callback = block
     return this
