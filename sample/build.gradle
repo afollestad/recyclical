@@ -22,6 +22,7 @@ android {
 
 dependencies {
   implementation project(':core')
+  implementation project(':swipe')
 
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
   implementation 'androidx.appcompat:appcompat:' + versions.androidx

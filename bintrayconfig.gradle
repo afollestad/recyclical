@@ -13,7 +13,9 @@ def getBintrayUserAndKey() {
   ]
 }
 
-if (versions == null || versions.publishVersion == null) {
+if (artifactName == null) {
+  throw new IllegalStateException("Must specify a artifactName in module's build.gradle")
+} else if (versions == null || versions.publishVersion == null) {
   throw new IllegalStateException("Unable to reference publishVersion")
 }
 
@@ -37,7 +39,7 @@ publish {
   bintrayKey = key
   userOrg = 'drummer-aidan'
   groupId = 'com.afollestad'
-  artifactId = 'recyclical'
+  artifactId = artifactName
   publishVersion = versions.publishVersion
   desc =
       'A Kotlin DSL API to make RecyclerViews easier to use and faster to setup.'

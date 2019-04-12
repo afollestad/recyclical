@@ -26,11 +26,13 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.RecyclicalHandle
+import com.afollestad.recyclical.handle.getDataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
 import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
+import com.afollestad.recyclical.plugins.PluginData
 
 /** @author Aidan Follestad (@afollestad) */
 @DslMarker
@@ -39,11 +41,13 @@ annotation class RecyclicalMarker
 /** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
 class RecyclicalSetup internal constructor(
-  private val recyclerView: RecyclerView
+  val recyclerView: RecyclerView
 ) {
   private var itemClassToType = mutableMapOf<String, Int>()
   private var bindingsToTypes = mutableMapOf<Int, ItemDefinition<*>>()
   private var emptyView: View? = null
+
+  internal var pluginData: MutableMap<String, PluginData>? = null
 
   internal var globalOnClick: ItemClickListener<Any>? = null
   internal var globalOnLongClick: ItemClickListener<Any>? = null
@@ -94,6 +98,23 @@ class RecyclicalSetup internal constructor(
   fun withLongClickListener(block: ItemClickListener<Any>): RecyclicalSetup {
     this.globalOnLongClick = block
     return this
+  }
+
+  /** Persists a [PluginData] instance and allosw it to receive the attach signal. */
+  fun setPluginData(
+    name: String,
+    data: PluginData
+  ) {
+    if (this.pluginData == null) {
+      this.pluginData = mutableMapOf(name to data)
+    } else {
+      this.pluginData!![name] = data
+    }
+  }
+
+  /** Retrieves persisted plugin data and auto casts it. */
+  @Suppress("UNCHECKED_CAST") fun <T> getPluginData(name: String): T? {
+    return this.pluginData?.get(name) as? T
   }
 
   /** This should not be called directly. */
@@ -150,12 +171,16 @@ fun RecyclerView.setup(block: RecyclicalSetup.() -> Unit): RecyclicalHandle {
   }
 
   return setup.toAttached()
-      .also {
-        adapter = it.getAdapter()
+      .also { handle ->
+        adapter = handle.getAdapter()
 
-        if (it is RealRecyclicalHandle) {
-          onAttach { it.attachDataSource() }
-          onDetach { it.detachDataSource() }
+        if (handle is RealRecyclicalHandle) {
+          onAttach { handle.attachDataSource() }
+          onDetach { handle.detachDataSource() }
+        }
+
+        setup.pluginData?.values?.forEach { data ->
+          data.attach(this, handle.getDataSource())
         }
       }
 }

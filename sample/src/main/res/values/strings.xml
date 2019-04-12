@@ -6,4 +6,9 @@
   <string name="fragment">Fragment Sample</string>
   <string name="add_item">Add Item</string>
 
+  <string name="delete">Delete</string>
+  <string name="archive">Archive</string>
+  <string name="unread">Unread</string>
+  <string name="star">Star</string>
+
 </resources>

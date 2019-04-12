@@ -24,6 +24,11 @@ import com.afollestad.materialcab.createCab
 import com.afollestad.recyclical.datasource.emptySelectableDataSource
 import com.afollestad.recyclical.itemdefinition.onChildViewClick
 import com.afollestad.recyclical.setup
+import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
+import com.afollestad.recyclical.swipe.SwipeLocation.LEFT_LONG
+import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
+import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
+import com.afollestad.recyclical.swipe.withSwipeAction
 import com.afollestad.recyclical.viewholder.isSelected
 import com.afollestad.recyclical.withItem
 import com.afollestad.recyclicalsample.data.MyListItem
@@ -68,6 +73,43 @@ class MainActivity : AppCompatActivity() {
     )
 
     list.setup {
+      withSwipeAction(LEFT) {
+        icon(R.drawable.ic_action_star)
+        text(R.string.star)
+        color(R.color.md_orange)
+        callback { _, item ->
+          toast("Star: $item")
+          false
+        }
+      }
+      withSwipeAction(LEFT_LONG) {
+        icon(R.drawable.ic_action_delete)
+        text(R.string.delete)
+        color(R.color.md_red)
+        callback { _, item ->
+          toast("Delete: $item")
+          true
+        }
+      }
+      withSwipeAction(RIGHT) {
+        icon(R.drawable.ic_action_unread)
+        text(R.string.unread)
+        color(R.color.md_blue)
+        callback { _, item ->
+          toast("Unread: $item")
+          false
+        }
+      }
+      withSwipeAction(RIGHT_LONG) {
+        icon(R.drawable.ic_action_archive)
+        text(R.string.archive)
+        color(R.color.md_green)
+        callback { _, item ->
+          toast("Archive: $item")
+          true
+        }
+      }
+
       withEmptyView(emptyView)
       withDataSource(dataSource)
 

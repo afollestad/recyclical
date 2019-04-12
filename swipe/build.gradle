@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply from: '../dependencies.gradle'
 
-ext.artifactName = 'recyclical'
+ext.artifactName = 'recyclical-swipe'
 apply from: '../bintrayconfig.gradle'
 
 android {
@@ -25,8 +25,7 @@ android {
 }
 
 dependencies {
-  api 'androidx.appcompat:appcompat:' + versions.androidx
-  api 'androidx.recyclerview:recyclerview:' + versions.androidxRecyclerView
+  implementation project(":core")
 
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
 

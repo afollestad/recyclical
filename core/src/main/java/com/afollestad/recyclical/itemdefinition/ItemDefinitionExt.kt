@@ -17,18 +17,18 @@
 
 package com.afollestad.recyclical.itemdefinition
 
-import android.util.Log
 import android.view.View
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
+import com.afollestad.recyclical.ChildViewClickListener
 import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.R
 import com.afollestad.recyclical.R.id
 import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclical.ViewHolderBinder
 import com.afollestad.recyclical.ViewHolderCreator
+import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.SelectableDataSource
-import com.afollestad.recyclical.getDataSource
 import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.internal.makeBackgroundSelectable
 import com.afollestad.recyclical.viewholder.NoSelectionStateProvider
@@ -77,7 +77,6 @@ private fun ItemDefinition<*>.setChildClickListeners(viewHolder: ViewHolder) {
       getSelectionStateProvider(index).use {
         callback(it, index, childView)
       }
-      Log.d("IDK", "After")
     }
   }
 }
@@ -120,4 +119,33 @@ internal fun View.positionTag(): Int {
 @RestrictTo(LIBRARY)
 fun ItemDefinition<*>.realDefinition(): RealItemDefinition<*> {
   return this as? RealItemDefinition<*> ?: blowUp("$this is not a RealItemDefinition")
+}
+
+/**
+ * Sets a callback that's invoked when a child view in a item is clicked.
+ *
+ * @param view A lambda that provides the view we are attaching to in each view holder.
+ * @param block A lambda executed when the view is clicked.
+ */
+inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT>.onChildViewClick(
+  noinline view: VH.() -> VT,
+  noinline block: ChildViewClickListener<IT, VT>
+): ItemDefinition<IT> {
+  realDefinition().childClickDatas.add(
+      RealItemDefinition.ChildClickData(
+          viewHolderType = VH::class.java,
+          child = view,
+          callback = block
+      )
+  )
+  return this
+}
+
+/** Gets the current data source, auto casting to the type [T]. */
+inline fun <reified T : DataSource> ItemDefinition<*>.getDataSource(): T? {
+  return if (this is RealItemDefinition) {
+    currentDataSource as? T
+  } else {
+    blowUp("$this is not a RealItemDefinition")
+  }
 }
