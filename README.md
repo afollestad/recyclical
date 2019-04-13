@@ -447,6 +447,8 @@ dependencies {
 
 ## The Basics
 
+<img src="https://raw.githubusercontent.com/afollestad/recyclical/master/art/swipenormal.gif" width="200" />
+
 This example below sets up swipe to delete, so that it works if you swipe either right or left.
 A delete icon and delete text would be shown over a red gutter. *The callback returning true means 
 that the item should be removed from the `DataSource` when the action triggers.*
@@ -464,6 +466,8 @@ list.setup {
 ```
 
 ## Long Swipes
+
+<img src="https://raw.githubusercontent.com/afollestad/recyclical/master/art/swipelong.gif" width="200" />
 
 You can set long swipe actions. These actions require you to swipe an item further before releasing 
 to trigger. Take this block:
