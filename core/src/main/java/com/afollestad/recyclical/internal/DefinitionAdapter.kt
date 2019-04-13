@@ -22,12 +22,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.afollestad.recyclical.ItemDefinition
-import com.afollestad.recyclical.itemdefinition.RealItemDefinition
-import com.afollestad.recyclical.itemdefinition.bindViewHolder
-import com.afollestad.recyclical.itemdefinition.createViewHolder
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
+import com.afollestad.recyclical.itemdefinition.RealItemDefinition
+import com.afollestad.recyclical.itemdefinition.bindViewHolder
+import com.afollestad.recyclical.itemdefinition.createViewHolder
 
 /** @author Aidan Follestad (@afollestad) */
 internal open class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

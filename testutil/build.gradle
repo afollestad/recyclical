@@ -2,10 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply from: '../dependencies.gradle'
 
-ext.artifactName = 'recyclical'
-ext.useDryRun = false
-apply from: '../bintrayconfig.gradle'
-
 android {
   compileSdkVersion versions.compileSdk
   buildToolsVersion versions.buildTools
@@ -16,28 +12,18 @@ android {
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
   }
-
-  sourceSets {
-    main.res.srcDirs = [
-        'src/main/res',
-        'src/main/res-public'
-    ]
-  }
-
-  testOptions {
-    unitTests {
-      includeAndroidResources = true
-    }
-  }
 }
 
 dependencies {
-  api 'androidx.appcompat:appcompat:' + versions.androidx
-  api 'androidx.recyclerview:recyclerview:' + versions.androidxRecyclerView
-
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
+  implementation 'androidx.appcompat:appcompat:' + versions.androidx
+  implementation 'androidx.recyclerview:recyclerview:' + versions.androidxRecyclerView
 
-  testImplementation project(':testutil')
+  api 'org.robolectric:robolectric:' + versions.robolectric
+  api 'junit:junit:' + versions.junit
+  api 'androidx.test:core:' + versions.androidxTest
+  api 'org.mockito:mockito-core:' + versions.mockito
+  api 'com.nhaarman.mockitokotlin2:mockito-kotlin:' + versions.mockitoKotlin
 }
 
 apply from: '../spotless.gradle'

@@ -83,6 +83,24 @@ fun Collection<*>.assertSize(expected: Int) {
   }
 }
 
+fun Map<*, *>.assertSize(expected: Int) {
+  if (this.size != expected) {
+    throw AssertionError("Expected map size to be $expected, actual: ${this.size}")
+  }
+}
+
+fun <T> Map<T, *>.assertContainsKey(key: T) {
+  if (!containsKey(key)) {
+    throw AssertionError("Expected map to contain key $key, but it does not.")
+  }
+}
+
+fun <T> Map<T, *>.assertDoesNotContainKey(key: T) {
+  if (containsKey(key)) {
+    throw AssertionError("Expected map to NOT contain key $key, but it does.")
+  }
+}
+
 fun <T> Iterable<T>.second(): T {
   return when (this) {
     is List -> this[1]

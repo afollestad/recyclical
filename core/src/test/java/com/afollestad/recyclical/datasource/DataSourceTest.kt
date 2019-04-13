@@ -145,15 +145,19 @@ class DataSourceTest {
   }
 
   @Test fun clear() {
-    dataSource.isNotEmpty().assertTrue()
-    dataSource.isEmpty().assertFalse()
+    dataSource.isNotEmpty()
+        .assertTrue()
+    dataSource.isEmpty()
+        .assertFalse()
     dataSource.size()
         .assertEqualTo(2)
 
     dataSource.clear()
 
-    dataSource.isNotEmpty().assertFalse()
-    dataSource.isEmpty().assertTrue()
+    dataSource.isNotEmpty()
+        .assertFalse()
+    dataSource.isEmpty()
+        .assertTrue()
     dataSource.size()
         .assertEqualTo(0)
 

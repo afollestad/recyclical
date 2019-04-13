@@ -25,7 +25,7 @@ import com.afollestad.recyclical.swipe.SwipeLocation.LEFT_LONG
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
 
-private const val PLUGIN_NAME = "swipe_plugin"
+internal const val PLUGIN_NAME = "swipe_plugin"
 
 /** @author Aidan Follestad (@afollestad) */
 internal data class SwipePluginData(

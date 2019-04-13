@@ -25,6 +25,7 @@ import com.afollestad.recyclical.handle.getDataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
 import com.afollestad.recyclical.testdata.TestItem
 import com.afollestad.recyclical.testdata.TestItem2
+import com.afollestad.recyclical.testdata.TestPluginData
 import com.afollestad.recyclical.testdata.TestViewHolder
 import com.afollestad.recyclical.testdata.TestViewHolder2
 import com.afollestad.recyclical.testutil.assertEqualTo
@@ -173,5 +174,24 @@ class RecyclicalTest {
 
     verify(dataSource, never()).attach(any())
     verify(adapter, never()).setHasStableIds(any())
+  }
+
+  @Test fun `plugin data is attached after setup`() {
+    val testPluginData = TestPluginData()
+    recyclerView.setup {
+      adapterCreator = { adapter }
+      withDataSource(dataSource)
+      withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+        onBind(::TestViewHolder, binder)
+      }
+
+      setPluginData("test_data", testPluginData)
+      testPluginData.expectNotAttached()
+
+      getPluginData<TestPluginData>("test_data")
+          .assertSameAs(testPluginData)
+    }
+
+    testPluginData.expectAttached(recyclerView, dataSource)
   }
 }

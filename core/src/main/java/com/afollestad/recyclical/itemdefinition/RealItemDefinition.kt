@@ -29,7 +29,6 @@ import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclical.ViewHolderBinder
 import com.afollestad.recyclical.ViewHolderCreator
 import com.afollestad.recyclical.datasource.DataSource
-import com.afollestad.recyclical.itemdefinition.RealItemDefinition.ChildClickData
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 /** @author Aidan Follestad (@afollestad) */

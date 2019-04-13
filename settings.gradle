@@ -1,1 +1,1 @@
-include ':sample', ':core', ':swipe'
+include ':sample', ':core', ':swipe', ':testutil'

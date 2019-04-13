@@ -23,18 +23,18 @@ android {
         'src/main/res-public'
     ]
   }
+
+  testOptions {
+    unitTests {
+      includeAndroidResources = true
+    }
+  }
 }
 
 dependencies {
   implementation project(":core")
-
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
-
-  testImplementation 'org.robolectric:robolectric:' + versions.robolectric
-  testImplementation 'junit:junit:' + versions.junit
-  testImplementation 'androidx.test:core:' + versions.androidxTest
-  testImplementation 'org.mockito:mockito-core:' + versions.mockito
-  testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:' + versions.mockitoKotlin
+  testImplementation project(':testutil')
 }
 
 apply from: '../spotless.gradle'
