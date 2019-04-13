@@ -12,6 +12,10 @@ android {
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
   }
+
+  lintOptions {
+    disable 'InvalidPackage'
+  }
 }
 
 dependencies {

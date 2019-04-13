@@ -1,4 +1,4 @@
-0.6.0
+0.7.0
 
-1. Add `onChildViewClick` method to DSL when defining an item definition. See the README for examples.
-2. The signature of the callback for item click and long click listeners is changed. `item` is no longer a lambda parameter, it exists as a `val` in `this`. 
+1. Kotlin 1.3.0
+2. A new `recyclical-swipe` module! Add it your app to gain access to an extension to the code library which enables swipe actions, like swipe to delete. 
