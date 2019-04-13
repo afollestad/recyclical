@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
       // setup{} is an extension method on RecyclerView
       recyclerView.setup {
           withDataSource(dataSource)
-          
           withItem<Person>(R.layout.person_item_layout) {
             onBind(::PersonViewHolder) { index, item ->
               // PersonViewHolder is `this` here
@@ -157,9 +156,8 @@ class EmailViewHolder(itemView: View) : ViewHolder(itemView) {
 }
 
 recyclerView.setup {
-  
   withItem<EmailViewHolder>(R.layout.email_item_layout) {
-        
+    ...
     onChildViewClick(EmailViewHolder::icon) { index, view ->
       // `this` includes `item` along with selection-related methods discussed below in SelectableDataSource
       // `view` argument here is automatically an `ImageView`
@@ -183,7 +181,6 @@ val dataSource = dataSourceOf(
 
 recyclerView.setup {
   withDataSource(dataSource)
-    
   withItem<Person>(R.layout.person_item_layout) {
      onBind(::PersonViewHolder) { index, item ->
         name.text = item.name
@@ -375,7 +372,6 @@ of functions.
 recyclerView.setup {
     withEmptyView(emptyView)
     withDataSource(dataSource)
-    
     withItem<MyListItem>(R.layout.my_list_item) {
       onBind(::MyViewHolder) { index, item ->
           // Selection-related methods that can be used here:
@@ -385,7 +381,6 @@ recyclerView.setup {
           toggleSelection()
           hasSelection()
       }
-      
       onClick { index ->
           // Selection-related methods that can be used here:
           isSelected()
@@ -394,11 +389,9 @@ recyclerView.setup {
           toggleSelection()
           hasSelection()
       }
-      
       onChildViewClick(MyViewHolder::someView) { index, view ->
           // The same methods used in onClick can be used here as well
       }
-      
       onLongClick { index ->
           // The same methods used in onClick can be used here as well
       }
@@ -422,7 +415,6 @@ data class AnItemWithAnId(
 
 recyclerView.setup {
   withDataSource(dataSource)
-    
   withItem<AnItemWithAnId>(R.layout.my_item_layout) {
      onBind(::MyViewHolder) { index, item -> ... }
      // The key is this, which says the `id` field of your item represents a unique ID.
@@ -498,8 +490,6 @@ deleted. You can use `RIGHT_LONG` as well.
 
 As you saw above, you can use icons, text, and background colors easily. There are more details 
 you can customize about your swipe actions, mainly around text:
-
-### Text
 
 ```kotlin
 list.setup {
