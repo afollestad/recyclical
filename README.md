@@ -1,6 +1,6 @@
 # Recyclical
 
-*recyclical*, an easy-to-use Kotlin DSL API for setting up and manipulating RecyclerViews.
+*recyclical*: an easy-to-use, extensible Kotlin DSL for setting up and manipulating RecyclerViews.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdc552fb3832423986a296a47b9ddef0)](https://www.codacy.com/app/drummeraidan_50/recyclical?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/recyclical&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/afollestad/recyclical.svg)](https://travis-ci.org/afollestad/recyclical)
@@ -220,17 +220,20 @@ The included implementation of data source operates on a List of objects (of any
 
 ```kotlin
 // Empty by default, but can still add, insert, etc.
-// Could also use emptyDataSourceTyped<Type>
-val dataSource: DataSource<Any> = emptyDataSource() 
+val dataSource: DataSource<Any> = emptyDataSource()
+val dataSourceTyped: DataSource<Person> = emptyDataSourceTyped<Person>() 
+ 
 
 // Initial data set of items from a vararg list
-// Could also use dataSourceTypedOf(...)
 val dataSource: DataSource<Any> = dataSourceOf(item1, item2)
+val dataSourceTyped: DataSource<Person> = dataSourceTypedOf(item1, item2)
 
 // Initial data set of items from an existing list
 // Could also use dataSourceTypedOf(...)
 val items = listOf(item1, item2)
 val dataSource: DataSource<Any> = dataSourceOf(items)
+val dataSourceTyped: DataSource<Person> = dataSourceTypedOf(items)
+
 ```
 
 ### Manipulation
@@ -239,7 +242,7 @@ val dataSource: DataSource<Any> = dataSourceOf(items)
 val dataSource: DataSource<ItemType> = // ...
 
 // getters
-val item: ItemType = dataSource.get(5)
+val item: ItemType = dataSource[5]
 val contains: Boolean = dataSource.contains(item)
 val size: Int = dataSource.size()
 val isEmpty: Boolean = dataSource.isEmpty()
@@ -322,19 +325,19 @@ include `selectable` in their names.
 ```kotlin
 // Empty by default, but can still add, insert, etc.
 // Could also use emptySelectableDataSourceTyped()
-val dataSource: SelectableDataSource<Any> = 
-    emptySelectableDataSource()
+val dataSource: SelectableDataSource<Any> = emptySelectableDataSource()
+val dataSourceTyped: SelectableDataSource<Person> = emptySelectableDataSourceTyped()
 
 // Initial data set of items from a vararg list
 // Could also use selectableDataSourceTypedOf(...)
-val dataSource: SelectableDataSource = 
-    selectableDataSourceOf(item1, item2)
+val dataSource: SelectableDataSource<Any> = selectableDataSourceOf(item1, item2)
+val dataSourceTyped: SelectableDataSource<Person> = selectableDataSourceTypedOf(item1, item2)
 
 // Initial data set of items from an existing list
 // Could also use selectableDataSourceTypedOf(...)
 val items = listOf(item1, item2)
-val dataSource: SelectableDataSource = 
-    selectableDataSourceOf(items)
+val dataSource: SelectableDataSource<Any> = selectableDataSourceOf(items)
+val dataSourceTyped: SelectableDataSource<Person> = selectableDataSourceTypedOf(items)
 ```
 
 ### Manipulation

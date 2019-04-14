@@ -8,7 +8,7 @@ about: Suggest an idea for this project
 
 **What module does this apply to?**
 
-Core? Input? Files? Color?
+Core? Swipe?
 
 **Description what you'd like to happen:**
 

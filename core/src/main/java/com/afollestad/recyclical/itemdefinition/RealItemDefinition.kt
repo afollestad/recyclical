@@ -52,7 +52,7 @@ class RealItemDefinition<IT : Any>(
   internal var binder: ViewHolderBinder<*, *>? = null
   internal var idGetter: IdGetter<Any>? = null
 
-  var childClickDatas = mutableListOf<ChildClickData<*, *, *>>()
+  var childClickDataList = mutableListOf<ChildClickData<*, *, *>>()
 
   override fun <VH : ViewHolder> onBind(
     viewHolderCreator: ViewHolderCreator<VH>,

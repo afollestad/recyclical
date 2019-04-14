@@ -21,7 +21,7 @@ import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
 import com.afollestad.materialcab.createCab
-import com.afollestad.recyclical.datasource.emptySelectableDataSource
+import com.afollestad.recyclical.datasource.selectableDataSourceTypedOf
 import com.afollestad.recyclical.itemdefinition.onChildViewClick
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
@@ -29,6 +29,7 @@ import com.afollestad.recyclical.swipe.SwipeLocation.LEFT_LONG
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
 import com.afollestad.recyclical.swipe.withSwipeAction
+import com.afollestad.recyclical.viewholder.SelectionStateProvider
 import com.afollestad.recyclical.viewholder.isSelected
 import com.afollestad.recyclical.withItem
 import com.afollestad.recyclicalsample.data.MyListItem
@@ -42,7 +43,16 @@ import kotlinx.android.synthetic.main.activity_main.toolbar
 
 class MainActivity : AppCompatActivity() {
   private var cab: AttachedCab? = null
-  private val dataSource = emptySelectableDataSource()
+  private val dataSource = selectableDataSourceTypedOf(
+      IntArray(1000) { it + 1 }
+          .map {
+            MyListItem(
+                id = it,
+                title = "#$it",
+                body = "Hello, world! #$it"
+            )
+          }
+  )
       .apply {
         onSelectionChange { invalidateCab() }
       }
@@ -60,17 +70,6 @@ class MainActivity : AppCompatActivity() {
         true
       }
     }
-
-    dataSource.set(
-        IntArray(1000) { it + 1 }
-            .map {
-              MyListItem(
-                  id = it,
-                  title = "#$it",
-                  body = "Hello, world! #$it"
-              )
-            }
-    )
 
     list.setup {
       withSwipeAction(LEFT) {
@@ -115,39 +114,38 @@ class MainActivity : AppCompatActivity() {
 
       withItem<MyListItem>(R.layout.my_list_item) {
         hasStableIds { it.id }
-
-        onBind(::MyViewHolder) { _, item ->
-          icon.setImageResource(
-              if (isSelected()) {
-                R.drawable.check_circle
-              } else {
-                R.drawable.person
-              }
-          )
-          title.text = item.title
-          body.text = item.body
-        }
+        onBind(::MyViewHolder) { _, item -> bindMyListItem(item) }
 
         onChildViewClick(MyViewHolder::icon) { _, _ ->
           toast("Clicked icon of ${item.title}!")
           toggleSelection()
         }
 
-        onClick { index ->
-          if (hasSelection()) {
-            // If we are in selection mode, click should toggle selection
-            toggleSelection()
-          } else {
-            // Else just show a toast
-            toast("Clicked $index: ${item.title} / ${item.body}")
-          }
-        }
-
-        onLongClick {
-          // Long clicking starts selection mode, or ends it
-          toggleSelection()
-        }
+        onClick { clickMyListItem(it) }
+        onLongClick { toggleSelection() }
       }
+    }
+  }
+
+  private fun MyViewHolder.bindMyListItem(item: MyListItem) {
+    icon.setImageResource(
+        if (isSelected()) {
+          R.drawable.check_circle
+        } else {
+          R.drawable.person
+        }
+    )
+    title.text = item.title
+    body.text = item.body
+  }
+
+  private fun SelectionStateProvider<MyListItem>.clickMyListItem(index: Int) {
+    if (hasSelection()) {
+      // If we are in selection mode, click should toggle selection
+      toggleSelection()
+    } else {
+      // Else just show a toast
+      toast("Clicked $index: ${item.title} / ${item.body}")
     }
   }
 

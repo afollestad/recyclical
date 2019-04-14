@@ -8,7 +8,7 @@ about: Something is crashing or not working as intended
 
 **Library Version:**
 
-2.x.x
+0.x.x
  
 **Affected Device(s):**
  

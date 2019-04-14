@@ -60,11 +60,11 @@ internal fun ItemDefinition<*>.createViewHolder(itemView: View): ViewHolder {
 
 private fun ItemDefinition<*>.setChildClickListeners(viewHolder: ViewHolder) {
   val realDefinition = realDefinition()
-  if (realDefinition.childClickDatas.isEmpty()) {
+  if (realDefinition.childClickDataList.isEmpty()) {
     return
   }
 
-  val clickDatas = realDefinition.childClickDatas.filter {
+  val clickDatas = realDefinition.childClickDataList.filter {
     it.viewHolderType == viewHolder::class.java
   }
   for (item in clickDatas) {
@@ -131,7 +131,7 @@ inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT>.onC
   noinline view: VH.() -> VT,
   noinline block: ChildViewClickListener<IT, VT>
 ): ItemDefinition<IT> {
-  realDefinition().childClickDatas.add(
+  realDefinition().childClickDataList.add(
       RealItemDefinition.ChildClickData(
           viewHolderType = VH::class.java,
           child = view,
