@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.main_fragment.fragment_emptyView as emptyV
 import kotlinx.android.synthetic.main.main_fragment.fragment_list as list
 
 class MainFragment : Fragment() {
-  private lateinit var dataSource: DataSource
+  private lateinit var dataSource: DataSource<Any>
 
   override fun onCreateView(
     inflater: LayoutInflater,
