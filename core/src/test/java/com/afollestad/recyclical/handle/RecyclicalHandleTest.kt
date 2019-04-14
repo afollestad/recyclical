@@ -51,7 +51,7 @@ class RecyclicalHandleTest {
   private val bindingsToType = mutableMapOf(
       REAL_VIEW_TYPE to itemDefinition
   )
-  private val dataSource = mock<DataSource>()
+  private val dataSource = mock<DataSource<*>>()
 
   private val handle = RealRecyclicalHandle(
       emptyView = emptyView,

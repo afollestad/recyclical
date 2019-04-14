@@ -102,7 +102,7 @@ internal fun ItemDefinition<*>.bindViewHolder(
 internal fun <IT : Any> ItemDefinition<IT>.getSelectionStateProvider(
   position: Int
 ): SelectionStateProvider<IT> {
-  val selectableSource = getDataSource<SelectableDataSource>()
+  val selectableSource = getDataSource<SelectableDataSource<*>>()
   return if (selectableSource != null) {
     RealSelectionStateProvider(selectableSource, position)
   } else {
@@ -142,7 +142,7 @@ inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT>.onC
 }
 
 /** Gets the current data source, auto casting to the type [T]. */
-inline fun <reified T : DataSource> ItemDefinition<*>.getDataSource(): T? {
+inline fun <reified T : DataSource<*>> ItemDefinition<*>.getDataSource(): T? {
   return if (this is RealItemDefinition) {
     currentDataSource as? T
   } else {

@@ -34,7 +34,7 @@ import kotlin.math.abs
 internal class SwipeItemTouchListener(
   private val context: Context,
   pluginData: SwipePluginData,
-  private val dataSource: DataSource
+  private val dataSource: DataSource<*>
 ) : ItemTouchHelper.SimpleCallback(0, pluginData.getSwipeDirections()) {
   private val actions = pluginData.actions
 

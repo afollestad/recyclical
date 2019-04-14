@@ -23,11 +23,11 @@ import com.afollestad.recyclical.testutil.assertSameAs
 
 class TestPluginData : PluginData() {
   private var attachedView: RecyclerView? = null
-  private var dataSource: DataSource? = null
+  private var dataSource: DataSource<*>? = null
 
   override fun attach(
     toView: RecyclerView,
-    dataSource: DataSource
+    dataSource: DataSource<*>
   ) {
     this.attachedView = toView
     this.dataSource = dataSource
@@ -35,7 +35,7 @@ class TestPluginData : PluginData() {
 
   fun expectAttached(
     recyclerView: RecyclerView,
-    dataSource: DataSource
+    dataSource: DataSource<*>
   ) {
     this.attachedView.assertSameAs(recyclerView)
     this.dataSource.assertSameAs(dataSource)

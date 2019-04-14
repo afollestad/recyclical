@@ -40,7 +40,7 @@ class DataSourceTest {
       TestItem(1, "Aidan"),
       TestItem(2, "Hello")
   )
-  private val dataSource: DataSource = RealDataSource(defaultItems)
+  private val dataSource: DataSource<Any> = RealDataSource(defaultItems)
 
   @Before fun setup() {
     dataSource.size()

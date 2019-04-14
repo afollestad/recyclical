@@ -54,7 +54,7 @@ class RecyclicalTest {
   private val testItemClickListener = mock<ItemClickListener<Any>>()
   private val testItemLongClickListener = mock<ItemClickListener<Any>>()
 
-  private val dataSource = mock<DataSource>()
+  private val dataSource = mock<DataSource<*>>()
 
   private val emptyView = mock<View> {
     on { id } doReturn EMPTY_VIEW_ID
@@ -132,7 +132,7 @@ class RecyclicalTest {
         .assertSameAs(itemDefinition)
     handle.getDefinitionForClass(TestItem::class.java.name)
         .assertSameAs(itemDefinition)
-    handle.getDataSource<DataSource>()
+    handle.getDataSource<DataSource<*>>()
         .assertSameAs(dataSource)
 
     verify(dataSource).attach(handle)

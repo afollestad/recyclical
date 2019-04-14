@@ -51,7 +51,7 @@ class RecyclicalSetup internal constructor(
 
   internal var globalOnClick: ItemClickListener<Any>? = null
   internal var globalOnLongClick: ItemClickListener<Any>? = null
-  internal var currentDataSource: DataSource? = null
+  internal var currentDataSource: DataSource<*>? = null
   internal var adapterCreator: () -> DefinitionAdapter = { DefinitionAdapter() }
 
   /**
@@ -77,7 +77,7 @@ class RecyclicalSetup internal constructor(
    * You must use [withItem] to link model definitions to layouts and view holders, of any item
    * types that are added to the data source.
    */
-  fun withDataSource(dataSource: DataSource): RecyclicalSetup {
+  fun withDataSource(dataSource: DataSource<*>): RecyclicalSetup {
     this.currentDataSource = dataSource
     return this
   }

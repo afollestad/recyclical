@@ -33,6 +33,6 @@ abstract class PluginData {
    */
   abstract fun attach(
     toView: RecyclerView,
-    dataSource: DataSource
+    dataSource: DataSource<*>
   )
 }

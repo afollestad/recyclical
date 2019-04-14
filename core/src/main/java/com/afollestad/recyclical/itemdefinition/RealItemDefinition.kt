@@ -40,7 +40,7 @@ class RealItemDefinition<IT : Any>(
   /** The full name of the item model class this definition binds. */
   val itemClassName: String = itemClass.name
   /** The current data source set in setup. */
-  val currentDataSource: DataSource?
+  val currentDataSource: DataSource<*>?
     get() = setup.currentDataSource
 
   @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

@@ -47,7 +47,7 @@ private const val TEST_ITEM_INDEX = 101
 class ItemDefinitionTest {
   private val testItem = TestItem(1, "Aidan")
   private val recyclerView = mock<RecyclerView>()
-  private val dataSource = mock<DataSource> {
+  private val dataSource = mock<DataSource<*>> {
     on { get(TEST_ITEM_INDEX) } doReturn testItem
   }
   private val globalClickListener = TestClickListener<Any>()

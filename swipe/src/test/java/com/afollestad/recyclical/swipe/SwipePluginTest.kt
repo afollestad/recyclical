@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 @RunWith(NoManifestTestRunner::class)
 class SwipePluginTest {
   private lateinit var recyclerView: RecyclerView
-  private val dataSource = mock<DataSource>()
+  private val dataSource = mock<DataSource<*>>()
 
   @Before fun setup() {
     recyclerView = RecyclerView(ApplicationProvider.getApplicationContext())

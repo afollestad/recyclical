@@ -16,12 +16,12 @@
 package com.afollestad.recyclical.datasource
 
 /** @author Aidan Follestad (@afollestad) */
-open class RealSelectableDataSource(
-  initialData: List<Any> = mutableListOf()
-) : RealDataSource(initialData),
-    SelectableDataSource {
+open class RealSelectableDataSource<IT : Any>(
+  initialData: List<IT> = mutableListOf()
+) : RealDataSource<IT>(initialData), SelectableDataSource<IT> {
+
   private val selectedIndices = mutableSetOf<Int>()
-  private var onSelectionChange: ((SelectableDataSource) -> Unit)? = null
+  private var onSelectionChange: ((SelectableDataSource<IT>) -> Unit)? = null
 
   override fun selectAt(index: Int): Boolean {
     if (index < 0 || index >= size()) {
@@ -61,13 +61,13 @@ open class RealSelectableDataSource(
 
   override fun getSelectionCount(): Int = selectedIndices.size
 
-  override fun onSelectionChange(block: (SelectableDataSource) -> Unit) {
+  override fun onSelectionChange(block: (SelectableDataSource<IT>) -> Unit) {
     this.onSelectionChange = block
   }
 
   override fun insert(
     index: Int,
-    item: Any
+    item: IT
   ) {
     val greaterIndices = selectedIndices
         .filter { it >= index }

@@ -66,7 +66,7 @@ interface SelectionStateProvider<out IT> : Closeable {
 
 /** @author Aidan Follestad (@afollestad) */
 class NoSelectionStateProvider<out IT>(
-  private var dataSource: DataSource?,
+  private var dataSource: DataSource<*>?,
   private val index: Int
 ) : SelectionStateProvider<IT> {
 
@@ -96,10 +96,10 @@ class NoSelectionStateProvider<out IT>(
 
 /** @author Aidan Follestad (@afollestad) */
 class RealSelectionStateProvider<out IT>(
-  dataSource: SelectableDataSource,
+  dataSource: SelectableDataSource<*>,
   private val index: Int
 ) : SelectionStateProvider<IT> {
-  private var selectableDataSource: SelectableDataSource? = dataSource
+  private var selectableDataSource: SelectableDataSource<*>? = dataSource
 
   override val item: IT get() = ensureActive()[index] as IT
 
@@ -117,7 +117,7 @@ class RealSelectionStateProvider<out IT>(
     selectableDataSource = null
   }
 
-  private fun ensureActive(): SelectableDataSource {
+  private fun ensureActive(): SelectableDataSource<*> {
     return selectableDataSource ?: blowUp("Already disposed.")
   }
 }

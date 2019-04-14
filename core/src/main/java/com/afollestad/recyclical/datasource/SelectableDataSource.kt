@@ -22,7 +22,7 @@ package com.afollestad.recyclical.datasource
  *
  * @author Aidan Follestad (@afollestad)
  */
-interface SelectableDataSource : DataSource {
+interface SelectableDataSource<IT : Any> : DataSource<IT> {
 
   /** Selects the item at the given [index]. */
   fun selectAt(index: Int): Boolean
@@ -51,7 +51,7 @@ interface SelectableDataSource : DataSource {
   /**
    * Finds an item in the [DataSource], and selects if it it's found.
    */
-  fun select(item: Any): Boolean {
+  fun select(item: IT): Boolean {
     val index = indexOf(item)
     if (index == -1) return false
     return selectAt(index)
@@ -60,7 +60,7 @@ interface SelectableDataSource : DataSource {
   /**
    * Finds an item in the [DataSource], and deselects if it it's found.
    */
-  fun deselect(item: Any): Boolean {
+  fun deselect(item: IT): Boolean {
     val index = indexOf(item)
     if (index == -1) return false
     return deselectAt(index)
@@ -69,7 +69,7 @@ interface SelectableDataSource : DataSource {
   /**
    * If the given item is selected, deselect it. Else select it.
    */
-  fun toggleSelection(item: Any): Boolean {
+  fun toggleSelection(item: IT): Boolean {
     val index = indexOf(item)
     if (index == -1) return false
     return toggleSelectionAt(index)
@@ -78,7 +78,7 @@ interface SelectableDataSource : DataSource {
   /**
    * Finds an item in the [DataSource], and returns true if it's selected.
    */
-  fun isSelected(item: Any): Boolean {
+  fun isSelected(item: IT): Boolean {
     val index = indexOf(item)
     if (index == -1) return false
     return isSelectedAt(index)
@@ -91,7 +91,7 @@ interface SelectableDataSource : DataSource {
   fun hasSelection(): Boolean = getSelectionCount() > 0
 
   /** Sets a callback that's invoked when the selection is changed. */
-  fun onSelectionChange(block: (SelectableDataSource) -> Unit)
+  fun onSelectionChange(block: (SelectableDataSource<IT>) -> Unit)
 }
 
 /**
@@ -100,7 +100,16 @@ interface SelectableDataSource : DataSource {
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun selectableDataSourceOf(items: List<Any>): SelectableDataSource =
+fun selectableDataSourceOf(items: List<Any>): SelectableDataSource<Any> =
+  selectableDataSourceTypedOf(items)
+
+/**
+ * Constructs a [DataSource] with an initial list of items of type [IT]. This data source
+ * allows you to select and deselect items.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
+fun <IT : Any> selectableDataSourceTypedOf(items: List<IT>): SelectableDataSource<IT> =
   RealSelectableDataSource(items.toMutableList())
 
 /**
@@ -109,7 +118,16 @@ fun selectableDataSourceOf(items: List<Any>): SelectableDataSource =
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun selectableDataSourceOf(vararg items: Any): SelectableDataSource =
+fun selectableDataSourceOf(vararg items: Any): SelectableDataSource<Any> =
+  selectableDataSourceTypedOf(items)
+
+/**
+ * Constructs a [DataSource] with an initial set of items of type [IT]. This data source
+ * allows you to select and deselect items.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
+fun <IT : Any> selectableDataSourceTypedOf(vararg items: IT): SelectableDataSource<IT> =
   RealSelectableDataSource(items.toMutableList())
 
 /**
@@ -118,5 +136,13 @@ fun selectableDataSourceOf(vararg items: Any): SelectableDataSource =
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun emptySelectableDataSource(): SelectableDataSource =
+fun emptySelectableDataSource(): SelectableDataSource<Any> = emptySelectableDataSourceTyped()
+
+/**
+ * Constructs a data source that is empty by default, containing items of type [IT]. This
+ * data source allows you to select and deselect items.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
+fun <IT : Any> emptySelectableDataSourceTyped(): SelectableDataSource<IT> =
   RealSelectableDataSource()

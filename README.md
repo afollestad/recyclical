@@ -97,7 +97,8 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
       
-      val dataSource = dataSourceOf(
+      // dataSourceTypedOf(...) here creates a DataSource<Person>
+      val dataSource = dataSourceTypedOf(
           Person("Aidan", 24),
           Person("Nina", 24)
       )
@@ -174,6 +175,7 @@ recyclerView.setup {
 You can mix different types of items - but you need to specify view holders and layouts for them too:
 
 ```kotlin
+// dataSourceOf(...) without "typed" creates a DataSource<Any>
 val dataSource = dataSourceOf(
   Car(2012, "Volkswagen GTI"),
   Motorcycle(2018, "Triumph", "Thruxton R"),
@@ -218,23 +220,26 @@ The included implementation of data source operates on a List of objects (of any
 
 ```kotlin
 // Empty by default, but can still add, insert, etc.
-val dataSource: DataSource = emptyDataSource()
+// Could also use emptyDataSourceTyped<Type>
+val dataSource: DataSource<Any> = emptyDataSource() 
 
 // Initial data set of items from a vararg list
-val dataSource: DataSource = dataSourceOf(item1, item2)
+// Could also use dataSourceTypedOf(...)
+val dataSource: DataSource<Any> = dataSourceOf(item1, item2)
 
 // Initial data set of items from an existing list
+// Could also use dataSourceTypedOf(...)
 val items = listOf(item1, item2)
-val dataSource: DataSource = dataSourceOf(items)
+val dataSource: DataSource<Any> = dataSourceOf(items)
 ```
 
 ### Manipulation
 
 ```kotlin
-val dataSource: DataSource = // ...
+val dataSource: DataSource<ItemType> = // ...
 
 // getters
-val item: Any = dataSource.get(5)
+val item: ItemType = dataSource.get(5)
 val contains: Boolean = dataSource.contains(item)
 val size: Int = dataSource.size()
 val isEmpty: Boolean = dataSource.isEmpty()
@@ -316,14 +321,20 @@ include `selectable` in their names.
 
 ```kotlin
 // Empty by default, but can still add, insert, etc.
-val dataSource: SelectableDataSource = emptySelectableDataSource()
+// Could also use emptySelectableDataSourceTyped()
+val dataSource: SelectableDataSource<Any> = 
+    emptySelectableDataSource()
 
 // Initial data set of items from a vararg list
-val dataSource: SelectableDataSource = selectableDataSourceOf(item1, item2)
+// Could also use selectableDataSourceTypedOf(...)
+val dataSource: SelectableDataSource = 
+    selectableDataSourceOf(item1, item2)
 
 // Initial data set of items from an existing list
+// Could also use selectableDataSourceTypedOf(...)
 val items = listOf(item1, item2)
-val dataSource: SelectableDataSource = selectableDataSourceOf(items)
+val dataSource: SelectableDataSource = 
+    selectableDataSourceOf(items)
 ```
 
 ### Manipulation
@@ -331,7 +342,7 @@ val dataSource: SelectableDataSource = selectableDataSourceOf(items)
 There are some additional methods added on top of the `DataSource` methods:
 
 ```kotlin
-val dataSource: SelectableDataSource = // ...
+val dataSource: SelectableDataSource<Any> = // ...
 
 // Index operations
 dataSource.selectAt(1)

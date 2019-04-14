@@ -17,7 +17,6 @@
 
 package com.afollestad.recyclical.handle
 
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
@@ -36,7 +35,7 @@ interface RecyclicalHandle {
   fun showOrHideEmptyView(show: Boolean)
 
   /** Gets the underlying adapter for the RecyclerView. */
-  fun getAdapter(): RecyclerView.Adapter<*>
+  fun getAdapter(): Adapter<*>
 
   /**
    * Executes code in the given [block] on the current adapter,
@@ -56,7 +55,7 @@ interface RecyclicalHandle {
 }
 
 /** Gets the current data source, auto casting it to [T]. */
-inline fun <reified T : DataSource> RecyclicalHandle.getDataSource(): T {
+inline fun <reified T : DataSource<*>> RecyclicalHandle.getDataSource(): T {
   return if (this is RealRecyclicalHandle) {
     dataSource as? T ?: blowUp("$dataSource is not a ${T::class.java.name}")
   } else {

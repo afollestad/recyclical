@@ -41,7 +41,7 @@ class SelectableDataSourceTest {
       TestItem(3, "Three"),
       TestItem(4, "Four")
   )
-  private val dataSource: SelectableDataSource = RealSelectableDataSource(defaultItems)
+  private val dataSource: SelectableDataSource<Any> = RealSelectableDataSource(defaultItems)
 
   @Before fun setup() {
     dataSource.attach(handle)

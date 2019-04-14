@@ -16,7 +16,6 @@
 package com.afollestad.recyclical.handle
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
@@ -29,14 +28,14 @@ class RealRecyclicalHandle internal constructor(
   private val adapter: DefinitionAdapter,
   private val itemClassToType: MutableMap<String, Int>,
   private val bindingsToTypes: MutableMap<Int, ItemDefinition<*>>,
-  val dataSource: DataSource
+  val dataSource: DataSource<*>
 ) : RecyclicalHandle {
 
   override fun showOrHideEmptyView(show: Boolean) {
     emptyView?.visibility = if (show) View.VISIBLE else View.GONE
   }
 
-  override fun getAdapter(): RecyclerView.Adapter<*> = adapter
+  override fun getAdapter(): Adapter<*> = adapter
 
   override fun invalidateList(block: Adapter<*>.() -> Unit) {
     getAdapter().block()

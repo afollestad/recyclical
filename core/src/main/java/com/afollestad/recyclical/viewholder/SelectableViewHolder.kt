@@ -63,11 +63,10 @@ fun ViewHolder.hasSelection(): Boolean {
   return selectableDataSource.hasSelection()
 }
 
-private val ViewHolder.selectableDataSource: SelectableDataSource
+private val ViewHolder.selectableDataSource: SelectableDataSource<*>
   get() {
-    val dataSource =
-      itemView.getTag(R.id.rec_view_item_selectable_data_source) as? DataSource
-    return when (dataSource) {
+    return when (val dataSource =
+      itemView.getTag(R.id.rec_view_item_selectable_data_source) as? DataSource<*>) {
       null -> blowUp("isSelected() can only be called from within an onBind block.")
       !is SelectableDataSource -> blowUp("Current data source is not a SelectableDataSource.")
       else -> dataSource

@@ -30,9 +30,9 @@ import com.afollestad.recyclical.itemdefinition.bindViewHolder
 import com.afollestad.recyclical.itemdefinition.createViewHolder
 
 /** @author Aidan Follestad (@afollestad) */
-internal open class DefinitionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
   private var handle: RecyclicalHandle? = null
-  private var dataSource: DataSource? = null
+  private var dataSource: DataSource<*>? = null
 
   /** Attaches the adapter to a handle which provides a data source, etc. */
   open fun attach(handle: RecyclicalHandle) {

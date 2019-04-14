@@ -20,17 +20,17 @@ import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.internal.ItemDiffCallback
 
 /** @author Aidan Follestad (@afollestad) */
-open class RealDataSource internal constructor(
-  initialData: List<Any> = mutableListOf()
-) : DataSource {
+open class RealDataSource<IT : Any> internal constructor(
+  initialData: List<IT> = mutableListOf()
+) : DataSource<IT> {
   private var items = initialData.toMutableList()
   private var handle: RecyclicalHandle? = null
 
-  override operator fun get(index: Int): Any = items[index]
+  override operator fun get(index: Int): IT = items[index]
 
-  override operator fun contains(item: Any): Boolean = items.contains(item)
+  override operator fun contains(item: IT): Boolean = items.contains(item)
 
-  override operator fun iterator(): Iterator<Any> = items.iterator()
+  override operator fun iterator(): Iterator<IT> = items.iterator()
 
   override fun attach(handle: RecyclicalHandle) {
     if (this.handle != null) return
@@ -43,7 +43,7 @@ open class RealDataSource internal constructor(
     this.handle = null
   }
 
-  override fun add(item: Any) {
+  override fun add(item: IT) {
     items.add(item)
     handle?.invalidateList {
       notifyItemInserted(items.size - 1)
@@ -51,7 +51,7 @@ open class RealDataSource internal constructor(
   }
 
   override fun set(
-    newItems: List<Any>,
+    newItems: List<IT>,
     areTheSame: LeftAndRightComparer?,
     areContentsTheSame: LeftAndRightComparer?
   ) {
@@ -76,7 +76,7 @@ open class RealDataSource internal constructor(
 
   override fun insert(
     index: Int,
-    item: Any
+    item: IT
   ) {
     items.add(index, item)
     handle?.invalidateList { notifyItemInserted(index) }
@@ -87,7 +87,7 @@ open class RealDataSource internal constructor(
     handle?.invalidateList { notifyItemRemoved(index) }
   }
 
-  override fun remove(item: Any) {
+  override fun remove(item: IT) {
     val index = items.indexOf(item)
     if (index == -1) return
     removeAt(index)
@@ -127,13 +127,13 @@ open class RealDataSource internal constructor(
 
   override fun isNotEmpty() = items.isNotEmpty()
 
-  override fun forEach(block: (Any) -> Unit) = items.forEach(block)
+  override fun forEach(block: (IT) -> Unit) = items.forEach(block)
 
-  override fun indexOfFirst(predicate: (Any) -> Boolean): Int = items.indexOfFirst(predicate)
+  override fun indexOfFirst(predicate: (IT) -> Boolean): Int = items.indexOfFirst(predicate)
 
-  override fun indexOfLast(predicate: (Any) -> Boolean): Int = items.indexOfLast(predicate)
+  override fun indexOfLast(predicate: (IT) -> Boolean): Int = items.indexOfLast(predicate)
 
-  override fun indexOf(item: Any): Int = items.indexOf(item)
+  override fun indexOf(item: IT): Int = items.indexOf(item)
 
   override fun invalidateAt(index: Int) {
     handle?.invalidateList { notifyItemChanged(index) }

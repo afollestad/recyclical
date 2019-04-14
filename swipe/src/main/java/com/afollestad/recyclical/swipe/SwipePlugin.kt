@@ -34,7 +34,7 @@ internal data class SwipePluginData(
 
   override fun attach(
     toView: RecyclerView,
-    dataSource: DataSource
+    dataSource: DataSource<*>
   ) {
     val callback = SwipeItemTouchListener(toView.context, this, dataSource)
     ItemTouchHelper(callback).attachToRecyclerView(toView)

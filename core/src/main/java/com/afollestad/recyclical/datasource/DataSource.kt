@@ -29,26 +29,26 @@ typealias LeftAndRightComparer = (left: Any, right: Any) -> Boolean
  *
  * @author Aidan Follestad (@afollestad)
  */
-interface DataSource {
+interface DataSource<IT : Any> {
 
   /** Retrieves an item at a given index from the data source */
-  operator fun get(index: Int): Any
+  operator fun get(index: Int): IT
 
   /** Appends an item to the data source; calls [add] in its default implementation. */
-  operator fun plusAssign(item: Any) {
+  operator fun plusAssign(item: IT) {
     add(item)
   }
 
   /** Removes an item from the data source; calls [remove] in its default implementation. */
-  operator fun minusAssign(item: Any) {
+  operator fun minusAssign(item: IT) {
     remove(item)
   }
 
   /** Returns true if the data source contains the given item. */
-  operator fun contains(item: Any): Boolean
+  operator fun contains(item: IT): Boolean
 
   /** Returns an iterator to loop over all items in the data source. */
-  operator fun iterator(): Iterator<Any>
+  operator fun iterator(): Iterator<IT>
 
   /**
    * Attaches the data source to an empty view and adapter. This doesn't need to be manually
@@ -68,25 +68,25 @@ interface DataSource {
    * both provided, [DiffUtil] will be used.
    */
   fun set(
-    newItems: List<Any>,
+    newItems: List<IT>,
     areTheSame: LeftAndRightComparer? = null,
     areContentsTheSame: LeftAndRightComparer? = null
   )
 
   /** Appends an item to the data source. */
-  fun add(item: Any)
+  fun add(item: IT)
 
   /** Inserts an item into the data source at a given index. */
   fun insert(
     index: Int,
-    item: Any
+    item: IT
   )
 
   /** Removes an item from the data source at a given index. */
   fun removeAt(index: Int)
 
   /** Removes a given item from the data source, if it exists. */
-  fun remove(item: Any)
+  fun remove(item: IT)
 
   /** Swaps two items at given indices in the data source. */
   fun swap(
@@ -113,16 +113,16 @@ interface DataSource {
   fun isNotEmpty(): Boolean = !isEmpty()
 
   /** Calls [block] for each item in the data source. */
-  fun forEach(block: (Any) -> Unit)
+  fun forEach(block: (IT) -> Unit)
 
   /** Returns the index of the first item matching the given predicate. -1 if none. */
-  fun indexOfFirst(predicate: (Any) -> Boolean): Int
+  fun indexOfFirst(predicate: (IT) -> Boolean): Int
 
   /** Returns the index of the last item matching the given predicate. -1 if none. */
-  fun indexOfLast(predicate: (Any) -> Boolean): Int
+  fun indexOfLast(predicate: (IT) -> Boolean): Int
 
   /** Returns the index of the first item that equals the given. -1 if none. */
-  fun indexOf(item: Any): Int = indexOfFirst { it == item }
+  fun indexOf(item: IT): Int = indexOfFirst { it == item }
 
   /** Used by other [DataSource] implementations to notify that an item has changed state. */
   fun invalidateAt(index: Int)
@@ -136,7 +136,14 @@ interface DataSource {
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun dataSourceOf(items: List<Any>): DataSource =
+fun dataSourceOf(items: List<Any>): DataSource<Any> = dataSourceTypedOf(items)
+
+/**
+ * Constructs a [DataSource] with an initial list of items of type [IT].
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
+fun <IT : Any> dataSourceTypedOf(items: List<IT>): DataSource<IT> =
   RealDataSource(items.toMutableList())
 
 /**
@@ -144,7 +151,14 @@ fun dataSourceOf(items: List<Any>): DataSource =
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun dataSourceOf(vararg items: Any): DataSource =
+fun dataSourceOf(vararg items: Any): DataSource<Any> = dataSourceTypedOf(items)
+
+/**
+ * Constructs a [DataSource] with an initial set of items of type [IT].
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
+fun <IT : Any> dataSourceTypedOf(vararg items: IT): DataSource<IT> =
   RealDataSource(items.toMutableList())
 
 /**
@@ -152,15 +166,21 @@ fun dataSourceOf(vararg items: Any): DataSource =
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun emptyDataSource(): DataSource =
-  RealDataSource()
+fun emptyDataSource(): DataSource<Any> = emptyDataSourceTyped()
+
+/**
+ * Constructs a data source for items of type [IT], that is empty by default.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
+fun <IT : Any> emptyDataSourceTyped(): DataSource<IT> = RealDataSource()
 
 /**
  * Same as [DataSource.forEach] but only emits items of a certain type.
  *
  * @author Aidan Follestad (@afollestad)
  */
-inline fun <reified T : Any> DataSource.forEachOf(block: (T) -> Unit) {
+inline fun <reified T : Any> DataSource<Any>.forEachOf(block: (T) -> Unit) {
   iterator()
       .asSequence()
       .filter { it is T }
