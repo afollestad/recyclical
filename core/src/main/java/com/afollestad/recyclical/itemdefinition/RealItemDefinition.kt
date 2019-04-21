@@ -96,6 +96,7 @@ class RealItemDefinition<IT : Any>(
     true
   }
 
+  /** @author Aidan Follestad (@afollestad) */
   data class ChildClickData<in IT : Any, VH : ViewHolder, VT : View>(
     val viewHolderType: Class<VH>,
     val child: (viewHolder: VH) -> VT,
