@@ -73,8 +73,11 @@ interface DataSource<IT : Any> {
     areContentsTheSame: LeftAndRightComparer? = null
   )
 
-  /** Appends an item to the data source. */
-  fun add(item: IT)
+  /** Appends one or more items to the data source. */
+  fun add(vararg newItems: IT)
+
+  /** Appends a collection of items to the data source. */
+  fun addAll(newItems: Collection<IT>)
 
   /** Inserts an item into the data source at a given index. */
   fun insert(

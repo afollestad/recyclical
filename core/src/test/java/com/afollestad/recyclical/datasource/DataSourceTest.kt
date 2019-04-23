@@ -42,7 +42,8 @@ class DataSourceTest {
   )
   private val dataSource: DataSource<Any> = RealDataSource(defaultItems)
 
-  @Before fun setup() {
+  @Before
+  fun setup() {
     dataSource.size()
         .assertEqualTo(2)
     dataSource.attach(handle)
@@ -50,14 +51,34 @@ class DataSourceTest {
     verify(mockAdapter).notifyDataSetChanged()
   }
 
-  @Test fun add() {
+  @Test
+  fun add() {
     val item = TestItem(3, "Hi")
     dataSource.add(item)
 
-    verify(mockAdapter).notifyItemInserted(2)
+    verify(mockAdapter).notifyItemRangeInserted(2, 1)
   }
 
-  @Test fun set() {
+  @Test
+  fun `add multiple`() {
+    val item1 = TestItem(3, "Hi")
+    val item2 = TestItem(4, "Hey")
+    dataSource.add(item1, item2)
+
+    verify(mockAdapter).notifyItemRangeInserted(2, 2)
+  }
+
+  @Test
+  fun addAll() {
+    val item1 = TestItem(3, "Hi")
+    val item2 = TestItem(4, "Hey")
+    dataSource.addAll(setOf(item1, item2))
+
+    verify(mockAdapter).notifyItemRangeInserted(2, 2)
+  }
+
+  @Test
+  fun set() {
     val newItems = listOf(
         TestItem(9, "Nine"),
         TestItem(10, "Ten")
@@ -72,7 +93,8 @@ class DataSourceTest {
     verify(mockAdapter, times(2)).notifyDataSetChanged()
   }
 
-  @Test fun contains() {
+  @Test
+  fun contains() {
     val item = TestItem(3, "Hi")
     dataSource.contains(defaultItems[0])
         .assertTrue()
@@ -80,7 +102,8 @@ class DataSourceTest {
         .assertFalse()
   }
 
-  @Test fun insert() {
+  @Test
+  fun insert() {
     dataSource.size()
         .assertEqualTo(2)
     val item = TestItem(-1, "Test")
@@ -95,7 +118,8 @@ class DataSourceTest {
     verify(mockAdapter).notifyItemInserted(0)
   }
 
-  @Test fun removeAt() {
+  @Test
+  fun removeAt() {
     dataSource.size()
         .assertEqualTo(2)
     dataSource.removeAt(0)
@@ -107,7 +131,8 @@ class DataSourceTest {
     verify(mockAdapter).notifyItemRemoved(0)
   }
 
-  @Test fun remove() {
+  @Test
+  fun remove() {
     dataSource.size()
         .assertEqualTo(2)
     dataSource.remove(defaultItems[0])
@@ -119,7 +144,8 @@ class DataSourceTest {
     verify(mockAdapter).notifyItemRemoved(0)
   }
 
-  @Test fun swap() {
+  @Test
+  fun swap() {
     dataSource[0].assertSameAs(defaultItems[0])
     dataSource[1].assertSameAs(defaultItems[1])
 
@@ -132,7 +158,8 @@ class DataSourceTest {
     verify(mockAdapter).notifyItemChanged(1)
   }
 
-  @Test fun move() {
+  @Test
+  fun move() {
     dataSource[0].assertSameAs(defaultItems[0])
     dataSource[1].assertSameAs(defaultItems[1])
 
@@ -144,7 +171,8 @@ class DataSourceTest {
     verify(mockAdapter).notifyItemMoved(0, 1)
   }
 
-  @Test fun clear() {
+  @Test
+  fun clear() {
     dataSource.isNotEmpty()
         .assertTrue()
     dataSource.isEmpty()
@@ -164,38 +192,45 @@ class DataSourceTest {
     verify(mockAdapter, times(2)).notifyDataSetChanged()
   }
 
-  @Test fun forEach() {
+  @Test
+  fun forEach() {
     var iterations = 0
     dataSource.forEach { iterations++ }
     iterations.assertEqualTo(2)
   }
 
-  @Test fun indexOfFirst() {
+  @Test
+  fun indexOfFirst() {
     dataSource.indexOfFirst { it === defaultItems[1] }
         .assertEqualTo(1)
   }
 
-  @Test fun indexOfLast() {
+  @Test
+  fun indexOfLast() {
     dataSource.indexOfLast { it === defaultItems[1] }
         .assertEqualTo(1)
   }
 
-  @Test fun indexOf() {
+  @Test
+  fun indexOf() {
     dataSource.indexOf(defaultItems[1])
         .assertEqualTo(1)
   }
 
-  @Test fun invalidateAt() {
+  @Test
+  fun invalidateAt() {
     dataSource.invalidateAt(0)
     verify(mockAdapter).notifyItemChanged(0)
   }
 
-  @Test fun invalidateAll() {
+  @Test
+  fun invalidateAll() {
     dataSource.invalidateAll()
     verify(mockAdapter, times(2)).notifyDataSetChanged()
   }
 
-  @After fun teardown() {
+  @After
+  fun teardown() {
     dataSource.detach()
   }
 }

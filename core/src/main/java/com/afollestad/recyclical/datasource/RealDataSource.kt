@@ -43,10 +43,19 @@ open class RealDataSource<IT : Any> internal constructor(
     this.handle = null
   }
 
-  override fun add(item: IT) {
-    items.add(item)
+  override fun add(vararg newItems: IT) {
+    val startPosition = this.items.size
+    this.items.addAll(newItems)
     handle?.invalidateList {
-      notifyItemInserted(items.size - 1)
+      notifyItemRangeInserted(startPosition, newItems.size)
+    }
+  }
+
+  override fun addAll(newItems: Collection<IT>) {
+    val startPosition = this.items.size
+    this.items.addAll(newItems)
+    handle?.invalidateList {
+      notifyItemRangeInserted(startPosition, newItems.size)
     }
   }
 
