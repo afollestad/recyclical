@@ -34,9 +34,8 @@ open class RealDataSource<IT : Any> internal constructor(
 
   override fun attach(handle: RecyclicalHandle) {
     if (this.handle != null) return
-    this.handle = handle.also {
-      it.invalidateList { notifyDataSetChanged() }
-    }
+    this.handle = handle
+    invalidateAll()
   }
 
   override fun detach() {
@@ -79,7 +78,7 @@ open class RealDataSource<IT : Any> internal constructor(
           ?.let { diffResult.dispatchUpdatesTo(it) }
     } else {
       this.items = newItems.toMutableList()
-      handle?.invalidateList { notifyDataSetChanged() }
+      invalidateAll()
     }
   }
 
@@ -109,10 +108,8 @@ open class RealDataSource<IT : Any> internal constructor(
     val leftItem = items[left]
     items[left] = items[right]
     items[right] = leftItem
-    handle?.invalidateList {
-      notifyItemChanged(left)
-      notifyItemChanged(right)
-    }
+    invalidateAt(left)
+    invalidateAt(right)
   }
 
   override fun move(
@@ -127,14 +124,14 @@ open class RealDataSource<IT : Any> internal constructor(
 
   override fun clear() {
     items.clear()
-    handle?.invalidateList { notifyDataSetChanged() }
+    invalidateAll()
   }
 
-  override fun size() = items.size
+  override fun size(): Int = items.size
 
-  override fun isEmpty() = items.isEmpty()
+  override fun isEmpty(): Boolean = items.isEmpty()
 
-  override fun isNotEmpty() = items.isNotEmpty()
+  override fun isNotEmpty(): Boolean = items.isNotEmpty()
 
   override fun forEach(block: (IT) -> Unit) = items.forEach(block)
 
