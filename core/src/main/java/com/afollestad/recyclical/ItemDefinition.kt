@@ -66,13 +66,18 @@ interface ItemDefinition<IT : Any> {
 /**
  * Defines an item definition which binds a model with a view model and layout.
  *
+ * @param itemClassName You can override the item class name used for mapping internally by
+ *  using the fully qualified class name (e.g. com.yourapp.Model). It defaults to the class
+ *  name taken from your generic [IT] type.
+ *
  * @author Aidan Follestad (@afollestad)
  */
 inline fun <reified IT : Any> RecyclicalSetup.withItem(
   @LayoutRes layoutRes: Int,
+  itemClassName: String = IT::class.java.name,
   noinline block: ItemDefinition<IT>.() -> Unit
 ): ItemDefinition<IT> {
-  return RealItemDefinition(this, IT::class.java)
+  return RealItemDefinition<IT>(this, itemClassName)
       .apply(block)
       .also { definition ->
         registerItemDefinition(
