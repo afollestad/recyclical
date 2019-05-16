@@ -77,7 +77,8 @@ class RealItemDefinition<IT : Any>(
   }
 
   internal val viewClickListener = View.OnClickListener { itemView ->
-    val position = itemView.positionTag()
+    val position = itemView.viewHolder()
+        .adapterPosition
     getSelectionStateProvider(position).use {
       this.itemOnClick?.invoke(it, position)
       setup.globalOnClick?.invoke(it, position)
@@ -85,7 +86,8 @@ class RealItemDefinition<IT : Any>(
   }
 
   internal val viewLongClickListener = View.OnLongClickListener { itemView ->
-    val position = itemView.positionTag()
+    val position = itemView.viewHolder()
+        .adapterPosition
     getSelectionStateProvider(position)
         .use {
           this.itemOnLongClick?.invoke(it, position)

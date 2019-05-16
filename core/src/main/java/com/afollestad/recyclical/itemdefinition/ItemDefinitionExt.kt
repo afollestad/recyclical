@@ -73,7 +73,7 @@ private fun ItemDefinition<*>.setChildClickListeners(viewHolder: ViewHolder) {
     val childView = viewGetter(viewHolder)
 
     childView.setOnClickListener {
-      val index = viewHolder.itemView.positionTag()
+      val index = viewHolder.itemView.viewHolder().adapterPosition
       getSelectionStateProvider(index).use {
         callback(it, index, childView)
       }
@@ -88,7 +88,7 @@ internal fun ItemDefinition<*>.bindViewHolder(
 ) {
   val realDefinition = realDefinition()
   viewHolder.itemView.run {
-    setTag(R.id.rec_view_item_adapter_position, position)
+    setTag(R.id.rec_view_item_view_holder, viewHolder)
     setTag(R.id.rec_view_item_selectable_data_source, realDefinition.currentDataSource)
   }
 
@@ -110,9 +110,9 @@ internal fun <IT : Any> ItemDefinition<IT>.getSelectionStateProvider(
   }
 }
 
-internal fun View.positionTag(): Int {
-  return getTag(R.id.rec_view_item_adapter_position) as? Int ?: blowUp(
-      "Didn't find position in itemView tag."
+internal fun View.viewHolder(): ViewHolder {
+  return getTag(R.id.rec_view_item_view_holder) as? ViewHolder ?: blowUp(
+      "Didn't find view holder in itemView tag."
   )
 }
 

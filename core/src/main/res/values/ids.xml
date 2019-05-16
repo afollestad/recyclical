@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <item format="integer" name="rec_view_item_adapter_position" type="id"/>
+  <item format="integer" name="rec_view_item_view_holder" type="id"/>
   <item format="integer" name="rec_view_item_selectable_data_source" type="id"/>
 </resources>
