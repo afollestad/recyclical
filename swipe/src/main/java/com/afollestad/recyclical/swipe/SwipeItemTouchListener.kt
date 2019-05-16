@@ -67,20 +67,25 @@ internal class SwipeItemTouchListener(
     direction: Int
   ) {
     val index = viewHolder.adapterPosition
+    val itemClass = dataSource[index].javaClass.name
     when (direction) {
       ItemTouchHelper.LEFT -> {
-        val action = actions[if (leftIsLong) LEFT_LONG else LEFT] ?: return
-        val callbackResult = action.callback?.invoke(index, dataSource[index]) ?: false
-        if (callbackResult) {
+        val location = if (leftIsLong) LEFT_LONG else LEFT
+        val actionKeyForItem = ActionKey(location = location, itemClassName = itemClass)
+        val actionKeyGlobal = ActionKey(location = location, itemClassName = null)
+        val action = actions[actionKeyForItem] ?: actions[actionKeyGlobal] ?: return
+        if (action.sendToCallback(index, dataSource[index])) {
           dataSource.removeAt(index)
         } else {
           dataSource.invalidateAt(index)
         }
       }
       ItemTouchHelper.RIGHT -> {
-        val action = actions[if (rightIsLong) RIGHT_LONG else RIGHT] ?: return
-        val callbackResult = action.callback?.invoke(index, dataSource[index]) ?: false
-        if (callbackResult) {
+        val location = if (rightIsLong) RIGHT_LONG else RIGHT
+        val actionKeyForItem = ActionKey(location = location, itemClassName = itemClass)
+        val actionKeyGlobal = ActionKey(location = location, itemClassName = null)
+        val action = actions[actionKeyForItem] ?: actions[actionKeyGlobal] ?: return
+        if (action.sendToCallback(index, dataSource[index])) {
           dataSource.removeAt(index)
         } else {
           dataSource.invalidateAt(index)
@@ -93,6 +98,32 @@ internal class SwipeItemTouchListener(
     rightDistance = DEFAULT_DISTANCE
   }
 
+  override fun getSwipeDirs(
+    recyclerView: RecyclerView,
+    viewHolder: ViewHolder
+  ): Int {
+    val index = viewHolder.adapterPosition
+    if (index == -1) return 0
+    val itemClass = dataSource[index].javaClass.name
+
+    var directions: Int = 0
+    if (actions.containsKey(ActionKey(LEFT, itemClass)) ||
+        actions.containsKey(ActionKey(LEFT, null)) ||
+        actions.containsKey(ActionKey(LEFT_LONG, itemClass)) ||
+        actions.containsKey(ActionKey(LEFT_LONG, null))
+    ) {
+      directions = directions or ItemTouchHelper.LEFT
+    }
+    if (actions.containsKey(ActionKey(RIGHT, itemClass)) ||
+        actions.containsKey(ActionKey(RIGHT, null)) ||
+        actions.containsKey(ActionKey(RIGHT_LONG, itemClass)) ||
+        actions.containsKey(ActionKey(RIGHT_LONG, null))
+    ) {
+      directions = directions or ItemTouchHelper.RIGHT
+    }
+    return directions
+  }
+
   override fun onChildDraw(
     c: Canvas,
     recyclerView: RecyclerView,
@@ -102,18 +133,33 @@ internal class SwipeItemTouchListener(
     actionState: Int,
     isCurrentlyActive: Boolean
   ) {
+    val index = viewHolder.adapterPosition
+    if (index == -1) return
+    val itemClass = dataSource[index].javaClass.name
+
     val itemView = viewHolder.itemView
-    val action: SwipeAction?
+    val action: SwipeAction<*>?
     var textX = 0f
+
     when {
       dX > 0 -> {
         // Swiping to the right
         rightDistance = dX
 
-        rightIsLong = actions.containsKey(RIGHT_LONG) &&
-            rightDistance >= (LONG_THRESHOLD_PERCENT * itemView.measuredWidth)
-        action = actions[if (rightIsLong) RIGHT_LONG else RIGHT] ?: return
-        icon = action.iconDrawable
+        val actionKeyForItemLong = ActionKey(location = RIGHT_LONG, itemClassName = itemClass)
+        val actionKeyGlobalLong = ActionKey(location = RIGHT_LONG, itemClassName = null)
+        val actionKeyForItemShort = ActionKey(location = RIGHT, itemClassName = itemClass)
+        val actionKeyGlobalShort = ActionKey(location = RIGHT, itemClassName = null)
+
+        rightIsLong =
+          (actions.containsKey(actionKeyForItemLong) || actions.containsKey(actionKeyGlobalLong)) &&
+              rightDistance >= (LONG_THRESHOLD_PERCENT * itemView.measuredWidth)
+        action = if (rightIsLong) {
+          actions[actionKeyForItemLong] ?: actions[actionKeyGlobalLong]
+        } else {
+          actions[actionKeyForItemShort] ?: actions[actionKeyGlobalShort]
+        }
+        icon = action?.iconDrawable ?: return
         background = action.backgroundDrawable ?: ColorDrawable(DKGRAY)
 
         if (icon != null) {
@@ -143,10 +189,20 @@ internal class SwipeItemTouchListener(
         // Swiping to the left
         leftDistance = dX
 
-        leftIsLong = actions.containsKey(LEFT_LONG) &&
-            abs(leftDistance) >= (LONG_THRESHOLD_PERCENT * itemView.measuredWidth)
-        action = actions[if (leftIsLong) LEFT_LONG else LEFT] ?: return
-        icon = action.iconDrawable
+        val actionKeyForItemLong = ActionKey(location = LEFT_LONG, itemClassName = itemClass)
+        val actionKeyGlobalLong = ActionKey(location = LEFT_LONG, itemClassName = null)
+        val actionKeyForItemShort = ActionKey(location = LEFT, itemClassName = itemClass)
+        val actionKeyGlobalShort = ActionKey(location = LEFT, itemClassName = null)
+
+        leftIsLong =
+          (actions.containsKey(actionKeyForItemLong) || actions.containsKey(actionKeyGlobalLong)) &&
+              abs(leftDistance) >= (LONG_THRESHOLD_PERCENT * itemView.measuredWidth)
+        action = if (leftIsLong) {
+          actions[actionKeyForItemLong] ?: actions[actionKeyGlobalLong]
+        } else {
+          actions[actionKeyForItemShort] ?: actions[actionKeyGlobalShort]
+        }
+        icon = action?.iconDrawable ?: return
         background = action.backgroundDrawable ?: ColorDrawable(DKGRAY)
 
         if (icon != null) {

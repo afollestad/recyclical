@@ -479,6 +479,19 @@ list.setup {
 }
 ```
 
+You can target specific item types with `withSwipeActionOn`, too:
+
+```kotlin
+withSwipeActionOn<MyItem>(LEFT, RIGHT) {
+  icon(R.drawable.ic_delete)
+  text(R.string.delete)
+  color(R.color.md_red)
+  callback { index, item -> true }
+}
+```
+
+With `withSwipeActionOn`, `item` in the callback is a `MyItem` instead of `Any` as well.
+
 ## Long Swipes
 
 <img src="https://raw.githubusercontent.com/afollestad/recyclical/master/art/swipelong.gif" width="200" />

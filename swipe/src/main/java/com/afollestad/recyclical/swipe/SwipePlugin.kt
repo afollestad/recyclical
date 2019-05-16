@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package com.afollestad.recyclical.swipe
 
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,12 +26,19 @@ import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT_LONG
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
+import kotlin.reflect.KClass
 
 internal const val PLUGIN_NAME = "swipe_plugin"
 
 /** @author Aidan Follestad (@afollestad) */
+internal data class ActionKey(
+  val location: SwipeLocation,
+  val itemClassName: String?
+)
+
+/** @author Aidan Follestad (@afollestad) */
 internal data class SwipePluginData(
-  val actions: MutableMap<SwipeLocation, SwipeAction> = mutableMapOf()
+  val actions: MutableMap<ActionKey, SwipeAction<*>> = mutableMapOf()
 ) : PluginData() {
 
   override fun attach(
@@ -42,10 +51,10 @@ internal data class SwipePluginData(
 
   fun getSwipeDirections(): Int {
     var result = 0
-    if (actions.any { it.key == RIGHT || it.key == RIGHT_LONG }) {
+    if (actions.any { it.key.location == RIGHT || it.key.location == RIGHT_LONG }) {
       result = result or ItemTouchHelper.RIGHT
     }
-    if (actions.any { it.key == LEFT || it.key == LEFT_LONG }) {
+    if (actions.any { it.key.location == LEFT || it.key.location == LEFT_LONG }) {
       result = result or ItemTouchHelper.LEFT
     }
     return result
@@ -54,15 +63,35 @@ internal data class SwipePluginData(
 
 /**
  * Configures a swipe action for the view.
+ *
+ * @param forItemClassName If specified, this action will not effect items of other types.
  */
 fun RecyclicalSetup.withSwipeAction(
   vararg locations: SwipeLocation,
-  block: SwipeAction.() -> Unit
+  forItemClassName: KClass<*>? = null,
+  block: SwipeAction<Any>.() -> Unit
 ): RecyclicalSetup {
   val pluginData = getPluginData<SwipePluginData>(PLUGIN_NAME) ?: SwipePluginData()
   for (location in locations) {
-    pluginData.actions[location] = SwipeAction(recyclerView.context).apply(block)
+    val key = ActionKey(location = location, itemClassName = forItemClassName?.java?.name)
+    pluginData.actions[key] = SwipeAction<Any>(recyclerView.context).apply(block)
   }
   setPluginData(PLUGIN_NAME, pluginData)
   return this
+}
+
+/**
+ * Configures a swipe action for the view, for a specific item type. This action will not
+ * effect items of other types.
+ */
+inline fun <reified IT : Any> RecyclicalSetup.withSwipeActionOn(
+  vararg locations: SwipeLocation,
+  noinline block: SwipeAction<IT>.() -> Unit
+): RecyclicalSetup {
+  @Suppress("UNCHECKED_CAST")
+  return withSwipeAction(
+      locations = *locations,
+      forItemClassName = IT::class,
+      block = block as SwipeAction<Any>.() -> Unit
+  )
 }

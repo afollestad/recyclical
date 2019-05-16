@@ -23,10 +23,15 @@ import androidx.fragment.app.Fragment
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.emptyDataSource
 import com.afollestad.recyclical.setup
+import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
+import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
+import com.afollestad.recyclical.swipe.withSwipeActionOn
 import com.afollestad.recyclical.withItem
 import com.afollestad.recyclicalsample.R
 import com.afollestad.recyclicalsample.data.MyListItem
+import com.afollestad.recyclicalsample.data.MyListItem2
 import com.afollestad.recyclicalsample.data.MyViewHolder
+import com.afollestad.recyclicalsample.data.MyViewHolder2
 import com.afollestad.recyclicalsample.util.toast
 import kotlinx.android.synthetic.main.main_fragment.add_item as addItem
 import kotlinx.android.synthetic.main.main_fragment.fragment_emptyView as emptyView
@@ -50,7 +55,13 @@ class MainFragment : Fragment() {
     addItem.setOnClickListener {
       val newIndex = dataSource.size() + 1
       val title = "Item #$newIndex"
-      dataSource.add(MyListItem(newIndex, title, "Hello world #$newIndex"))
+      dataSource.add(
+          if (newIndex % 2 == 0) {
+            MyListItem(newIndex, title, "Hello world #$newIndex")
+          } else {
+            MyListItem2(newIndex, title)
+          }
+      )
     }
 
     dataSource = emptyDataSource()
@@ -59,17 +70,45 @@ class MainFragment : Fragment() {
       withEmptyView(emptyView)
       withDataSource(dataSource)
 
+      withSwipeActionOn<MyListItem2>(RIGHT) {
+        icon(R.drawable.ic_action_delete)
+        text(R.string.delete)
+        color(R.color.md_red)
+        callback { _, item ->
+          toast("Delete: $item")
+          true
+        }
+      }
+      withSwipeActionOn<MyListItem2>(RIGHT_LONG) {
+        icon(R.drawable.ic_action_archive)
+        text(R.string.archive)
+        color(R.color.md_green)
+        callback { _, item ->
+          toast("Archive: $item")
+          true
+        }
+      }
+
       withItem<MyListItem>(R.layout.my_list_item) {
         hasStableIds { it.id }
-
         onBind(::MyViewHolder) { _, item ->
           icon.setImageResource(R.drawable.person)
           title.text = item.title
           body.text = item.body
         }
-
         onClick { index ->
           toast("Clicked $index: ${item.title} / ${item.body}")
+        }
+      }
+
+      withItem<MyListItem2>(R.layout.my_list_item_2) {
+        hasStableIds { it.id }
+        onBind(::MyViewHolder2) { _, item ->
+          icon.setImageResource(R.drawable.person)
+          title.text = item.title
+        }
+        onClick { index ->
+          toast("Clicked $index: ${item.title}")
         }
       }
     }

@@ -20,3 +20,8 @@ data class MyListItem(
   val title: String,
   val body: String
 )
+
+data class MyListItem2(
+  val id: Int,
+  val title: String
+)

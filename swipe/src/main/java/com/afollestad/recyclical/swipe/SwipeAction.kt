@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package com.afollestad.recyclical.swipe
 
 import android.content.Context
@@ -35,7 +37,7 @@ import com.afollestad.recyclical.RecyclicalMarker
  * Return true to remove the item from the list, false to push it back
  * into place.
  */
-typealias SwipedCallback = (index: Int, item: Any) -> Boolean
+typealias SwipedCallback<IT> = (index: Int, item: IT) -> Boolean
 
 /**
  * Represents what position the swipe callback represents. Left means a right-to-left swipe,
@@ -50,10 +52,10 @@ enum class SwipeLocation {
 
 /** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
-class SwipeAction(private val context: Context) {
+class SwipeAction<IT : Any>(private val context: Context) {
   internal var iconDrawable: Drawable? = null
   internal var backgroundDrawable: ColorDrawable? = null
-  internal var callback: SwipedCallback? = null
+  private var callback: SwipedCallback<IT>? = null
 
   internal var text: String? = null
   internal var textPaint: TextPaint? = null
@@ -63,7 +65,7 @@ class SwipeAction(private val context: Context) {
   fun icon(
     @DrawableRes res: Int? = null,
     literal: Drawable? = null
-  ): SwipeAction {
+  ): SwipeAction<IT> {
     require(res != null || literal != null) {
       "Must provide a res or literal value to icon()"
     }
@@ -75,7 +77,7 @@ class SwipeAction(private val context: Context) {
   fun color(
     @ColorRes res: Int? = null,
     @ColorInt literal: Int? = null
-  ): SwipeAction {
+  ): SwipeAction<IT> {
     require(res != null || literal != null) {
       "Must provide a res or literal value to color()"
     }
@@ -92,7 +94,7 @@ class SwipeAction(private val context: Context) {
     @DimenRes size: Int = R.dimen.swipe_default_text_size,
     typeface: Typeface? = null,
     @FontRes typefaceRes: Int? = null
-  ) {
+  ): SwipeAction<IT> {
     require(res != null || literal != null) {
       "Must provide a res or literal value to text()"
     }
@@ -109,6 +111,8 @@ class SwipeAction(private val context: Context) {
       this.typeface = actualTypeface
       this.textSize = context.resources.getDimension(size)
     }
+
+    return this
   }
 
   /**
@@ -116,7 +120,7 @@ class SwipeAction(private val context: Context) {
    * to remove the swiped item from the data source automatically. Returning false will animate
    * the item back in place.
    */
-  fun callback(block: SwipedCallback): SwipeAction {
+  fun callback(block: SwipedCallback<IT>): SwipeAction<IT> {
     this.callback = block
     return this
   }
@@ -124,6 +128,14 @@ class SwipeAction(private val context: Context) {
   internal fun getTextWidth(): Int = getTextBounds().width()
 
   internal fun getTextHeight(): Int = getTextBounds().height()
+
+  internal fun sendToCallback(
+    index: Int,
+    item: Any
+  ): Boolean {
+    @Suppress("UNCHECKED_CAST")
+    return callback?.invoke(index, item as IT) ?: false
+  }
 
   private fun getTextBounds(): Rect {
     require(text != null) { "text is null" }

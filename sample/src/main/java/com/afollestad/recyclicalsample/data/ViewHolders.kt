@@ -26,3 +26,8 @@ class MyViewHolder(itemView: View) : ViewHolder(itemView) {
   val title: TextView = itemView.findViewById(id.title)
   val body: TextView = itemView.findViewById(id.body)
 }
+
+class MyViewHolder2(itemView: View) : ViewHolder(itemView) {
+  val icon: ImageView = itemView.findViewById(id.icon)
+  val title: TextView = itemView.findViewById(id.title)
+}
