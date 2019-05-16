@@ -16,6 +16,7 @@
 package com.afollestad.recyclical
 
 import android.content.Context
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +54,20 @@ class ItemDefinitionTest {
   private val globalClickListener = TestClickListener<Any>()
   private val globalLongClickListener = TestClickListener<Any>()
 
+  private val viewHolderCreator: (View) -> (TestViewHolder) = { view ->
+    val newViewHolder = mock<TestViewHolder> {
+      on { title } doReturn TextView(ApplicationProvider.getApplicationContext())
+      on { adapterPosition } doReturn TEST_ITEM_INDEX
+    }
+    newViewHolder.apply {
+      val itemViewField = ViewHolder::class.java.getDeclaredField("itemView")
+          .apply {
+            isAccessible = true
+          }
+      itemViewField.set(this, view)
+    }
+  }
+
   private lateinit var titleView: TextView
   private lateinit var rootView: FrameLayout
 
@@ -61,9 +76,9 @@ class ItemDefinitionTest {
     withClickListener(globalClickListener.capture())
     withLongClickListener(globalLongClickListener.capture())
   }
-  private val definition = RealItemDefinition(
+  private val definition = RealItemDefinition<TestItem>(
       setup = setup,
-      itemClass = TestItem::class.java
+      itemClassName = TestItem::class.java.name
   )
 
   @Before fun create() {
@@ -107,8 +122,8 @@ class ItemDefinitionTest {
 
     wasBinderCalled.assertTrue()
 
-    rootView.getTag(R.id.rec_view_item_adapter_position)
-        .assertEqualTo(TEST_ITEM_INDEX)
+    rootView.getTag(R.id.rec_view_item_view_holder)
+        .assertIsA<ViewHolder>()
     rootView.getTag(R.id.rec_view_item_selectable_data_source)
         .assertNull()
   }
@@ -117,9 +132,8 @@ class ItemDefinitionTest {
     val listener = TestClickListener<TestItem>()
     definition.onClick(listener.capture())
 
-    val creator = ::TestViewHolder
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
-    definition.onBind(creator, binder)
+    definition.onBind(viewHolderCreator, binder)
     val viewHolder = definition.createViewHolder(rootView)
     definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)
 
@@ -132,9 +146,8 @@ class ItemDefinitionTest {
     val listener = TestClickListener<TestItem>()
     definition.onLongClick(listener.capture())
 
-    val creator = ::TestViewHolder
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
-    definition.onBind(creator, binder)
+    definition.onBind(viewHolderCreator, binder)
     val viewHolder = definition.createViewHolder(rootView)
     definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)
 
@@ -147,9 +160,8 @@ class ItemDefinitionTest {
     val listener = TestChildClickListener<TestItem, TextView>()
     definition.onChildViewClick(TestViewHolder::title, listener.capture())
 
-    val creator = ::TestViewHolder
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
-    definition.onBind(creator, binder)
+    definition.onBind(viewHolderCreator, binder)
 
     val viewHolder = definition.createViewHolder(rootView) as TestViewHolder
     definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)

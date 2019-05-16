@@ -1,9 +1,6 @@
-0.7.2
+0.8.0
 
-1. `DataSource`'s add method can now take multiple items as vararg parameters.
-2. Added an `addAll` method to `DataSource` for appending collections as well.
-
-### 0.7.1
-1. Kotlin 1.3.0
-2. A new `recyclical-swipe` module! Add it your app to gain access to an extension to the core library which enables swipe actions, like swipe to delete.
-3. `DataSource` now accepts a generic type, to make it easier if your list only contains one type of item. (sorry if this breaks your app temporarily, you just need to use `DataSource<Any>` if you don't care about any specific type). 
+1. Fix a crash caused by stored indices getting out of date as items are removed from the list.
+2. `withItem` can take a custom class name string to support generated model classes, see #11.
+3. Added generic `withSwipeActionOn<>` method to the swipe plugin to target specific item types, see #12.
+4. Internal cleanup and dependency upgrades. 

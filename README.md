@@ -49,7 +49,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad:recyclical:0.7.2'
+  implementation 'com.afollestad:recyclical:0.8.0'
 }
 ```
 

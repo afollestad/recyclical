@@ -54,8 +54,8 @@ class SwipePluginTest {
 
       getPluginData<SwipePluginData>(PLUGIN_NAME)!!.run {
         actions.assertSize(2)
-        actions.assertContainsKey(LEFT)
-        actions.assertContainsKey(RIGHT)
+        actions.assertContainsKey(ActionKey(LEFT, null))
+        actions.assertContainsKey(ActionKey(RIGHT, null))
       }
     }
 
@@ -73,7 +73,7 @@ class SwipePluginTest {
 
       getPluginData<SwipePluginData>(PLUGIN_NAME)!!.run {
         actions.assertSize(1)
-        actions.assertContainsKey(LEFT)
+        actions.assertContainsKey(ActionKey(LEFT, null))
         getSwipeDirections().assertEqualTo(ItemTouchHelper.LEFT)
       }
     }
@@ -89,7 +89,7 @@ class SwipePluginTest {
 
       getPluginData<SwipePluginData>(PLUGIN_NAME)!!.run {
         actions.assertSize(1)
-        actions.assertContainsKey(RIGHT)
+        actions.assertContainsKey(ActionKey(RIGHT, null))
         getSwipeDirections().assertEqualTo(ItemTouchHelper.RIGHT)
       }
     }
@@ -105,8 +105,8 @@ class SwipePluginTest {
 
       getPluginData<SwipePluginData>(PLUGIN_NAME)!!.run {
         actions.assertSize(2)
-        actions.assertContainsKey(LEFT)
-        actions.assertContainsKey(RIGHT)
+        actions.assertContainsKey(ActionKey(LEFT, null))
+        actions.assertContainsKey(ActionKey(RIGHT, null))
         getSwipeDirections()
             .assertEqualTo(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
       }
