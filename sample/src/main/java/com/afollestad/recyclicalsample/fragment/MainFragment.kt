@@ -89,7 +89,7 @@ class MainFragment : Fragment() {
         }
       }
 
-      withItem<MyListItem>(R.layout.my_list_item) {
+      withItem<MyListItem, MyViewHolder>(R.layout.my_list_item) {
         hasStableIds { it.id }
         onBind(::MyViewHolder) { _, item ->
           icon.setImageResource(R.drawable.person)
@@ -99,9 +99,12 @@ class MainFragment : Fragment() {
         onClick { index ->
           toast("Clicked $index: ${item.title} / ${item.body}")
         }
+        onRecycled { viewHolder ->
+          toast("Recycled holder for holder: $viewHolder")
+        }
       }
 
-      withItem<MyListItem2>(R.layout.my_list_item_2) {
+      withItem<MyListItem2, MyViewHolder2>(R.layout.my_list_item_2) {
         hasStableIds { it.id }
         onBind(::MyViewHolder2) { _, item ->
           icon.setImageResource(R.drawable.person)

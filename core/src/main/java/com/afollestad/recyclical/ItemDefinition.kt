@@ -29,6 +29,7 @@ typealias ChildViewClickListener<IT, VT> = SelectionStateProvider<IT>.(index: In
 typealias ViewHolderCreator<VH> = (itemView: View) -> VH
 typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
 typealias IdGetter<IT> = (item: IT) -> Number
+typealias RecycledCallback<VH> = (viewHolder: VH) -> Unit
 
 /**
  * Represents the association of a model class to a layout and view model. Also responsible for
@@ -37,30 +38,35 @@ typealias IdGetter<IT> = (item: IT) -> Number
  * @author Aidan Follestad (@afollestad)
  */
 @RecyclicalMarker
-interface ItemDefinition<IT : Any> {
+interface ItemDefinition<out IT : Any, VH : ViewHolder> {
   /**
    * Sets a binder that binds this item to a view holder before being displayed in the
    * RecyclerView.
    */
-  fun <VH : ViewHolder> onBind(
+  fun onBind(
     viewHolderCreator: ViewHolderCreator<VH>,
     block: ViewHolderBinder<VH, IT>
-  ): ItemDefinition<IT>
+  ): ItemDefinition<IT, VH>
 
   /**
    * Sets a callback that's invoked when items of this type are clicked.
    */
-  fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT>
+  fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH>
 
   /**
    * Sets a callback that's invoked when items of this type are long clicked.
    */
-  fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT>
+  fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH>
 
   /**
    * Sets a callback that gets a unique ID for each item of this type.
    */
-  fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT>
+  fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT, VH>
+
+  /**
+   * Sets a callback that's invoked when a view holder is recycled by the underlying adapter.
+   */
+  fun onRecycled(block: RecycledCallback<VH>)
 }
 
 /**
@@ -72,12 +78,12 @@ interface ItemDefinition<IT : Any> {
  *
  * @author Aidan Follestad (@afollestad)
  */
-inline fun <reified IT : Any> RecyclicalSetup.withItem(
+inline fun <reified IT : Any, VH : ViewHolder> RecyclicalSetup.withItem(
   @LayoutRes layoutRes: Int,
   itemClassName: String = IT::class.java.name,
-  noinline block: ItemDefinition<IT>.() -> Unit
-): ItemDefinition<IT> {
-  return RealItemDefinition<IT>(this, itemClassName)
+  noinline block: ItemDefinition<IT, VH>.() -> Unit
+): ItemDefinition<IT, VH> {
+  return RealItemDefinition<IT, VH>(this, itemClassName)
       .apply(block)
       .also { definition ->
         registerItemDefinition(

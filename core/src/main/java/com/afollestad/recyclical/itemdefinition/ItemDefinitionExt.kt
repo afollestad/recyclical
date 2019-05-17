@@ -23,7 +23,6 @@ import androidx.annotation.RestrictTo.Scope.LIBRARY
 import com.afollestad.recyclical.ChildViewClickListener
 import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.R
-import com.afollestad.recyclical.R.id
 import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclical.ViewHolderBinder
 import com.afollestad.recyclical.ViewHolderCreator
@@ -35,7 +34,7 @@ import com.afollestad.recyclical.viewholder.NoSelectionStateProvider
 import com.afollestad.recyclical.viewholder.RealSelectionStateProvider
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
-internal fun ItemDefinition<*>.createViewHolder(itemView: View): ViewHolder {
+internal fun ItemDefinition<*, *>.createViewHolder(itemView: View): ViewHolder {
   val realDefinition = realDefinition()
   val setup = realDefinition.setup
 
@@ -58,7 +57,7 @@ internal fun ItemDefinition<*>.createViewHolder(itemView: View): ViewHolder {
       }
 }
 
-private fun ItemDefinition<*>.setChildClickListeners(viewHolder: ViewHolder) {
+private fun ItemDefinition<*, *>.setChildClickListeners(viewHolder: ViewHolder) {
   val realDefinition = realDefinition()
   if (realDefinition.childClickDataList.isEmpty()) {
     return
@@ -73,7 +72,8 @@ private fun ItemDefinition<*>.setChildClickListeners(viewHolder: ViewHolder) {
     val childView = viewGetter(viewHolder)
 
     childView.setOnClickListener {
-      val index = viewHolder.itemView.viewHolder().adapterPosition
+      val index = viewHolder.itemView.viewHolder()
+          .adapterPosition
       getSelectionStateProvider(index).use {
         callback(it, index, childView)
       }
@@ -81,7 +81,7 @@ private fun ItemDefinition<*>.setChildClickListeners(viewHolder: ViewHolder) {
   }
 }
 
-internal fun ItemDefinition<*>.bindViewHolder(
+internal fun ItemDefinition<*, *>.bindViewHolder(
   viewHolder: ViewHolder,
   item: Any,
   position: Int
@@ -96,10 +96,15 @@ internal fun ItemDefinition<*>.bindViewHolder(
   viewHolderBinder?.invoke(viewHolder, position, item)
 
   // Make sure we cleanup this reference, the data source shouldn't be held onto in views
-  viewHolder.itemView.setTag(id.rec_view_item_selectable_data_source, null)
+  viewHolder.itemView.setTag(R.id.rec_view_item_selectable_data_source, null)
 }
 
-internal fun <IT : Any> ItemDefinition<IT>.getSelectionStateProvider(
+internal fun ItemDefinition<*, *>.recycleViewHolder(viewHolder: ViewHolder) {
+  val realDefinition = realDefinition()
+  realDefinition.onRecycled?.invoke(viewHolder)
+}
+
+internal fun <IT : Any, VH : ViewHolder> ItemDefinition<IT, VH>.getSelectionStateProvider(
   position: Int
 ): SelectionStateProvider<IT> {
   val selectableSource = getDataSource<SelectableDataSource<*>>()
@@ -117,8 +122,8 @@ internal fun View.viewHolder(): ViewHolder {
 }
 
 @RestrictTo(LIBRARY)
-fun ItemDefinition<*>.realDefinition(): RealItemDefinition<*> {
-  return this as? RealItemDefinition<*> ?: blowUp("$this is not a RealItemDefinition")
+fun ItemDefinition<*, *>.realDefinition(): RealItemDefinition<*, *> {
+  return this as? RealItemDefinition<*, *> ?: blowUp("$this is not a RealItemDefinition")
 }
 
 /**
@@ -127,10 +132,10 @@ fun ItemDefinition<*>.realDefinition(): RealItemDefinition<*> {
  * @param view A lambda that provides the view we are attaching to in each view holder.
  * @param block A lambda executed when the view is clicked.
  */
-inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT>.onChildViewClick(
+inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT, VH>.onChildViewClick(
   noinline view: VH.() -> VT,
   noinline block: ChildViewClickListener<IT, VT>
-): ItemDefinition<IT> {
+): ItemDefinition<IT, VH> {
   realDefinition().childClickDataList.add(
       RealItemDefinition.ChildClickData(
           viewHolderType = VH::class.java,
@@ -142,7 +147,7 @@ inline fun <IT : Any, reified VH : ViewHolder, VT : View> ItemDefinition<IT>.onC
 }
 
 /** Gets the current data source, auto casting to the type [T]. */
-inline fun <reified T : DataSource<*>> ItemDefinition<*>.getDataSource(): T? {
+inline fun <reified T : DataSource<*>> ItemDefinition<*, *>.getDataSource(): T? {
   return if (this is RealItemDefinition) {
     currentDataSource as? T
   } else {

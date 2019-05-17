@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
       // setup{} is an extension method on RecyclerView
       recyclerView.setup {
           withDataSource(dataSource)
-          withItem<Person>(R.layout.person_item_layout) {
+          withItem<Person, PersonViewHolder>(R.layout.person_item_layout) {
             onBind(::PersonViewHolder) { index, item ->
               // PersonViewHolder is `this` here
               name.text = item.name
@@ -158,7 +158,7 @@ class EmailViewHolder(itemView: View) : ViewHolder(itemView) {
 }
 
 recyclerView.setup {
-  withItem<EmailViewHolder>(R.layout.email_item_layout) {
+  withItem<EmailItem, EmailViewHolder>(R.layout.email_item_layout) {
     ...
     onChildViewClick(EmailViewHolder::icon) { index, view ->
       // `this` includes `item` along with selection-related methods discussed below in SelectableDataSource
@@ -184,20 +184,20 @@ val dataSource = dataSourceOf(
 
 recyclerView.setup {
   withDataSource(dataSource)
-  withItem<Person>(R.layout.person_item_layout) {
+  withItem<Person, PersonViewHolder>(R.layout.person_item_layout) {
      onBind(::PersonViewHolder) { index, item ->
         name.text = item.name
         age.text = "${item.age}"
      }
   }
-  withItem<Motorcycle>(R.layout.motorcycle_item_layout) {
+  withItem<Motorcycle, MotorcycleViewHolder>(R.layout.motorcycle_item_layout) {
      onBind(::MotorcycleViewHolder) { index, item ->
         year.text = "${item.year}"
         make.text = item.make
         model.text = item.model
      }
   }
-  withItem<Car>(R.layout.car_item_layout) {
+  withItem<Car, CarViewHolder>(R.layout.car_item_layout) {
      onBind(::CarViewHolder) { index, item ->
         year.text = "${item.year}"
         name.text = item.name
@@ -387,7 +387,7 @@ of functions.
 recyclerView.setup {
     withEmptyView(emptyView)
     withDataSource(dataSource)
-    withItem<MyListItem>(R.layout.my_list_item) {
+    withItem<MyListItem, MyViewHolder>(R.layout.my_list_item) {
       onBind(::MyViewHolder) { index, item ->
           // Selection-related methods that can be used here:
           isSelected()
@@ -430,7 +430,7 @@ data class AnItemWithAnId(
 
 recyclerView.setup {
   withDataSource(dataSource)
-  withItem<AnItemWithAnId>(R.layout.my_item_layout) {
+  withItem<AnItemWithAnId, MyViewHolder>(R.layout.my_item_layout) {
      onBind(::MyViewHolder) { index, item -> ... }
      // The key is this, which says the `id` field of your item represents a unique ID.
      hasStableIds { it.id }

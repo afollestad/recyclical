@@ -48,10 +48,10 @@ interface RecyclicalHandle {
   fun getViewTypeForClass(name: String): Int
 
   /* Retrieves an [ItemDefinition] for a item class. */
-  fun getDefinitionForClass(name: String): ItemDefinition<*>
+  fun getDefinitionForClass(name: String): ItemDefinition<*, *>
 
   /** Retrieves an [ItemDefinition] for a view type. */
-  fun getDefinitionForType(type: Int): ItemDefinition<*>
+  fun getDefinitionForType(type: Int): ItemDefinition<*, *>
 }
 
 /** Gets the current data source, auto casting it to [T]. */

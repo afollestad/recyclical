@@ -27,7 +27,7 @@ class RealRecyclicalHandle internal constructor(
   internal val emptyView: View?,
   private val adapter: DefinitionAdapter,
   private val itemClassToType: MutableMap<String, Int>,
-  private val bindingsToTypes: MutableMap<Int, ItemDefinition<*>>,
+  private val bindingsToTypes: MutableMap<Int, ItemDefinition<*, *>>,
   val dataSource: DataSource<*>
 ) : RecyclicalHandle {
 
@@ -46,12 +46,12 @@ class RealRecyclicalHandle internal constructor(
     return itemClassToType[name] ?: blowUp("Didn't find type for class $name")
   }
 
-  override fun getDefinitionForClass(name: String): ItemDefinition<*> {
+  override fun getDefinitionForClass(name: String): ItemDefinition<*, *> {
     val viewType = getViewTypeForClass(name)
     return getDefinitionForType(viewType)
   }
 
-  override fun getDefinitionForType(type: Int): ItemDefinition<*> {
+  override fun getDefinitionForType(type: Int): ItemDefinition<*, *> {
     return bindingsToTypes[type] ?: blowUp("Unable to view item definition for viewType $type")
   }
 

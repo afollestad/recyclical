@@ -23,6 +23,7 @@ import com.afollestad.recyclical.ChildViewClickListener
 import com.afollestad.recyclical.IdGetter
 import com.afollestad.recyclical.ItemClickListener
 import com.afollestad.recyclical.ItemDefinition
+import com.afollestad.recyclical.RecycledCallback
 import com.afollestad.recyclical.RecyclicalMarker
 import com.afollestad.recyclical.RecyclicalSetup
 import com.afollestad.recyclical.ViewHolder
@@ -33,10 +34,11 @@ import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 /** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
-class RealItemDefinition<IT : Any>(
+class RealItemDefinition<out IT : Any, VH : ViewHolder>(
   internal val setup: RecyclicalSetup,
   val itemClassName: String
-) : ItemDefinition<IT> {
+) : ItemDefinition<IT, VH> {
+
   /** The current data source set in setup. */
   val currentDataSource: DataSource<*>?
     get() = setup.currentDataSource
@@ -49,31 +51,36 @@ class RealItemDefinition<IT : Any>(
   internal var creator: ViewHolderCreator<*>? = null
   internal var binder: ViewHolderBinder<*, *>? = null
   internal var idGetter: IdGetter<Any>? = null
+  internal var onRecycled: RecycledCallback<Any>? = null
 
   var childClickDataList = mutableListOf<ChildClickData<*, *, *>>()
 
-  override fun <VH : ViewHolder> onBind(
+  override fun onBind(
     viewHolderCreator: ViewHolderCreator<VH>,
     block: ViewHolderBinder<VH, IT>
-  ): ItemDefinition<IT> {
+  ): ItemDefinition<IT, VH> {
     this.creator = viewHolderCreator
     this.binder = block
     return this
   }
 
-  override fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT> {
+  override fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH> {
     this.itemOnClick = (block as SelectionStateProvider<Any>.(Int) -> Unit)
     return this
   }
 
-  override fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT> {
+  override fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH> {
     this.itemOnLongClick = (block as SelectionStateProvider<Any>.(Int) -> Unit)
     return this
   }
 
-  override fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT> {
+  override fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT, VH> {
     this.idGetter = idGetter as IdGetter<Any>
     return this
+  }
+
+  override fun onRecycled(block: RecycledCallback<VH>) {
+    this.onRecycled = block as RecycledCallback<Any>
   }
 
   internal val viewClickListener = View.OnClickListener { itemView ->

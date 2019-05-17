@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
       withEmptyView(emptyView)
       withDataSource(dataSource)
 
-      withItem<MyListItem>(R.layout.my_list_item) {
+      withItem<MyListItem, MyViewHolder>(R.layout.my_list_item) {
         hasStableIds { it.id }
         onBind(::MyViewHolder) { _, item -> bindMyListItem(item) }
 

@@ -28,6 +28,7 @@ import com.afollestad.recyclical.handle.getDataSource
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 import com.afollestad.recyclical.itemdefinition.bindViewHolder
 import com.afollestad.recyclical.itemdefinition.createViewHolder
+import com.afollestad.recyclical.itemdefinition.recycleViewHolder
 
 /** @author Aidan Follestad (@afollestad) */
 internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
@@ -81,12 +82,23 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
         .bindViewHolder(holder, item, position)
   }
 
+  override fun onViewRecycled(holder: ViewHolder) {
+    val index = holder.adapterPosition
+    if (index > -1) {
+      dataSource?.get(index)
+          ?.getItemType()
+          ?.getItemDefinition()
+          ?.recycleViewHolder(holder)
+    }
+    super.onViewRecycled(holder)
+  }
+
   private fun Any.getItemType(): Int {
     val itemClassName = this::class.java.name
     return handle?.getViewTypeForClass(itemClassName) ?: blowUp("Not attached!")
   }
 
-  private fun Int.getItemDefinition(): ItemDefinition<*> {
+  private fun Int.getItemDefinition(): ItemDefinition<*, *> {
     return handle?.getDefinitionForType(this) ?: blowUp("Not attached!")
   }
 }

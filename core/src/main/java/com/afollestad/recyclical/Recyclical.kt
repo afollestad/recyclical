@@ -44,7 +44,7 @@ class RecyclicalSetup internal constructor(
   val recyclerView: RecyclerView
 ) {
   private var itemClassToType = mutableMapOf<String, Int>()
-  private var bindingsToTypes = mutableMapOf<Int, ItemDefinition<*>>()
+  private var bindingsToTypes = mutableMapOf<Int, ItemDefinition<*, *>>()
   private var emptyView: View? = null
 
   internal var pluginData: MutableMap<String, PluginData>? = null
@@ -121,7 +121,7 @@ class RecyclicalSetup internal constructor(
   @RestrictTo(LIBRARY) fun registerItemDefinition(
     className: String,
     viewType: Int,
-    definition: ItemDefinition<*>
+    definition: ItemDefinition<*, *>
   ) {
     itemClassToType[className] = viewType
     bindingsToTypes[viewType] = definition
