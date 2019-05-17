@@ -47,7 +47,7 @@ class SwipePluginTest {
   @Test fun `attaches to recycler view`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(LEFT, RIGHT) {}
@@ -66,7 +66,7 @@ class SwipePluginTest {
   @Test fun `left swipe direction`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(LEFT) {}
@@ -82,7 +82,7 @@ class SwipePluginTest {
   @Test fun `right swipe direction`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(RIGHT) {}
@@ -98,7 +98,7 @@ class SwipePluginTest {
   @Test fun `left and right swipe directions`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(LEFT, RIGHT) {}

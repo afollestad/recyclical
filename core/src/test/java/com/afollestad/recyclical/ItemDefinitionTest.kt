@@ -76,7 +76,7 @@ class ItemDefinitionTest {
     withClickListener(globalClickListener.capture())
     withLongClickListener(globalLongClickListener.capture())
   }
-  private val definition = RealItemDefinition<TestItem>(
+  private val definition = RealItemDefinition<TestItem, TestViewHolder>(
       setup = setup,
       itemClassName = TestItem::class.java.name
   )

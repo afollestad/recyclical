@@ -47,7 +47,7 @@ class RecyclicalHandleTest {
   private val itemClassToType = mutableMapOf(
       REAL_CLASS_NAME to REAL_VIEW_TYPE
   )
-  private val itemDefinition = mock<ItemDefinition<*>>()
+  private val itemDefinition = mock<ItemDefinition<*, *>>()
   private val bindingsToType = mutableMapOf(
       REAL_VIEW_TYPE to itemDefinition
   )

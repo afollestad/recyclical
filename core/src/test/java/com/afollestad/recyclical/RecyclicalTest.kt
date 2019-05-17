@@ -90,7 +90,7 @@ class RecyclicalTest {
         withLayoutManager(testLayoutManager)
         verify(recyclerView).layoutManager = same(testLayoutManager)
 
-        withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+        withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
           onBind(::TestViewHolder, binder)
           onClick(testItemClickListener)
           onLongClick(testItemLongClickListener)
@@ -100,7 +100,7 @@ class RecyclicalTest {
   }
 
   @Test fun `setup succeeds with required information`() {
-    var itemDefinition: ItemDefinition<*>? = null
+    var itemDefinition: ItemDefinition<*, *>? = null
     val handle = recyclerView.setup {
       adapterCreator = { adapter }
       withEmptyView(emptyView)
@@ -108,7 +108,7 @@ class RecyclicalTest {
       withClickListener(testGlobalClickListener)
       withLongClickListener(testGlobalLongClickListener)
 
-      itemDefinition = withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+      itemDefinition = withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
         onBind(::TestViewHolder, binder)
         onClick(testItemClickListener)
         onLongClick(testItemLongClickListener)
@@ -143,7 +143,7 @@ class RecyclicalTest {
       adapterCreator = { adapter }
       withDataSource(dataSource)
 
-      withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+      withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
         hasStableIds { it.id }
         onBind(::TestViewHolder, binder)
       }
@@ -161,11 +161,11 @@ class RecyclicalTest {
         adapterCreator = { adapter }
         withDataSource(dataSource)
 
-        withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+        withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
           onBind(::TestViewHolder, binder)
         }
 
-        withItem<TestItem2>(INFLATE_ITEM_LAYOUT_RES_2) {
+        withItem<TestItem2, TestViewHolder2>(INFLATE_ITEM_LAYOUT_RES_2) {
           hasStableIds { it.id }
           onBind(::TestViewHolder2, binder2)
         }
@@ -181,7 +181,7 @@ class RecyclicalTest {
     recyclerView.setup {
       adapterCreator = { adapter }
       withDataSource(dataSource)
-      withItem<TestItem>(INFLATE_ITEM_LAYOUT_RES) {
+      withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
         onBind(::TestViewHolder, binder)
       }
 
