@@ -60,8 +60,8 @@ open class RealDataSource<IT : Any> internal constructor(
 
   override fun set(
     newItems: List<IT>,
-    areTheSame: LeftAndRightComparer?,
-    areContentsTheSame: LeftAndRightComparer?
+    areTheSame: LeftAndRightComparer<IT>?,
+    areContentsTheSame: LeftAndRightComparer<IT>?
   ) {
     if (this.items.isNotEmpty() && areTheSame != null && areContentsTheSame != null) {
       val oldItems = this.items

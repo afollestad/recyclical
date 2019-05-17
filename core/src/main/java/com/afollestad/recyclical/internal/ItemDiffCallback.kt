@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.DiffUtil
 import com.afollestad.recyclical.datasource.LeftAndRightComparer
 
 /** @author Aidan Follestad (@afollestad) */
-class ItemDiffCallback(
-  private val oldItems: List<Any>,
-  private val newItems: List<Any>,
-  private val areTheSame: LeftAndRightComparer,
-  private val areContentsTheSame: LeftAndRightComparer
+class ItemDiffCallback<IT : Any>(
+  private val oldItems: List<IT>,
+  private val newItems: List<IT>,
+  private val areTheSame: LeftAndRightComparer<IT>,
+  private val areContentsTheSame: LeftAndRightComparer<IT>
 ) : DiffUtil.Callback() {
 
   override fun areItemsTheSame(

@@ -1,4 +1,9 @@
-0.9.0
+0.9.1
+
+* `DataSource#set(...)`'s diffing comparators now use the type of items that the data source contains, rather than `Any` 
+(unless of course your data source contains `Any` type of item).
+
+### 0.9.0
 
 * `withItem` requires that you specify the `ViewHolder` type as a generic parameter.
 * Add `getSelectedItems(): List<IT>` method to `SelectableDataSource`.

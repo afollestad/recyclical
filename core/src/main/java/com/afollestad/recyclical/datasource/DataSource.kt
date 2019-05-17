@@ -22,7 +22,7 @@ import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.DiffUtil
 import com.afollestad.recyclical.handle.RecyclicalHandle
 
-typealias LeftAndRightComparer = (left: Any, right: Any) -> Boolean
+typealias LeftAndRightComparer<IT> = (left: IT, right: IT) -> Boolean
 
 /**
  * Provides a data set for a RecyclerView to bind and display.
@@ -69,8 +69,8 @@ interface DataSource<IT : Any> {
    */
   fun set(
     newItems: List<IT>,
-    areTheSame: LeftAndRightComparer? = null,
-    areContentsTheSame: LeftAndRightComparer? = null
+    areTheSame: LeftAndRightComparer<IT>? = null,
+    areContentsTheSame: LeftAndRightComparer<IT>? = null
   )
 
   /** Appends one or more items to the data source. */
