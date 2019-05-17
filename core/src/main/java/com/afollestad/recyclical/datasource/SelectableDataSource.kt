@@ -92,6 +92,9 @@ interface SelectableDataSource<IT : Any> : DataSource<IT> {
 
   /** Sets a callback that's invoked when the selection is changed. */
   fun onSelectionChange(block: (SelectableDataSource<IT>) -> Unit)
+
+  /** Gets a list of all selected items in the data source. */
+  fun getSelectedItems(): List<IT>
 }
 
 /**

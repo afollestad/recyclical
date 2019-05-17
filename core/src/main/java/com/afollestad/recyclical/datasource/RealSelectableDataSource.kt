@@ -119,6 +119,10 @@ open class RealSelectableDataSource<IT : Any>(
     super.clear()
   }
 
+  override fun getSelectedItems(): List<IT> {
+    return selectedIndices.map { index -> get(index) }
+  }
+
   private fun maybeNotifyCallback(block: () -> Unit): Boolean {
     val before = selectedIndices.size
     block()
