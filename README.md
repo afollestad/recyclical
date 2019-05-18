@@ -492,34 +492,6 @@ withSwipeActionOn<MyItem>(LEFT, RIGHT) {
 
 With `withSwipeActionOn`, `item` in the callback is a `MyItem` instead of `Any` as well.
 
-## Long Swipes
-
-<img src="https://raw.githubusercontent.com/afollestad/recyclical/master/art/swipelong.gif" width="200" />
-
-You can set long swipe actions. These actions require you to swipe an item further before releasing 
-to trigger. Take this block:
-
-```kotlin
-list.setup {
-  ...
-  withSwipeAction(LEFT) {
-    icon(R.drawable.ic_archive)
-    text(R.string.archive)
-    color(R.color.md_green)
-    callback { index, item -> true }
-  }
-  withSwipeAction(LEFT_LONG) {
-    icon(R.drawable.ic_delete)
-    text(R.string.delete)
-    color(R.color.md_red)
-    callback { index, item -> true }
-  }
-}
-```
-
-If you swipe just a little bit and release, the item is archived. If you swipe further, the item is 
-deleted. You can use `RIGHT_LONG` as well.
-
 ## Customization
 
 As you saw above, you can use icons, text, and background colors easily. There are more details 

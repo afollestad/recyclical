@@ -23,8 +23,8 @@ import androidx.fragment.app.Fragment
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.emptyDataSource
 import com.afollestad.recyclical.setup
+import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
-import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
 import com.afollestad.recyclical.swipe.withSwipeActionOn
 import com.afollestad.recyclical.withItem
 import com.afollestad.recyclicalsample.R
@@ -70,21 +70,12 @@ class MainFragment : Fragment() {
       withEmptyView(emptyView)
       withDataSource(dataSource)
 
-      withSwipeActionOn<MyListItem2>(RIGHT) {
+      withSwipeActionOn<MyListItem2>(LEFT, RIGHT) {
         icon(R.drawable.ic_action_delete)
         text(R.string.delete)
         color(R.color.md_red)
         callback { _, item ->
           toast("Delete: $item")
-          true
-        }
-      }
-      withSwipeActionOn<MyListItem2>(RIGHT_LONG) {
-        icon(R.drawable.ic_action_archive)
-        text(R.string.archive)
-        color(R.color.md_green)
-        callback { _, item ->
-          toast("Archive: $item")
           true
         }
       }

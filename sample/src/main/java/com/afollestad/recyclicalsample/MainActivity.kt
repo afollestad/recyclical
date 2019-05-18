@@ -25,9 +25,7 @@ import com.afollestad.recyclical.datasource.selectableDataSourceTypedOf
 import com.afollestad.recyclical.itemdefinition.onChildViewClick
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
-import com.afollestad.recyclical.swipe.SwipeLocation.LEFT_LONG
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
-import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
 import com.afollestad.recyclical.swipe.withSwipeAction
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 import com.afollestad.recyclical.viewholder.isSelected
@@ -74,15 +72,6 @@ class MainActivity : AppCompatActivity() {
 
     list.setup {
       withSwipeAction(LEFT) {
-        icon(R.drawable.ic_action_star)
-        text(R.string.star)
-        color(R.color.md_orange)
-        callback { _, item ->
-          toast("Star: $item")
-          false
-        }
-      }
-      withSwipeAction(LEFT_LONG) {
         icon(R.drawable.ic_action_delete)
         text(R.string.delete)
         color(R.color.md_red)
@@ -92,15 +81,6 @@ class MainActivity : AppCompatActivity() {
         }
       }
       withSwipeAction(RIGHT) {
-        icon(R.drawable.ic_action_unread)
-        text(R.string.unread)
-        color(R.color.md_blue)
-        callback { _, item ->
-          toast("Unread: $item")
-          false
-        }
-      }
-      withSwipeAction(RIGHT_LONG) {
         icon(R.drawable.ic_action_archive)
         text(R.string.archive)
         color(R.color.md_green)

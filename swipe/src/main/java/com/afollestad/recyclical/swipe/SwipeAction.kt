@@ -41,13 +41,11 @@ typealias SwipedCallback<IT> = (index: Int, item: IT) -> Boolean
 
 /**
  * Represents what position the swipe callback represents. Left means a right-to-left swipe,
- * right means left-to-right swipe. A long swipe means you swipe further vs a short swipe.
+ * right means left-to-right swipe.
  */
 enum class SwipeLocation {
   LEFT,
-  RIGHT,
-  LEFT_LONG,
-  RIGHT_LONG
+  RIGHT
 }
 
 /** @author Aidan Follestad (@afollestad) */

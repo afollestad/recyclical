@@ -23,9 +23,7 @@ import com.afollestad.recyclical.RecyclicalSetup
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.plugins.PluginData
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
-import com.afollestad.recyclical.swipe.SwipeLocation.LEFT_LONG
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
-import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT_LONG
 import kotlin.reflect.KClass
 
 internal const val PLUGIN_NAME = "swipe_plugin"
@@ -51,10 +49,10 @@ internal data class SwipePluginData(
 
   fun getSwipeDirections(): Int {
     var result = 0
-    if (actions.any { it.key.location == RIGHT || it.key.location == RIGHT_LONG }) {
+    if (actions.any { it.key.location == RIGHT }) {
       result = result or ItemTouchHelper.RIGHT
     }
-    if (actions.any { it.key.location == LEFT || it.key.location == LEFT_LONG }) {
+    if (actions.any { it.key.location == LEFT }) {
       result = result or ItemTouchHelper.LEFT
     }
     return result
