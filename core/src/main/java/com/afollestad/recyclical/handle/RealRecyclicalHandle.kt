@@ -15,6 +15,8 @@
  */
 package com.afollestad.recyclical.handle
 
+import android.os.Looper.getMainLooper
+import android.os.Looper.myLooper
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.afollestad.recyclical.ItemDefinition
@@ -32,12 +34,18 @@ class RealRecyclicalHandle internal constructor(
 ) : RecyclicalHandle {
 
   override fun showOrHideEmptyView(show: Boolean) {
+    check(myLooper() == getMainLooper()) {
+      "DataSource interaction must be done on the main (UI) thread."
+    }
     emptyView?.visibility = if (show) View.VISIBLE else View.GONE
   }
 
   override fun getAdapter(): Adapter<*> = adapter
 
   override fun invalidateList(block: Adapter<*>.() -> Unit) {
+    check(myLooper() == getMainLooper()) {
+      "DataSource interaction must be done on the main (UI) thread."
+    }
     getAdapter().block()
     showOrHideEmptyView(dataSource.isEmpty())
   }
