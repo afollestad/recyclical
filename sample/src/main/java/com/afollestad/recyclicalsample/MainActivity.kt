@@ -64,8 +64,9 @@ class MainActivity : AppCompatActivity() {
     toolbar.run {
       inflateMenu(R.menu.main)
       setOnMenuItemClickListener {
-        if (it.itemId == R.id.fragment) {
-          startActivity<FragmentSampleActivity>()
+        when (it.itemId) {
+          R.id.fragment -> startActivity<FragmentSampleActivity>()
+          R.id.reverse -> reverseListOrder()
         }
         true
       }
@@ -168,6 +169,17 @@ class MainActivity : AppCompatActivity() {
     } else {
       cab.destroy()
     }
+  }
+
+  private fun reverseListOrder() {
+    val reversedList = dataSource.toList()
+        .asReversed()
+    dataSource.set(
+        newItems = reversedList,
+        areTheSame = MyListItem.Companion::areTheSame,
+        areContentsTheSame = MyListItem.Companion::areContentsTheSame
+    )
+    list.scrollToPosition(0)
   }
 
   override fun onBackPressed() {

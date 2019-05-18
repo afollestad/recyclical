@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item
+      android:id="@+id/reverse"
+      android:icon="@drawable/ic_swap_vert"
+      android:title="@string/reverse_list_order"
+      app:showAsAction="ifRoom"/>
   <item
       android:id="@+id/fragment"
       android:title="@string/fragment"/>

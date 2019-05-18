@@ -19,7 +19,25 @@ data class MyListItem(
   val id: Int,
   val title: String,
   val body: String
-)
+) {
+  companion object {
+    @JvmStatic fun areTheSame(
+      left: MyListItem,
+      right: MyListItem
+    ): Boolean {
+      return left.id == right.id
+    }
+
+    @JvmStatic fun areContentsTheSame(
+      left: MyListItem,
+      right: MyListItem
+    ): Boolean {
+      return left.id == right.id &&
+          left.title == right.title &&
+          left.body == right.body
+    }
+  }
+}
 
 data class MyListItem2(
   val id: Int,

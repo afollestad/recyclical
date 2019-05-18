@@ -132,6 +132,9 @@ interface DataSource<IT : Any> {
 
   /** Used by other [DataSource] implementations to notify that the whole data set has changed state. */
   fun invalidateAll()
+
+  /** Copies the DataSource items to a List. Be careful, as this copies the whole list. */
+  fun toList(): List<IT>
 }
 
 /**

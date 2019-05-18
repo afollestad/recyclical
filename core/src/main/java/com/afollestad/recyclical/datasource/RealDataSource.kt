@@ -141,6 +141,8 @@ open class RealDataSource<IT : Any> internal constructor(
 
   override fun indexOf(item: IT): Int = items.indexOf(item)
 
+  override fun toList(): List<IT> = items.toList()
+
   override fun invalidateAt(index: Int) {
     handle?.invalidateList { notifyItemChanged(index) }
   }

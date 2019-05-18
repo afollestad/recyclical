@@ -10,5 +10,6 @@
   <string name="archive">Archive</string>
   <string name="unread">Unread</string>
   <string name="star">Star</string>
+  <string name="reverse_list_order">Reverse List Order</string>
 
 </resources>
