@@ -49,7 +49,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad:recyclical:1.0.0-RC1'
+  implementation 'com.afollestad:recyclical:1.0.0-RC2'
 }
 ```
 
@@ -455,7 +455,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad:recyclical-swipe:1.0.0-RC1'
+  implementation 'com.afollestad:recyclical-swipe:1.0.0-RC2'
 }
 ```
 
