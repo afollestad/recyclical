@@ -26,7 +26,7 @@ dependencies {
   implementation project(':core')
   implementation project(':swipe')
 
-  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
   implementation 'androidx.appcompat:appcompat:' + versions.androidx
   implementation 'androidx.recyclerview:recyclerview:' + versions.androidxRecyclerView
 
