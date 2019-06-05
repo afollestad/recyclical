@@ -16,6 +16,8 @@ android {
     targetSdkVersion versions.compileSdk
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
+
+    javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
   }
 
   lintOptions {
