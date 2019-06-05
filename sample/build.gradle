@@ -6,6 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
   compileSdkVersion versions.compileSdk
+  buildToolsVersion versions.buildTools
 
   compileOptions {
     sourceCompatibility 1.8
