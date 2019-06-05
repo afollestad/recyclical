@@ -20,7 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.datasource.dataSourceOf
 import com.afollestad.recyclical.datasource.emptyDataSource
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.main_fragment.fragment_emptyView as emptyV
 import kotlinx.android.synthetic.main.main_fragment.fragment_list as list
 
 class MainFragment : Fragment() {
-  private lateinit var dataSource: DataSource<Any>
+  private val dataSource = emptyDataSource()
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -63,8 +63,6 @@ class MainFragment : Fragment() {
           }
       )
     }
-
-    dataSource = emptyDataSource()
 
     list.setup {
       withEmptyView(emptyView)

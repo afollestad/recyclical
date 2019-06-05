@@ -142,7 +142,14 @@ interface DataSource<IT : Any> {
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun dataSourceOf(items: List<Any>): DataSource<Any> = dataSourceTypedOf(items)
+fun dataSourceOf(items: List<Any>): DataSource<Any> = RealDataSource(items.toMutableList())
+
+/**
+ * Constructs a [DataSource] with an initial set of items of any type.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
+fun dataSourceOf(vararg items: Any): DataSource<Any> = RealDataSource(items.toMutableList())
 
 /**
  * Constructs a [DataSource] with an initial list of items of type [IT].
@@ -151,13 +158,6 @@ fun dataSourceOf(items: List<Any>): DataSource<Any> = dataSourceTypedOf(items)
  */
 fun <IT : Any> dataSourceTypedOf(items: List<IT>): DataSource<IT> =
   RealDataSource(items.toMutableList())
-
-/**
- * Constructs a [DataSource] with an initial set of items of any type.
- *
- * @author Aidan Follestad (@afollestad)
- */
-fun dataSourceOf(vararg items: Any): DataSource<Any> = dataSourceTypedOf(items)
 
 /**
  * Constructs a [DataSource] with an initial set of items of type [IT].
@@ -172,7 +172,7 @@ fun <IT : Any> dataSourceTypedOf(vararg items: IT): DataSource<IT> =
  *
  * @author Aidan Follestad (@afollestad)
  */
-fun emptyDataSource(): DataSource<Any> = emptyDataSourceTyped()
+fun emptyDataSource(): DataSource<Any> = RealDataSource()
 
 /**
  * Constructs a data source for items of type [IT], that is empty by default.

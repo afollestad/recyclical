@@ -21,7 +21,6 @@ import com.afollestad.recyclical.R
 import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.SelectableDataSource
-import com.afollestad.recyclical.internal.blowUp
 
 /**
  * Must be called from within an onBind block. Returns true if the item is
@@ -67,8 +66,8 @@ private val ViewHolder.selectableDataSource: SelectableDataSource<*>
   get() {
     return when (val dataSource =
       itemView.getTag(R.id.rec_view_item_selectable_data_source) as? DataSource<*>) {
-      null -> blowUp("isSelected() can only be called from within an onBind block.")
-      !is SelectableDataSource -> blowUp("Current data source is not a SelectableDataSource.")
+      null -> error("isSelected() can only be called from within an onBind block.")
+      !is SelectableDataSource -> error("Current data source is not a SelectableDataSource.")
       else -> dataSource
     }
   }

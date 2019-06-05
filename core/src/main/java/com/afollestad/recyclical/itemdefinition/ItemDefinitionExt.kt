@@ -28,7 +28,6 @@ import com.afollestad.recyclical.ViewHolderBinder
 import com.afollestad.recyclical.ViewHolderCreator
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.SelectableDataSource
-import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.internal.makeBackgroundSelectable
 import com.afollestad.recyclical.viewholder.NoSelectionStateProvider
 import com.afollestad.recyclical.viewholder.RealSelectionStateProvider
@@ -48,7 +47,7 @@ internal fun ItemDefinition<*, *>.createViewHolder(itemView: View): ViewHolder {
   }
 
   val viewHolderCreator = realDefinition.creator as? ViewHolderCreator<ViewHolder>
-      ?: blowUp(
+      ?: error(
           "View holder creator not provided for item definition ${realDefinition.itemClassName}"
       )
   return viewHolderCreator.invoke(itemView)
@@ -116,14 +115,14 @@ internal fun <IT : Any, VH : ViewHolder> ItemDefinition<IT, VH>.getSelectionStat
 }
 
 internal fun View.viewHolder(): ViewHolder {
-  return getTag(R.id.rec_view_item_view_holder) as? ViewHolder ?: blowUp(
+  return getTag(R.id.rec_view_item_view_holder) as? ViewHolder ?: error(
       "Didn't find view holder in itemView tag."
   )
 }
 
 @RestrictTo(LIBRARY)
 fun ItemDefinition<*, *>.realDefinition(): RealItemDefinition<*, *> {
-  return this as? RealItemDefinition<*, *> ?: blowUp("$this is not a RealItemDefinition")
+  return this as? RealItemDefinition<*, *> ?: error("$this is not a RealItemDefinition")
 }
 
 /**
@@ -151,6 +150,6 @@ inline fun <reified T : DataSource<*>> ItemDefinition<*, *>.getDataSource(): T? 
   return if (this is RealItemDefinition) {
     currentDataSource as? T
   } else {
-    blowUp("$this is not a RealItemDefinition")
+    error("$this is not a RealItemDefinition")
   }
 }

@@ -15,7 +15,7 @@ android {
 
   defaultConfig {
     applicationId "com.afollestad.recyclicalsample"
-    minSdkVersion versions.minSdk
+    minSdkVersion 21
     targetSdkVersion versions.compileSdk
     versionCode versions.publishVersionCode
     versionName versions.publishVersion

@@ -57,7 +57,7 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
   }
 
   override fun getItemViewType(position: Int): Int {
-    return dataSource?.get(position)?.getItemType() ?: blowUp("No data source available.")
+    return dataSource?.get(position)?.getItemType() ?: error("No data source available.")
   }
 
   override fun onCreateViewHolder(
@@ -95,10 +95,10 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
 
   private fun Any.getItemType(): Int {
     val itemClassName = this::class.java.name
-    return handle?.getViewTypeForClass(itemClassName) ?: blowUp("Not attached!")
+    return handle?.getViewTypeForClass(itemClassName) ?: error("Not attached!")
   }
 
   private fun Int.getItemDefinition(): ItemDefinition<*, *> {
-    return handle?.getDefinitionForType(this) ?: blowUp("Not attached!")
+    return handle?.getDefinitionForType(this) ?: error("Not attached!")
   }
 }

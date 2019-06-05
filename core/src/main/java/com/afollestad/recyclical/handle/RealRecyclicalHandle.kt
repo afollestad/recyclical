@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
-import com.afollestad.recyclical.internal.blowUp
 
 /** @author Aidan Follestad (@afollestad) */
 class RealRecyclicalHandle internal constructor(
@@ -51,7 +50,7 @@ class RealRecyclicalHandle internal constructor(
   }
 
   override fun getViewTypeForClass(name: String): Int {
-    return itemClassToType[name] ?: blowUp("Didn't find type for class $name")
+    return itemClassToType[name] ?: error("Didn't find type for class $name")
   }
 
   override fun getDefinitionForClass(name: String): ItemDefinition<*, *> {
@@ -60,7 +59,7 @@ class RealRecyclicalHandle internal constructor(
   }
 
   override fun getDefinitionForType(type: Int): ItemDefinition<*, *> {
-    return bindingsToTypes[type] ?: blowUp("Unable to view item definition for viewType $type")
+    return bindingsToTypes[type] ?: error("Unable to view item definition for viewType $type")
   }
 
   internal fun attachDataSource() {

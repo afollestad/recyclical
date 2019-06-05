@@ -28,7 +28,6 @@ import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
-import com.afollestad.recyclical.internal.blowUp
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
@@ -144,7 +143,7 @@ class RecyclicalSetup internal constructor(
       )
     }
 
-    val dataSource = currentDataSource ?: blowUp("Must set a data source.")
+    val dataSource = currentDataSource ?: error("Must set a data source.")
     return RealRecyclicalHandle(
         emptyView = emptyView,
         adapter = adapterCreator(),

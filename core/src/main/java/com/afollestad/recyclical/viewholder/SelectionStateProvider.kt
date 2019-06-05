@@ -19,7 +19,6 @@ package com.afollestad.recyclical.viewholder
 
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.SelectableDataSource
-import com.afollestad.recyclical.internal.blowUp
 import java.io.Closeable
 
 /**
@@ -73,7 +72,7 @@ class NoSelectionStateProvider<out IT>(
   override val item: IT
     get() {
       return if (dataSource == null) {
-        blowUp("Already disposed")
+        error("Already disposed")
       } else {
         dataSource!![index] as IT
       }
@@ -118,6 +117,6 @@ class RealSelectionStateProvider<out IT>(
   }
 
   private fun ensureActive(): SelectableDataSource<*> {
-    return selectableDataSource ?: blowUp("Already disposed.")
+    return selectableDataSource ?: error("Already disposed.")
   }
 }
