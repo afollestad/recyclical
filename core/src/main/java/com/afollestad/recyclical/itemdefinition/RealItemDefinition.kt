@@ -30,6 +30,7 @@ import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclical.ViewHolderBinder
 import com.afollestad.recyclical.ViewHolderCreator
 import com.afollestad.recyclical.datasource.DataSource
+import com.afollestad.recyclical.internal.Debouncer
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 /** @author Aidan Follestad (@afollestad) */
@@ -84,22 +85,26 @@ class RealItemDefinition<out IT : Any, VH : ViewHolder>(
   }
 
   internal val viewClickListener = View.OnClickListener { itemView ->
-    val position = itemView.viewHolder()
-        .adapterPosition
-    getSelectionStateProvider(position).use {
-      this.itemOnClick?.invoke(it, position)
-      setup.globalOnClick?.invoke(it, position)
+    if (Debouncer.canPerform(itemView)) {
+      val position = itemView.viewHolder()
+          .adapterPosition
+      getSelectionStateProvider(position).use {
+        this.itemOnClick?.invoke(it, position)
+        setup.globalOnClick?.invoke(it, position)
+      }
     }
   }
 
   internal val viewLongClickListener = View.OnLongClickListener { itemView ->
-    val position = itemView.viewHolder()
-        .adapterPosition
-    getSelectionStateProvider(position)
-        .use {
-          this.itemOnLongClick?.invoke(it, position)
-          setup.globalOnLongClick?.invoke(it, position)
-        }
+    if (Debouncer.canPerform(itemView)) {
+      val position = itemView.viewHolder()
+          .adapterPosition
+      getSelectionStateProvider(position)
+          .use {
+            this.itemOnLongClick?.invoke(it, position)
+            setup.globalOnLongClick?.invoke(it, position)
+          }
+    }
     true
   }
 

@@ -29,6 +29,7 @@ import com.afollestad.recyclical.ViewHolderCreator
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.SelectableDataSource
 import com.afollestad.recyclical.internal.makeBackgroundSelectable
+import com.afollestad.recyclical.internal.onClickDebounced
 import com.afollestad.recyclical.viewholder.NoSelectionStateProvider
 import com.afollestad.recyclical.viewholder.RealSelectionStateProvider
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
@@ -70,11 +71,11 @@ private fun ItemDefinition<*, *>.setChildClickListeners(viewHolder: ViewHolder) 
     val callback = item.callback as (SelectionStateProvider<Any>.(Int, Any) -> Unit)
     val childView = viewGetter(viewHolder)
 
-    childView.setOnClickListener {
+    childView.onClickDebounced { child ->
       val index = viewHolder.itemView.viewHolder()
           .adapterPosition
       getSelectionStateProvider(index).use {
-        callback(it, index, childView)
+        callback(it, index, child)
       }
     }
   }
