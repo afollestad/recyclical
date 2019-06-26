@@ -13,6 +13,13 @@ android {
   compileOptions {
     sourceCompatibility 1.8
     targetCompatibility 1.8
+
+    if (modulePackageId != null) {
+      logger.warn('Package for current module: ' + modulePackageId)
+      kotlinOptions.freeCompilerArgs += ['-module-name', modulePackageId]
+    } else {
+      logger.warn('Skipping setting compiler module name, no package to use.')
+    }
   }
 
   defaultConfig {

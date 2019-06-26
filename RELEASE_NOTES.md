@@ -1,3 +1,3 @@
-1.0.0
+1.0.1
 
-* Clicks are debounced.
+* Set module names for the Kotlin compiler so they don't clash with other third party deps.
