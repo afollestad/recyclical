@@ -79,6 +79,7 @@ class MainActivity : AppCompatActivity() {
           toast("Delete: $item")
           true
         }
+        hapticFeedbackEnabled()
       }
       withSwipeAction(RIGHT) {
         icon(R.drawable.ic_action_archive)

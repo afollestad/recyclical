@@ -20,12 +20,14 @@ import android.graphics.Canvas
 import android.graphics.Color.DKGRAY
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.view.HapticFeedbackConstants
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
 import com.afollestad.recyclical.swipe.SwipeLocation.RIGHT
+import kotlin.math.absoluteValue
 
 /** @author Aidan Follestad (@afollestad) */
 internal class SwipeItemTouchListener(
@@ -50,6 +52,8 @@ internal class SwipeItemTouchListener(
   private val textMarginHalf: Float by lazy {
     context.resources.getDimension(R.dimen.swipe_text_margin_half)
   }
+
+  private var shouldTriggerThresholdDecor = true
 
   override fun onMove(
     recyclerView: RecyclerView,
@@ -207,6 +211,20 @@ internal class SwipeItemTouchListener(
         action = null
         background?.setBounds(0, 0, 0, 0)
       }
+    }
+
+    if ((dX / itemView.measuredWidth).absoluteValue > getSwipeThreshold(viewHolder)) {
+      if (shouldTriggerThresholdDecor) {
+        shouldTriggerThresholdDecor = false
+        if (action?.hapticFeedbackEnabled == true) {
+          recyclerView.performHapticFeedback(
+            HapticFeedbackConstants.VIRTUAL_KEY,
+            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+          )
+        }
+      }
+    } else {
+      shouldTriggerThresholdDecor = true
     }
 
     background?.draw(c)
