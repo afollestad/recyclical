@@ -151,7 +151,7 @@ class RecyclicalTest {
   }
 
   @Test fun `only some items having stable IDs throws exception`() {
-    expectException<IllegalStateException>(
+    expectException<IllegalArgumentException>(
         "If you specify that one item type has stable IDs, all item types must."
     ) {
       recyclerView.setup {

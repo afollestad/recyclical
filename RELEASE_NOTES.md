@@ -1,3 +1,4 @@
-1.0.1
+1.1.0
 
-* Set module names for the Kotlin compiler so they don't clash with other third party deps.
+* The same layout could be used for multiple item types.
+* Dependency upgrades and some internal cleanup.
