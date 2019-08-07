@@ -87,8 +87,7 @@ inline fun <reified IT : Any, VH : ViewHolder> RecyclicalSetup.withItem(
       .apply(block)
       .also { definition ->
         registerItemDefinition(
-            className = definition.itemClassName,
-            viewType = layoutRes,
+            layoutRes = layoutRes,
             definition = definition
         )
       }

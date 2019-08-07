@@ -19,14 +19,11 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
-import com.afollestad.recyclical.testdata.TestItem
+import com.afollestad.recyclical.itemdefinition.ItemGraph
 import com.afollestad.recyclical.testutil.NoManifestTestRunner
-import com.afollestad.recyclical.testutil.assertEqualTo
 import com.afollestad.recyclical.testutil.assertSameAs
-import com.afollestad.recyclical.testutil.expectException
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
@@ -35,30 +32,18 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Test
 import org.junit.runner.RunWith
 
-private const val FAKE_VIEW_TYPE = -1
-private const val REAL_VIEW_TYPE = 1
-private const val FAKE_CLASS_NAME = "Hello, World"
-private val REAL_CLASS_NAME = TestItem::class.java.name
-
 @RunWith(NoManifestTestRunner::class)
 class RecyclicalHandleTest {
   private val emptyView = mock<View>()
   private val adapter = mock<DefinitionAdapter>()
-  private val itemClassToType = mutableMapOf(
-      REAL_CLASS_NAME to REAL_VIEW_TYPE
-  )
-  private val itemDefinition = mock<ItemDefinition<*, *>>()
-  private val bindingsToType = mutableMapOf(
-      REAL_VIEW_TYPE to itemDefinition
-  )
   private val dataSource = mock<DataSource<*>>()
+  private val itemGraph = mock<ItemGraph>()
 
   private val handle = RealRecyclicalHandle(
       emptyView = emptyView,
       adapter = adapter,
-      itemClassToType = itemClassToType,
-      bindingsToTypes = bindingsToType,
-      dataSource = dataSource
+      dataSource = dataSource,
+      itemGraph = itemGraph
   )
 
   @Test fun showOrHideEmptyView_show() {
@@ -104,36 +89,6 @@ class RecyclicalHandleTest {
     }
     verify(adapter).notifyDataSetChanged()
     verify(emptyView).visibility = GONE
-  }
-
-  @Test fun getViewTypeForClass() {
-    handle.getViewTypeForClass(REAL_CLASS_NAME)
-        .assertEqualTo(REAL_VIEW_TYPE)
-    expectException<IllegalStateException>(
-        "Didn't find type for class $FAKE_CLASS_NAME"
-    ) {
-      handle.getViewTypeForClass(FAKE_CLASS_NAME)
-    }
-  }
-
-  @Test fun getDefinitionForClass() {
-    handle.getDefinitionForClass(REAL_CLASS_NAME)
-        .assertSameAs(itemDefinition)
-    expectException<IllegalStateException>(
-        "Didn't find type for class $FAKE_CLASS_NAME"
-    ) {
-      handle.getViewTypeForClass(FAKE_CLASS_NAME)
-    }
-  }
-
-  @Test fun getDefinitionForType() {
-    handle.getDefinitionForType(REAL_VIEW_TYPE)
-        .assertSameAs(itemDefinition)
-    expectException<IllegalStateException>(
-        "Unable to view item definition for viewType $FAKE_VIEW_TYPE"
-    ) {
-      handle.getDefinitionForType(FAKE_VIEW_TYPE)
-    }
   }
 
   @Test fun attachDataSource() {

@@ -18,18 +18,18 @@ package com.afollestad.recyclical.handle
 import android.os.Looper.getMainLooper
 import android.os.Looper.myLooper
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
+import com.afollestad.recyclical.itemdefinition.ItemGraph
 
 /** @author Aidan Follestad (@afollestad) */
 class RealRecyclicalHandle internal constructor(
   internal val emptyView: View?,
   private val adapter: DefinitionAdapter,
-  private val itemClassToType: MutableMap<String, Int>,
-  private val bindingsToTypes: MutableMap<Int, ItemDefinition<*, *>>,
-  val dataSource: DataSource<*>
+  val dataSource: DataSource<*>,
+  @VisibleForTesting internal val itemGraph: ItemGraph
 ) : RecyclicalHandle {
 
   override fun showOrHideEmptyView(show: Boolean) {
@@ -49,18 +49,7 @@ class RealRecyclicalHandle internal constructor(
     showOrHideEmptyView(dataSource.isEmpty())
   }
 
-  override fun getViewTypeForClass(name: String): Int {
-    return itemClassToType[name] ?: error("Didn't find type for class $name")
-  }
-
-  override fun getDefinitionForClass(name: String): ItemDefinition<*, *> {
-    val viewType = getViewTypeForClass(name)
-    return getDefinitionForType(viewType)
-  }
-
-  override fun getDefinitionForType(type: Int): ItemDefinition<*, *> {
-    return bindingsToTypes[type] ?: error("Unable to view item definition for viewType $type")
-  }
+  override fun itemGraph(): ItemGraph = itemGraph
 
   internal fun attachDataSource() {
     dataSource.attach(this)

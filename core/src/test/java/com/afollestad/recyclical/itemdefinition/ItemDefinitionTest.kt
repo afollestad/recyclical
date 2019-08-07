@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.recyclical
+package com.afollestad.recyclical.itemdefinition
 
 import android.content.Context
 import android.view.View
@@ -21,11 +21,11 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
+import com.afollestad.recyclical.R
+import com.afollestad.recyclical.R.id
+import com.afollestad.recyclical.RecyclicalSetup
+import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclical.datasource.DataSource
-import com.afollestad.recyclical.itemdefinition.RealItemDefinition
-import com.afollestad.recyclical.itemdefinition.bindViewHolder
-import com.afollestad.recyclical.itemdefinition.createViewHolder
-import com.afollestad.recyclical.itemdefinition.onChildViewClick
 import com.afollestad.recyclical.testdata.TestChildClickListener
 import com.afollestad.recyclical.testdata.TestClickListener
 import com.afollestad.recyclical.testdata.TestItem
@@ -71,7 +71,8 @@ class ItemDefinitionTest {
   private lateinit var titleView: TextView
   private lateinit var rootView: FrameLayout
 
-  private val setup = RecyclicalSetup(recyclerView).apply {
+  private val setup = RecyclicalSetup(recyclerView)
+      .apply {
     withDataSource(dataSource)
     withClickListener(globalClickListener.capture())
     withLongClickListener(globalLongClickListener.capture())
@@ -118,13 +119,15 @@ class ItemDefinitionTest {
 
     definition.onBind(::TestViewHolder, binder)
     definition.binder.assertSameAs(binder)
-    definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)
+    definition.bindViewHolder(viewHolder, testItem,
+        TEST_ITEM_INDEX
+    )
 
     wasBinderCalled.assertTrue()
 
-    rootView.getTag(R.id.rec_view_item_view_holder)
+    rootView.getTag(id.rec_view_item_view_holder)
         .assertIsA<ViewHolder>()
-    rootView.getTag(R.id.rec_view_item_selectable_data_source)
+    rootView.getTag(id.rec_view_item_selectable_data_source)
         .assertNull()
   }
 
@@ -135,7 +138,9 @@ class ItemDefinitionTest {
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(viewHolderCreator, binder)
     val viewHolder = definition.createViewHolder(rootView)
-    definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)
+    definition.bindViewHolder(viewHolder, testItem,
+        TEST_ITEM_INDEX
+    )
 
     rootView.performClick()
     listener.expect(TEST_ITEM_INDEX, testItem)
@@ -149,7 +154,9 @@ class ItemDefinitionTest {
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(viewHolderCreator, binder)
     val viewHolder = definition.createViewHolder(rootView)
-    definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)
+    definition.bindViewHolder(viewHolder, testItem,
+        TEST_ITEM_INDEX
+    )
 
     rootView.performLongClick()
     listener.expect(TEST_ITEM_INDEX, testItem)
@@ -164,7 +171,9 @@ class ItemDefinitionTest {
     definition.onBind(viewHolderCreator, binder)
 
     val viewHolder = definition.createViewHolder(rootView) as TestViewHolder
-    definition.bindViewHolder(viewHolder, testItem, TEST_ITEM_INDEX)
+    definition.bindViewHolder(viewHolder, testItem,
+        TEST_ITEM_INDEX
+    )
 
     rootView.performClick()
     listener.expectNothing()

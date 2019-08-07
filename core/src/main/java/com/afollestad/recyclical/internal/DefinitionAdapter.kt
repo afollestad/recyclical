@@ -21,19 +21,27 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.afollestad.recyclical.ItemDefinition
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
+import com.afollestad.recyclical.itemdefinition.ItemGraph
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 import com.afollestad.recyclical.itemdefinition.bindViewHolder
 import com.afollestad.recyclical.itemdefinition.createViewHolder
 import com.afollestad.recyclical.itemdefinition.recycleViewHolder
 
-/** @author Aidan Follestad (@afollestad) */
+/**
+ * The core [RecyclerView] adapter of the library that manages showing
+ * items in your data source using registered item definitions.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
   private var handle: RecyclicalHandle? = null
   private var dataSource: DataSource<*>? = null
+
+  private val itemGraph: ItemGraph
+    get() = handle?.itemGraph() ?: error("Not attached!")
 
   /** Attaches the adapter to a handle which provides a data source, etc. */
   open fun attach(handle: RecyclicalHandle) {
@@ -50,23 +58,25 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
 
   override fun getItemId(position: Int): Long {
     val item = dataSource!![position]
-    val viewType = item.getItemType()
-    val definition = viewType.getItemDefinition()
+    val definition = itemGraph.definitionForName(item.className)
     val idGetter = (definition as? RealItemDefinition)?.idGetter
     return idGetter?.invoke(item)?.toLong() ?: super.getItemId(position)
   }
 
   override fun getItemViewType(position: Int): Int {
-    return dataSource?.get(position)?.getItemType() ?: error("No data source available.")
+    val itemClassName = dataSource?.get(position)?.className
+        ?: error("No data source available.")
+    return itemGraph.typeForName(itemClassName)
   }
 
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
   ): ViewHolder {
+    val layoutRes = itemGraph.layoutForType(viewType)
     val view = LayoutInflater.from(parent.context)
-        .inflate(viewType, parent, false)
-    return viewType.getItemDefinition()
+        .inflate(layoutRes, parent, false)
+    return itemGraph.definitionForType(viewType)
         .createViewHolder(view)
   }
 
@@ -77,8 +87,7 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
     position: Int
   ) {
     val item = dataSource!![position]
-    val viewType = item.getItemType()
-    viewType.getItemDefinition()
+    itemGraph.definitionForName(item.className)
         .bindViewHolder(holder, item, position)
   }
 
@@ -86,19 +95,12 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
     val index = holder.adapterPosition
     if (index > -1) {
       dataSource?.get(index)
-          ?.getItemType()
-          ?.getItemDefinition()
+          ?.className
+          ?.let { itemGraph.definitionForName(it) }
           ?.recycleViewHolder(holder)
     }
     super.onViewRecycled(holder)
   }
 
-  private fun Any.getItemType(): Int {
-    val itemClassName = this::class.java.name
-    return handle?.getViewTypeForClass(itemClassName) ?: error("Not attached!")
-  }
-
-  private fun Int.getItemDefinition(): ItemDefinition<*, *> {
-    return handle?.getDefinitionForType(this) ?: error("Not attached!")
-  }
+  private val Any.className: String get() = this::class.java.name
 }

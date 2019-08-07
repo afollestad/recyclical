@@ -125,13 +125,10 @@ class RecyclicalTest {
 
     handle.assertIsA<RealRecyclicalHandle> {
       emptyView.assertSameAs(emptyView)
+      itemGraph.itemTypeToDefinition.values
+          .single()
+          .assertEqualTo(itemDefinition)
     }
-    handle.getViewTypeForClass(TestItem::class.java.name)
-        .assertEqualTo(INFLATE_ITEM_LAYOUT_RES)
-    handle.getDefinitionForType(INFLATE_ITEM_LAYOUT_RES)
-        .assertSameAs(itemDefinition)
-    handle.getDefinitionForClass(TestItem::class.java.name)
-        .assertSameAs(itemDefinition)
     handle.getDataSource<DataSource<*>>()
         .assertSameAs(dataSource)
 

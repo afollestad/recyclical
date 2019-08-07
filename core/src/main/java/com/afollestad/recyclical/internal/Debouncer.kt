@@ -17,6 +17,12 @@ package com.afollestad.recyclical.internal
 
 import android.view.View
 
+/**
+ * Used to debounce clicks - prevents multiple click events from happening
+ * rapidly on the same thread queue.
+ *
+ * @author Aidan Follestad (@afollestad)
+ */
 internal object Debouncer {
   @Volatile private var enabled: Boolean = true
   private val enableAgain = Runnable { enabled = true }

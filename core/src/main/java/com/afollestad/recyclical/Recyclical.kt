@@ -18,6 +18,7 @@
 package com.afollestad.recyclical
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,9 +29,9 @@ import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
+import com.afollestad.recyclical.itemdefinition.ItemGraph
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
-import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 import com.afollestad.recyclical.plugins.PluginData
 
 /** @author Aidan Follestad (@afollestad) */
@@ -42,8 +43,7 @@ annotation class RecyclicalMarker
 class RecyclicalSetup internal constructor(
   val recyclerView: RecyclerView
 ) {
-  private var itemClassToType = mutableMapOf<String, Int>()
-  private var bindingsToTypes = mutableMapOf<Int, ItemDefinition<*, *>>()
+  private val itemGraph = ItemGraph()
   private var emptyView: View? = null
 
   internal var pluginData: MutableMap<String, PluginData>? = null
@@ -118,41 +118,20 @@ class RecyclicalSetup internal constructor(
 
   /** This should not be called directly. */
   @RestrictTo(LIBRARY) fun registerItemDefinition(
-    className: String,
-    viewType: Int,
+    @LayoutRes layoutRes: Int,
     definition: ItemDefinition<*, *>
-  ) {
-    itemClassToType[className] = viewType
-    bindingsToTypes[viewType] = definition
-  }
+  ) = itemGraph.register(layoutRes, definition)
 
   internal fun toAttached(): RecyclicalHandle {
-    check(itemClassToType.isNotEmpty()) { "No bindings defined." }
-    check(bindingsToTypes.size == itemClassToType.size) {
-      "Something is very wrong - binding maps don't have matching sizes. " +
-          "Make sure you aren't using the same layout for multiple item classes."
-    }
-
-    val definitions = bindingsToTypes.values
-    val shouldHaveStableIds = definitions.any {
-      (it as? RealItemDefinition)?.idGetter != null
-    }
-    if (shouldHaveStableIds && !definitions.all { (it as? RealItemDefinition)?.idGetter != null }) {
-      throw IllegalStateException(
-          "If you specify that one item type has stable IDs, all item types must."
-      )
-    }
-
     val dataSource = currentDataSource ?: error("Must set a data source.")
     return RealRecyclicalHandle(
         emptyView = emptyView,
         adapter = adapterCreator(),
-        itemClassToType = itemClassToType,
-        bindingsToTypes = bindingsToTypes,
-        dataSource = dataSource
+        dataSource = dataSource,
+        itemGraph = itemGraph.validate()
     ).also {
       it.getAdapter()
-          .setHasStableIds(shouldHaveStableIds)
+          .setHasStableIds(itemGraph.hasStableIds())
       dataSource.attach(it)
     }
   }
