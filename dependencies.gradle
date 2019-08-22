@@ -5,9 +5,9 @@ ext.versions = [
     publishVersion      : '1.1.0',
     publishVersionCode  : 24,
 
-    gradlePlugin        : '3.4.2',
-    kotlin              : '1.3.41',
-    spotlessPlugin      : '3.24.0',
+    gradlePlugin        : '3.5.0',
+    kotlin              : '1.3.50',
+    spotlessPlugin      : '3.24.2',
     versionsPlugin      : '0.22.0',
     bintrayRelease      : '0.9.1',
 
