@@ -59,6 +59,8 @@ class SwipeAction<IT : Any>(private val context: Context) {
   internal var textPaint: TextPaint? = null
   private var textBounds: Rect? = null
 
+  internal var hapticFeedbackEnabled = false
+
   /** Sets an optional icon that is shown in the swipe gutter. */
   fun icon(
     @DrawableRes res: Int? = null,
@@ -121,6 +123,11 @@ class SwipeAction<IT : Any>(private val context: Context) {
   fun callback(block: SwipedCallback<IT>): SwipeAction<IT> {
     this.callback = block
     return this
+  }
+
+  /** To perform a haptic feedback when swipe threshold is passed. */
+  fun hapticFeedbackEnabled() {
+    hapticFeedbackEnabled = true
   }
 
   internal fun getTextWidth(): Int = getTextBounds().width()
