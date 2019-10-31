@@ -218,8 +218,8 @@ internal class SwipeItemTouchListener(
         shouldTriggerThresholdDecor = false
         if (action?.hapticFeedbackEnabled == true) {
           recyclerView.performHapticFeedback(
-            HapticFeedbackConstants.VIRTUAL_KEY,
-            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+              HapticFeedbackConstants.VIRTUAL_KEY,
+              HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
           )
         }
       }

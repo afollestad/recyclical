@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.afollestad.recyclical.handle.RecyclicalHandle
 
 typealias LeftAndRightComparer<IT> = (left: IT, right: IT) -> Boolean
+typealias DataSourceChangeListener<IT> = DataSource<IT>.() -> Unit
 
 /**
  * Provides a data set for a RecyclerView to bind and display.
@@ -135,6 +136,9 @@ interface DataSource<IT : Any> {
 
   /** Copies the DataSource items to a List. Be careful, as this copies the whole list. */
   fun toList(): List<IT>
+
+  /** Adds a listener that's invoked whenever the data source is modified (adds, sets, removals, etc.) */
+  fun addOnChangeListener(block: DataSourceChangeListener<IT>)
 }
 
 /**

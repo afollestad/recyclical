@@ -22,8 +22,8 @@ import com.afollestad.recyclical.testutil.assertTrue
 import com.afollestad.recyclical.testutil.expectException
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import org.junit.Test
 import java.lang.IllegalArgumentException
+import org.junit.Test
 
 private const val REAL_LAYOUT_RES_1 = 1024
 private const val REAL_CLASS_NAME_1 = "com.afollestad.SomeClass1"
