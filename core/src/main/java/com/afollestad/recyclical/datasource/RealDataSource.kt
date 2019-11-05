@@ -16,6 +16,7 @@
 package com.afollestad.recyclical.datasource
 
 import androidx.recyclerview.widget.DiffUtil
+import com.afollestad.recyclical.handle.AdapterBlock
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.internal.ItemDiffCallback
 
@@ -25,6 +26,7 @@ open class RealDataSource<IT : Any> internal constructor(
 ) : DataSource<IT> {
   private var items = initialData.toMutableList()
   private var handle: RecyclicalHandle? = null
+  private var changeListeners: MutableList<DataSourceOnChanged<IT>>? = null
 
   override operator fun get(index: Int): IT = items[index]
 
@@ -40,12 +42,14 @@ open class RealDataSource<IT : Any> internal constructor(
 
   override fun detach() {
     this.handle = null
+    this.changeListeners?.clear()
+    this.changeListeners = null
   }
 
   override fun add(vararg newItems: IT) {
     val startPosition = this.items.size
     this.items.addAll(newItems)
-    handle?.invalidateList {
+    invalidateList {
       notifyItemRangeInserted(startPosition, newItems.size)
     }
   }
@@ -53,7 +57,7 @@ open class RealDataSource<IT : Any> internal constructor(
   override fun addAll(newItems: Collection<IT>) {
     val startPosition = this.items.size
     this.items.addAll(newItems)
-    handle?.invalidateList {
+    invalidateList {
       notifyItemRangeInserted(startPosition, newItems.size)
     }
   }
@@ -74,7 +78,7 @@ open class RealDataSource<IT : Any> internal constructor(
           areContentsTheSame = areContentsTheSame
       )
       val diffResult = DiffUtil.calculateDiff(diffCallback)
-      handle?.invalidateList {
+      invalidateList {
         diffResult.dispatchUpdatesTo(this)
       }
     } else {
@@ -88,12 +92,12 @@ open class RealDataSource<IT : Any> internal constructor(
     item: IT
   ) {
     items.add(index, item)
-    handle?.invalidateList { notifyItemInserted(index) }
+    invalidateList { notifyItemInserted(index) }
   }
 
   override fun removeAt(index: Int) {
     items.removeAt(index)
-    handle?.invalidateList { notifyItemRemoved(index) }
+    invalidateList { notifyItemRemoved(index) }
   }
 
   override fun remove(item: IT) {
@@ -109,8 +113,10 @@ open class RealDataSource<IT : Any> internal constructor(
     val leftItem = items[left]
     items[left] = items[right]
     items[right] = leftItem
-    invalidateAt(left)
-    invalidateAt(right)
+    invalidateList {
+      notifyItemChanged(left)
+      notifyItemChanged(right)
+    }
   }
 
   override fun move(
@@ -120,7 +126,7 @@ open class RealDataSource<IT : Any> internal constructor(
     val item = items[from]
     items.removeAt(from)
     items.add(to, item)
-    handle?.invalidateList { notifyItemMoved(from, to) }
+    invalidateList { notifyItemMoved(from, to) }
   }
 
   override fun clear() {
@@ -144,11 +150,17 @@ open class RealDataSource<IT : Any> internal constructor(
 
   override fun toList(): List<IT> = items.toList()
 
-  override fun invalidateAt(index: Int) {
-    handle?.invalidateList { notifyItemChanged(index) }
+  override fun addChangedListener(listener: DataSourceOnChanged<IT>) {
+    (changeListeners ?: mutableListOf<DataSourceOnChanged<IT>>()
+        .also { changeListeners = it }).add(listener)
   }
 
-  override fun invalidateAll() {
-    handle?.invalidateList { notifyDataSetChanged() }
+  override fun invalidateAt(index: Int) = invalidateList { notifyItemChanged(index) }
+
+  override fun invalidateAll() = invalidateList { notifyDataSetChanged() }
+
+  private fun invalidateList(block: AdapterBlock) {
+    handle?.invalidateList(block)
+    changeListeners?.forEach { it.onDataSourceChanged(this) }
   }
 }

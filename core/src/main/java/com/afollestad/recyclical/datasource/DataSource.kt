@@ -24,6 +24,11 @@ import com.afollestad.recyclical.handle.RecyclicalHandle
 
 typealias LeftAndRightComparer<IT> = (left: IT, right: IT) -> Boolean
 
+/** @author Aidan Follestad (@afollestad) */
+interface DataSourceOnChanged<IT : Any> {
+  fun onDataSourceChanged(dataSource: DataSource<IT>)
+}
+
 /**
  * Provides a data set for a RecyclerView to bind and display.
  *
@@ -135,6 +140,13 @@ interface DataSource<IT : Any> {
 
   /** Copies the DataSource items to a List. Be careful, as this copies the whole list. */
   fun toList(): List<IT>
+
+  /**
+   * Adds a listener that's invoked when the data source is modified in any way. These listeners
+   * will be cleared when the [DataSource] becomes detached (e.g. the [RecyclerView] is detached
+   * from its window).
+   */
+  fun addChangedListener(listener: DataSourceOnChanged<IT>)
 }
 
 /**
