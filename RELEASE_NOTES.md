@@ -1,4 +1,5 @@
-1.1.0
+1.1.1
 
-* The same layout could be used for multiple item types.
-* Dependency upgrades and some internal cleanup.
+* Dependency upgrades.
+* Add `withLayoutAnimation(...)` for the `setup {}` block. See the README.
+* Add `addChangedListener(...)` to `DataSource<T>`.
