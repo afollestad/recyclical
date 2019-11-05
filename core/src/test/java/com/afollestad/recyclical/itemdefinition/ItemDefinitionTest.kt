@@ -73,10 +73,10 @@ class ItemDefinitionTest {
 
   private val setup = RecyclicalSetup(recyclerView)
       .apply {
-    withDataSource(dataSource)
-    withClickListener(globalClickListener.capture())
-    withLongClickListener(globalLongClickListener.capture())
-  }
+        withDataSource(dataSource)
+        withClickListener(globalClickListener.capture())
+        withLongClickListener(globalLongClickListener.capture())
+      }
   private val definition = RealItemDefinition<TestItem, TestViewHolder>(
       setup = setup,
       itemClassName = TestItem::class.java.name
@@ -119,7 +119,8 @@ class ItemDefinitionTest {
 
     definition.onBind(::TestViewHolder, binder)
     definition.binder.assertSameAs(binder)
-    definition.bindViewHolder(viewHolder, testItem,
+    definition.bindViewHolder(
+        viewHolder, testItem,
         TEST_ITEM_INDEX
     )
 
@@ -138,7 +139,8 @@ class ItemDefinitionTest {
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(viewHolderCreator, binder)
     val viewHolder = definition.createViewHolder(rootView)
-    definition.bindViewHolder(viewHolder, testItem,
+    definition.bindViewHolder(
+        viewHolder, testItem,
         TEST_ITEM_INDEX
     )
 
@@ -154,7 +156,8 @@ class ItemDefinitionTest {
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(viewHolderCreator, binder)
     val viewHolder = definition.createViewHolder(rootView)
-    definition.bindViewHolder(viewHolder, testItem,
+    definition.bindViewHolder(
+        viewHolder, testItem,
         TEST_ITEM_INDEX
     )
 
@@ -171,7 +174,8 @@ class ItemDefinitionTest {
     definition.onBind(viewHolderCreator, binder)
 
     val viewHolder = definition.createViewHolder(rootView) as TestViewHolder
-    definition.bindViewHolder(viewHolder, testItem,
+    definition.bindViewHolder(
+        viewHolder, testItem,
         TEST_ITEM_INDEX
     )
 
