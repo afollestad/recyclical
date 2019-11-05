@@ -29,9 +29,9 @@ import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.RecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
 import com.afollestad.recyclical.internal.DefinitionAdapter
-import com.afollestad.recyclical.itemdefinition.ItemGraph
 import com.afollestad.recyclical.internal.onAttach
 import com.afollestad.recyclical.internal.onDetach
+import com.afollestad.recyclical.itemdefinition.ItemGraph
 import com.afollestad.recyclical.plugins.PluginData
 
 /** @author Aidan Follestad (@afollestad) */

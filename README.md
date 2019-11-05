@@ -142,6 +142,8 @@ recyclerView.setup {
   withClickListener { index, item -> }
   // Global long click listener for any item type. Individual item long click listeners are called first.
   withLongClickListener { index, item -> }
+  // Add an animation used to animate the group's children after the first layout.
+  withLayoutAnimation(R.anim.your_anim, durationRes = android.R.integer.config_animShortTime)
 }
 ```
 
