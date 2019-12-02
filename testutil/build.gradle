@@ -14,3 +14,5 @@ dependencies {
   compileOnly deps.test.mockito_core
   compileOnly deps.test.robolectric
 }
+
+android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
