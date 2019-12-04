@@ -4,4 +4,6 @@
   <color name="md_green">#43A047</color>
   <color name="md_blue">#1E88E5</color>
   <color name="md_orange">#FB8C00</color>
+
+  <color name="icons_color">#000000</color>
 </resources>
