@@ -4,6 +4,7 @@
     <item name="colorPrimary">#2196F3</item>
     <item name="colorPrimaryDark">#1E88E5</item>
     <item name="colorAccent">#E91E63</item>
+    <item name="iconColor">#000000</item>
   </style>
 
   <style name="AppTheme.WithToolbar" parent="Theme.AppCompat.Light.DarkActionBar">
