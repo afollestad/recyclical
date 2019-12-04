@@ -16,7 +16,10 @@
 package com.afollestad.recyclicalsample
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
@@ -35,11 +38,12 @@ import com.afollestad.recyclicalsample.data.MyViewHolder
 import com.afollestad.recyclicalsample.fragment.FragmentSampleActivity
 import com.afollestad.recyclicalsample.util.startActivity
 import com.afollestad.recyclicalsample.util.toast
-import kotlinx.android.synthetic.main.activity_main.emptyView
-import kotlinx.android.synthetic.main.activity_main.list
-import kotlinx.android.synthetic.main.activity_main.toolbar
 
 class MainActivity : AppCompatActivity() {
+  private val emptyView by lazy { findViewById<View>(R.id.emptyView) }
+  private val list by lazy { findViewById<RecyclerView>(R.id.list) }
+  private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
+
   private var cab: AttachedCab? = null
   private val dataSource = selectableDataSourceTypedOf(
       IntArray(1000) { it + 1 }

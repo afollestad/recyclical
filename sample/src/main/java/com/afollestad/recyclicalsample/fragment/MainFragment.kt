@@ -19,7 +19,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.recyclical.datasource.emptyDataSource
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
@@ -32,11 +34,11 @@ import com.afollestad.recyclicalsample.data.MyListItem2
 import com.afollestad.recyclicalsample.data.MyViewHolder
 import com.afollestad.recyclicalsample.data.MyViewHolder2
 import com.afollestad.recyclicalsample.util.toast
-import kotlinx.android.synthetic.main.main_fragment.add_item as addItem
-import kotlinx.android.synthetic.main.main_fragment.fragment_emptyView as emptyView
-import kotlinx.android.synthetic.main.main_fragment.fragment_list as list
 
 class MainFragment : Fragment() {
+  private val addItem by lazy { view!!.findViewById<Button>(R.id.add_item) }
+  private val emptyView by lazy { view!!.findViewById<View>(R.id.fragment_emptyView) }
+  private val list by lazy { view!!.findViewById<RecyclerView>(R.id.fragment_list) }
   private val dataSource = emptyDataSource()
 
   override fun onCreateView(
