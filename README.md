@@ -136,7 +136,7 @@ There are other things you can give to the setup extension:
 recyclerView.setup {
   // Custom layout manager, rather than the default which is a vertical LinearLayoutManager
   withLayoutManager(GridLayoutManager(context, 2))
-  // Assigns a view that is made visible when the data source has content, else is hidden (gone)
+  // Assigns a view that is made visible when the data source has no content, else is hidden (gone)
   withEmptyView(view)
   // Global click listener for any item type. Individual item click listeners are called first.
   withClickListener { index, item -> }
