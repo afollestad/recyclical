@@ -3,7 +3,7 @@
 *recyclical*: an easy-to-use, extensible Kotlin DSL for setting up and manipulating RecyclerViews.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdc552fb3832423986a296a47b9ddef0)](https://www.codacy.com/app/drummeraidan_50/recyclical?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/recyclical&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/afollestad/recyclical.svg)](https://travis-ci.org/afollestad/recyclical)
+[![Android CI](https://github.com/afollestad/recyclical/workflows/Android%20CI/badge.svg)](https://github.com/afollestad/recyclical/actions?query=workflow%3A%22Android+CI%22)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 <img src="https://raw.githubusercontent.com/afollestad/recyclical/master/art/showcase3.png" width="600" />
