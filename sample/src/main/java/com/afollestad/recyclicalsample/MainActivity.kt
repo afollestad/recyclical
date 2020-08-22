@@ -17,7 +17,6 @@ package com.afollestad.recyclicalsample
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
@@ -104,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         hasStableIds { it.id }
         onBind(::MyViewHolder) { _, item ->
           binding.icon.setImageResource(
-              if(isSelected()){
+              if (isSelected()) {
                 R.drawable.check_circle
               } else {
                 R.drawable.person

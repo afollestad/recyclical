@@ -21,7 +21,13 @@ import android.view.View
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.viewbinding.ViewBinding
-import com.afollestad.recyclical.*
+import com.afollestad.recyclical.BindingViewHolder
+import com.afollestad.recyclical.ChildViewClickListener
+import com.afollestad.recyclical.ItemDefinition
+import com.afollestad.recyclical.R
+import com.afollestad.recyclical.ViewHolder
+import com.afollestad.recyclical.ViewHolderBinder
+import com.afollestad.recyclical.ViewHolderCreator
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.datasource.SelectableDataSource
 import com.afollestad.recyclical.internal.makeBackgroundSelectable
@@ -30,7 +36,7 @@ import com.afollestad.recyclical.viewholder.NoSelectionStateProvider
 import com.afollestad.recyclical.viewholder.RealSelectionStateProvider
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
-internal inline fun <reified VB: ViewBinding> ItemDefinition<*, *, *>.createViewHolder(itemBinding: VB): BindingViewHolder<VB> {
+internal inline fun <reified VB : ViewBinding> ItemDefinition<*, *, *>.createViewHolder(itemBinding: VB): BindingViewHolder<VB> {
   val realDefinition = realDefinition()
   val setup = realDefinition.setup
 
@@ -53,7 +59,7 @@ internal inline fun <reified VB: ViewBinding> ItemDefinition<*, *, *>.createView
       }
 }
 
-private inline fun <reified VB: ViewBinding> ItemDefinition<*, *, *>.setChildClickListeners(viewBinding: VB) {
+private inline fun <reified VB : ViewBinding> ItemDefinition<*, *, *>.setChildClickListeners(viewBinding: VB) {
   val realDefinition = realDefinition()
   if (realDefinition.childClickDataList.isEmpty()) {
     return
@@ -76,7 +82,7 @@ private inline fun <reified VB: ViewBinding> ItemDefinition<*, *, *>.setChildCli
   }
 }
 
-internal fun <VB: ViewBinding> ItemDefinition<*, *, VB>.bindViewHolder(
+internal fun <VB : ViewBinding> ItemDefinition<*, *, VB>.bindViewHolder(
   viewHolder: ViewHolder,
   item: Any,
   position: Int
@@ -99,7 +105,7 @@ internal fun ItemDefinition<*, *, *>.recycleViewHolder(viewHolder: ViewHolder) {
   realDefinition.onRecycled?.invoke(viewHolder)
 }
 
-internal fun <IT : Any, VH : ViewHolder, VB: ViewBinding> ItemDefinition<IT, VH, VB>.getSelectionStateProvider(
+internal fun <IT : Any, VH : ViewHolder, VB : ViewBinding> ItemDefinition<IT, VH, VB>.getSelectionStateProvider(
   position: Int
 ): SelectionStateProvider<IT> {
   val selectableSource = getDataSource<SelectableDataSource<*>, VB>()
@@ -117,7 +123,7 @@ internal fun View.viewHolder(): ViewHolder {
 }
 
 @RestrictTo(LIBRARY)
-fun <VB: ViewBinding> ItemDefinition<*, *, VB>.realDefinition(): RealItemDefinition<*, *, VB> {
+fun <VB : ViewBinding> ItemDefinition<*, *, VB>.realDefinition(): RealItemDefinition<*, *, VB> {
   return this as? RealItemDefinition<*, *, VB> ?: error("$this is not a RealItemDefinition")
 }
 
@@ -127,7 +133,7 @@ fun <VB: ViewBinding> ItemDefinition<*, *, VB>.realDefinition(): RealItemDefinit
  * @param view A lambda that provides the view we are attaching to in each view holder.
  * @param block A lambda executed when the view is clicked.
  */
-inline fun <IT : Any, reified VH : ViewHolder, VT : View, reified VB: ViewBinding> ItemDefinition<IT, VH, VB>.onChildViewClick(
+inline fun <IT : Any, reified VH : ViewHolder, VT : View, reified VB : ViewBinding> ItemDefinition<IT, VH, VB>.onChildViewClick(
   noinline view: VB.() -> VT,
   noinline block: ChildViewClickListener<IT, VT>
 ): ItemDefinition<IT, VH, VB> {
@@ -142,7 +148,7 @@ inline fun <IT : Any, reified VH : ViewHolder, VT : View, reified VB: ViewBindin
 }
 
 /** Gets the current data source, auto casting to the type [T]. */
-inline fun <reified T : DataSource<*>, VB: ViewBinding> ItemDefinition<*, *, VB>.getDataSource(): T? {
+inline fun <reified T : DataSource<*>, VB : ViewBinding> ItemDefinition<*, *, VB>.getDataSource(): T? {
   return if (this is RealItemDefinition) {
     currentDataSource as? T
   } else {

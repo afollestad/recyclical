@@ -32,7 +32,6 @@ import com.afollestad.recyclicalsample.R
 import com.afollestad.recyclicalsample.data.MyListItem
 import com.afollestad.recyclicalsample.data.MyListItem2
 import com.afollestad.recyclicalsample.data.MyViewHolder
-import com.afollestad.recyclicalsample.data.MyViewHolder2
 import com.afollestad.recyclicalsample.databinding.MyListItemBinding
 import com.afollestad.recyclicalsample.util.toast
 

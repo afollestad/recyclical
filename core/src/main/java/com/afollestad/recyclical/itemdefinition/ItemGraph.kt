@@ -18,7 +18,6 @@ package com.afollestad.recyclical.itemdefinition
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.CheckResult
-import androidx.annotation.LayoutRes
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.annotation.VisibleForTesting

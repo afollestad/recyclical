@@ -29,14 +29,13 @@ import com.afollestad.recyclical.RecyclicalMarker
 import com.afollestad.recyclical.RecyclicalSetup
 import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclical.ViewHolderBinder
-import com.afollestad.recyclical.ViewHolderCreator
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.internal.Debouncer
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 /** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
-class RealItemDefinition<out IT : Any, VH : ViewHolder, VB: ViewBinding>(
+class RealItemDefinition<out IT : Any, VH : ViewHolder, VB : ViewBinding>(
   internal val setup: RecyclicalSetup,
   val itemClassName: String
 ) : ItemDefinition<IT, VH, VB> {

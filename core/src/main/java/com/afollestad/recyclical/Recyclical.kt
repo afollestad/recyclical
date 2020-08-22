@@ -20,7 +20,6 @@ package com.afollestad.recyclical
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.LinearLayoutManager

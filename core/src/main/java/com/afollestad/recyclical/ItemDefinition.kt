@@ -18,9 +18,7 @@
 package com.afollestad.recyclical
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.viewbinding.ViewBinding
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
@@ -41,7 +39,7 @@ typealias RecycledCallback<VH> = (viewHolder: VH) -> Unit
  * @author Aidan Follestad (@afollestad)
  */
 @RecyclicalMarker
-interface ItemDefinition<out IT : Any, VH : ViewHolder, VB: ViewBinding> {
+interface ItemDefinition<out IT : Any, VH : ViewHolder, VB : ViewBinding> {
   /**
    * Sets a binder that binds this item to a view holder before being displayed in the
    * RecyclerView.
@@ -81,7 +79,7 @@ interface ItemDefinition<out IT : Any, VH : ViewHolder, VB: ViewBinding> {
  *
  * @author Aidan Follestad (@afollestad)
  */
-inline fun <reified IT : Any, VH : ViewHolder, VB: ViewBinding> RecyclicalSetup.withItem(
+inline fun <reified IT : Any, VH : ViewHolder, VB : ViewBinding> RecyclicalSetup.withItem(
   noinline layoutBinding: (LayoutInflater, ViewGroup, Boolean) -> VB,
   itemClassName: String = IT::class.java.name,
   noinline block: ItemDefinition<IT, VH, VB>.() -> Unit

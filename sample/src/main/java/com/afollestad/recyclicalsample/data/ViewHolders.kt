@@ -18,13 +18,12 @@ package com.afollestad.recyclicalsample.data
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.viewbinding.ViewBinding
 import com.afollestad.recyclical.BindingViewHolder
 import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclicalsample.R.id
 import com.afollestad.recyclicalsample.databinding.MyListItemBinding
 
-class MyViewHolder(binding: MyListItemBinding): BindingViewHolder<MyListItemBinding>(binding)
+class MyViewHolder(binding: MyListItemBinding) : BindingViewHolder<MyListItemBinding>(binding)
 
 class MyViewHolder2(itemView: View) : ViewHolder(itemView) {
   val icon: ImageView = itemView.findViewById(id.icon)
