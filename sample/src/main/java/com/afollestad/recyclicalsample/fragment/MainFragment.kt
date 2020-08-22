@@ -33,6 +33,7 @@ import com.afollestad.recyclicalsample.data.MyListItem
 import com.afollestad.recyclicalsample.data.MyListItem2
 import com.afollestad.recyclicalsample.data.MyViewHolder
 import com.afollestad.recyclicalsample.data.MyViewHolder2
+import com.afollestad.recyclicalsample.databinding.MyListItemBinding
 import com.afollestad.recyclicalsample.util.toast
 
 class MainFragment : Fragment() {
@@ -57,7 +58,7 @@ class MainFragment : Fragment() {
       val newIndex = dataSource.size() + 1
       val title = "Item #$newIndex"
       dataSource.add(
-          if (newIndex % 2 == 0) {
+          if (newIndex % 2 == 0 || true) {
             MyListItem(newIndex, title, "Hello world #$newIndex")
           } else {
             MyListItem2(newIndex, title)
@@ -79,12 +80,14 @@ class MainFragment : Fragment() {
         }
       }
 
-      withItem<MyListItem, MyViewHolder>(R.layout.my_list_item) {
+      withItem<MyListItem, MyViewHolder, MyListItemBinding>(MyListItemBinding::inflate) {
         hasStableIds { it.id }
-        onBind(::MyViewHolder) { _, item ->
-          icon.setImageResource(R.drawable.person)
-          title.text = item.title
-          body.text = item.body
+        onBind(::MyViewHolder) { view, item ->
+          (binding as? MyListItemBinding)?.run {
+            icon.setImageResource(R.drawable.person)
+            title.text = item.title
+            body.text = item.body
+          }
         }
         onClick { index ->
           toast("Clicked $index: ${item.title} / ${item.body}")
@@ -94,16 +97,16 @@ class MainFragment : Fragment() {
         }
       }
 
-      withItem<MyListItem2, MyViewHolder2>(R.layout.my_list_item_2) {
-        hasStableIds { it.id }
-        onBind(::MyViewHolder2) { _, item ->
-          icon.setImageResource(R.drawable.person)
-          title.text = item.title
-        }
-        onClick { index ->
-          toast("Clicked $index: ${item.title}")
-        }
-      }
+//      withItem<MyListItem2, MyViewHolder2>(R.layout.my_list_item_2) {
+//        hasStableIds { it.id }
+//        onBind(::MyViewHolder2) { _, item ->
+//          icon.setImageResource(R.drawable.person)
+//          title.text = item.title
+//        }
+//        onClick { index ->
+//          toast("Clicked $index: ${item.title}")
+//        }
+//      }
     }
   }
 }

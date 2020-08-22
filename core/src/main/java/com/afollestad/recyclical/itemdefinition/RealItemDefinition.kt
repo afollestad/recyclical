@@ -19,6 +19,7 @@ package com.afollestad.recyclical.itemdefinition
 
 import android.view.View
 import androidx.annotation.VisibleForTesting
+import androidx.viewbinding.ViewBinding
 import com.afollestad.recyclical.ChildViewClickListener
 import com.afollestad.recyclical.IdGetter
 import com.afollestad.recyclical.ItemClickListener
@@ -35,10 +36,10 @@ import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
 /** @author Aidan Follestad (@afollestad) */
 @RecyclicalMarker
-class RealItemDefinition<out IT : Any, VH : ViewHolder>(
+class RealItemDefinition<out IT : Any, VH : ViewHolder, VB: ViewBinding>(
   internal val setup: RecyclicalSetup,
   val itemClassName: String
-) : ItemDefinition<IT, VH> {
+) : ItemDefinition<IT, VH, VB> {
 
   /** The current data source set in setup. */
   val currentDataSource: DataSource<*>?
@@ -49,7 +50,7 @@ class RealItemDefinition<out IT : Any, VH : ViewHolder>(
   @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
   internal var itemOnLongClick: ItemClickListener<Any>? = null
 
-  internal var creator: ViewHolderCreator<*>? = null
+  internal var creator: ((layoutBinding: VB) -> VH)? = null
   internal var binder: ViewHolderBinder<*, *>? = null
   internal var idGetter: IdGetter<Any>? = null
   internal var onRecycled: RecycledCallback<Any>? = null
@@ -57,25 +58,25 @@ class RealItemDefinition<out IT : Any, VH : ViewHolder>(
   var childClickDataList = mutableListOf<ChildClickData<*, *, *>>()
 
   override fun onBind(
-    viewHolderCreator: ViewHolderCreator<VH>,
+    viewHolderCreator: (layoutBinding: VB) -> VH,
     block: ViewHolderBinder<VH, IT>
-  ): ItemDefinition<IT, VH> {
+  ): ItemDefinition<IT, VH, VB> {
     this.creator = viewHolderCreator
     this.binder = block
     return this
   }
 
-  override fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH> {
+  override fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH, VB> {
     this.itemOnClick = (block as SelectionStateProvider<Any>.(Int) -> Unit)
     return this
   }
 
-  override fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH> {
+  override fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH, VB> {
     this.itemOnLongClick = (block as SelectionStateProvider<Any>.(Int) -> Unit)
     return this
   }
 
-  override fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT, VH> {
+  override fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT, VH, VB> {
     this.idGetter = idGetter as IdGetter<Any>
     return this
   }
@@ -109,9 +110,9 @@ class RealItemDefinition<out IT : Any, VH : ViewHolder>(
   }
 
   /** @author Aidan Follestad (@afollestad) */
-  data class ChildClickData<in IT : Any, VH : ViewHolder, VT : View>(
-    val viewHolderType: Class<VH>,
-    val child: (viewHolder: VH) -> VT,
+  data class ChildClickData<in IT : Any, VB : ViewBinding, VT : View>(
+    val viewBindingType: Class<VB>,
+    val child: (viewBinding: VB) -> VT,
     val callback: ChildViewClickListener<IT, VT>
   )
 }

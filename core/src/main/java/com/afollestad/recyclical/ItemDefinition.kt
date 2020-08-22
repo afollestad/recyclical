@@ -17,8 +17,11 @@
 
 package com.afollestad.recyclical
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.viewbinding.ViewBinding
 import com.afollestad.recyclical.itemdefinition.RealItemDefinition
 import com.afollestad.recyclical.viewholder.SelectionStateProvider
 
@@ -26,7 +29,7 @@ typealias ViewHolder = androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 typealias ItemClickListener<IT> = SelectionStateProvider<IT>.(index: Int) -> Unit
 typealias ChildViewClickListener<IT, VT> = SelectionStateProvider<IT>.(index: Int, view: VT) -> Unit
-typealias ViewHolderCreator<VH> = (itemView: View) -> VH
+typealias ViewHolderCreator<VH> = (layoutBinding: ViewBinding) -> VH
 typealias ViewHolderBinder<VH, IT> = VH.(index: Int, item: IT) -> Unit
 typealias IdGetter<IT> = (item: IT) -> Number
 typealias RecycledCallback<VH> = (viewHolder: VH) -> Unit
@@ -38,30 +41,30 @@ typealias RecycledCallback<VH> = (viewHolder: VH) -> Unit
  * @author Aidan Follestad (@afollestad)
  */
 @RecyclicalMarker
-interface ItemDefinition<out IT : Any, VH : ViewHolder> {
+interface ItemDefinition<out IT : Any, VH : ViewHolder, VB: ViewBinding> {
   /**
    * Sets a binder that binds this item to a view holder before being displayed in the
    * RecyclerView.
    */
   fun onBind(
-    viewHolderCreator: ViewHolderCreator<VH>,
+    viewHolderCreator: (layoutBinding: VB) -> VH,
     block: ViewHolderBinder<VH, IT>
-  ): ItemDefinition<IT, VH>
+  ): ItemDefinition<IT, VH, VB>
 
   /**
    * Sets a callback that's invoked when items of this type are clicked.
    */
-  fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH>
+  fun onClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH, VB>
 
   /**
    * Sets a callback that's invoked when items of this type are long clicked.
    */
-  fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH>
+  fun onLongClick(block: ItemClickListener<IT>): ItemDefinition<IT, VH, VB>
 
   /**
    * Sets a callback that gets a unique ID for each item of this type.
    */
-  fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT, VH>
+  fun hasStableIds(idGetter: IdGetter<IT>): ItemDefinition<IT, VH, VB>
 
   /**
    * Sets a callback that's invoked when a view holder is recycled by the underlying adapter.
@@ -78,16 +81,16 @@ interface ItemDefinition<out IT : Any, VH : ViewHolder> {
  *
  * @author Aidan Follestad (@afollestad)
  */
-inline fun <reified IT : Any, VH : ViewHolder> RecyclicalSetup.withItem(
-  @LayoutRes layoutRes: Int,
+inline fun <reified IT : Any, VH : ViewHolder, VB: ViewBinding> RecyclicalSetup.withItem(
+  noinline layoutBinding: (LayoutInflater, ViewGroup, Boolean) -> VB,
   itemClassName: String = IT::class.java.name,
-  noinline block: ItemDefinition<IT, VH>.() -> Unit
-): ItemDefinition<IT, VH> {
-  return RealItemDefinition<IT, VH>(this, itemClassName)
+  noinline block: ItemDefinition<IT, VH, VB>.() -> Unit
+): ItemDefinition<IT, VH, VB> {
+  return RealItemDefinition<IT, VH, VB>(this, itemClassName)
       .apply(block)
       .also { definition ->
         registerItemDefinition(
-            layoutRes = layoutRes,
+            layoutBinding = layoutBinding,
             definition = definition
         )
       }

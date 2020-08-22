@@ -17,6 +17,7 @@ package com.afollestad.recyclicalsample
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +36,7 @@ import com.afollestad.recyclical.viewholder.isSelected
 import com.afollestad.recyclical.withItem
 import com.afollestad.recyclicalsample.data.MyListItem
 import com.afollestad.recyclicalsample.data.MyViewHolder
+import com.afollestad.recyclicalsample.databinding.MyListItemBinding
 import com.afollestad.recyclicalsample.fragment.FragmentSampleActivity
 import com.afollestad.recyclicalsample.util.startActivity
 import com.afollestad.recyclicalsample.util.toast
@@ -98,11 +100,21 @@ class MainActivity : AppCompatActivity() {
       withEmptyView(emptyView)
       withDataSource(dataSource)
 
-      withItem<MyListItem, MyViewHolder>(R.layout.my_list_item) {
+      withItem<MyListItem, MyViewHolder, MyListItemBinding>(MyListItemBinding::inflate) {
         hasStableIds { it.id }
-        onBind(::MyViewHolder) { _, item -> bindMyListItem(item) }
+        onBind(::MyViewHolder) { _, item ->
+          binding.icon.setImageResource(
+              if(isSelected()){
+                R.drawable.check_circle
+              } else {
+                R.drawable.person
+              }
+          )
+          binding.title.text = item.title
+          binding.body.text = item.body
+        }
 
-        onChildViewClick(MyViewHolder::icon) { _, _ ->
+        onChildViewClick(MyListItemBinding::body) { _, _ ->
           toast("Clicked icon of ${item.title}!")
           toggleSelection()
         }
@@ -111,18 +123,6 @@ class MainActivity : AppCompatActivity() {
         onLongClick { toggleSelection() }
       }
     }
-  }
-
-  private fun MyViewHolder.bindMyListItem(item: MyListItem) {
-    icon.setImageResource(
-        if (isSelected()) {
-          R.drawable.check_circle
-        } else {
-          R.drawable.person
-        }
-    )
-    title.text = item.title
-    body.text = item.body
   }
 
   private fun SelectionStateProvider<MyListItem>.clickMyListItem(index: Int) {
