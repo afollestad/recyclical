@@ -17,15 +17,9 @@
 
 package com.afollestad.recyclical.testdata
 
-import android.view.View
-import android.widget.TextView
-import com.afollestad.recyclical.R
-import com.afollestad.recyclical.ViewHolder
+import com.afollestad.recyclical.BindingViewHolder
+import com.afollestad.recyclical.databinding.TestItemBinding
 
-class TestViewHolder(itemView: View) : ViewHolder(itemView) {
-  val title: TextView = itemView.findViewById(R.id.title)
-}
+class TestViewHolder(binding: TestItemBinding) : BindingViewHolder<TestItemBinding>(binding)
+class TestViewHolder2(binding: TestItemBinding) : BindingViewHolder<TestItemBinding>(binding)
 
-class TestViewHolder2(itemView: View) : ViewHolder(itemView) {
-  val title: TextView = itemView.findViewById(R.id.title)
-}

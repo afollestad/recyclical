@@ -16,15 +16,15 @@
 package com.afollestad.recyclical.itemdefinition
 
 import android.content.Context
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
-import com.afollestad.recyclical.R
 import com.afollestad.recyclical.R.id
 import com.afollestad.recyclical.RecyclicalSetup
 import com.afollestad.recyclical.ViewHolder
+import com.afollestad.recyclical.databinding.TestItemBinding
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.testdata.TestChildClickListener
 import com.afollestad.recyclical.testdata.TestClickListener
@@ -54,22 +54,22 @@ class ItemDefinitionTest {
   private val globalClickListener = TestClickListener<Any>()
   private val globalLongClickListener = TestClickListener<Any>()
 
-  private val viewHolderCreator: (View) -> (TestViewHolder) = { view ->
+  private val viewHolderCreator: (TestItemBinding) -> (TestViewHolder) = { itemBinding ->
+
     val newViewHolder = mock<TestViewHolder> {
-      on { title } doReturn TextView(ApplicationProvider.getApplicationContext())
       on { adapterPosition } doReturn TEST_ITEM_INDEX
+      on { binding } doReturn itemBinding
     }
     newViewHolder.apply {
       val itemViewField = ViewHolder::class.java.getDeclaredField("itemView")
           .apply {
             isAccessible = true
           }
-      itemViewField.set(this, view)
+      itemViewField.set(this, itemBinding.root)
     }
   }
 
-  private lateinit var titleView: TextView
-  private lateinit var rootView: FrameLayout
+  private lateinit var testBinding: TestItemBinding
 
   private val setup = RecyclicalSetup(recyclerView)
       .apply {
@@ -77,37 +77,38 @@ class ItemDefinitionTest {
         withClickListener(globalClickListener.capture())
         withLongClickListener(globalLongClickListener.capture())
       }
-  private val definition = RealItemDefinition<TestItem, TestViewHolder>(
+  private val definition = RealItemDefinition<TestItem, TestViewHolder, TestItemBinding>(
       setup = setup,
       itemClassName = TestItem::class.java.name
   )
 
-  @Before fun create() {
+  @Before
+  fun create() {
     val context = ApplicationProvider.getApplicationContext<Context>()
-    rootView = FrameLayout(context)
-    titleView = TextView(context)
-        .apply { id = R.id.title }
-        .also { rootView.addView(it) }
+
+    testBinding = TestItemBinding.inflate(LayoutInflater.from(context), null, false)
 
     definition.itemClassName
         .assertEqualTo(TestItem::class.java.name)
     definition.currentDataSource.assertSameAs(dataSource)
   }
 
-  @Test fun createViewHolder() {
+  @Test
+  fun createViewHolder() {
     val creator = ::TestViewHolder
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(creator, binder)
     definition.creator.assertSameAs(creator)
 
-    definition.createViewHolder(rootView)
+    definition.createViewHolder(testBinding)
         .assertIsA<TestViewHolder> {
-          title.assertSameAs(titleView)
+          binding.title.assertSameAs(testBinding.title)
         }
   }
 
-  @Test fun bindViewHolder() {
-    val viewHolder = TestViewHolder(rootView)
+  @Test
+  fun bindViewHolder() {
+    val viewHolder = TestViewHolder(testBinding)
 
     var wasBinderCalled = false
     val binder: ViewHolder.(Int, TestItem) -> Unit = { index, item ->
@@ -126,66 +127,69 @@ class ItemDefinitionTest {
 
     wasBinderCalled.assertTrue()
 
-    rootView.getTag(id.rec_view_item_view_holder)
+    testBinding.root.getTag(id.rec_view_item_view_holder)
         .assertIsA<ViewHolder>()
-    rootView.getTag(id.rec_view_item_selectable_data_source)
+    testBinding.root.getTag(id.rec_view_item_selectable_data_source)
         .assertNull()
   }
 
-  @Test fun onClick() {
+  @Test
+  fun onClick() {
     val listener = TestClickListener<TestItem>()
     definition.onClick(listener.capture())
 
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(viewHolderCreator, binder)
-    val viewHolder = definition.createViewHolder(rootView)
+    val viewHolder = definition.createViewHolder(testBinding)
     definition.bindViewHolder(
         viewHolder, testItem,
         TEST_ITEM_INDEX
     )
 
-    rootView.performClick()
+    testBinding.root.performClick()
     listener.expect(TEST_ITEM_INDEX, testItem)
     globalClickListener.expect(TEST_ITEM_INDEX, testItem)
   }
 
-  @Test fun onLongClick() {
+  @Test
+  fun onLongClick() {
     val listener = TestClickListener<TestItem>()
     definition.onLongClick(listener.capture())
 
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(viewHolderCreator, binder)
-    val viewHolder = definition.createViewHolder(rootView)
+    val viewHolder = definition.createViewHolder(testBinding)
     definition.bindViewHolder(
         viewHolder, testItem,
         TEST_ITEM_INDEX
     )
 
-    rootView.performLongClick()
+    testBinding.root.performLongClick()
     listener.expect(TEST_ITEM_INDEX, testItem)
     globalLongClickListener.expect(TEST_ITEM_INDEX, testItem)
   }
 
-  @Test fun onChildViewClick() {
+  @Test
+  fun onChildViewClick() {
     val listener = TestChildClickListener<TestItem, TextView>()
-    definition.onChildViewClick(TestViewHolder::title, listener.capture())
+    definition.onChildViewClick(TestItemBinding::title, listener.capture())
 
     val binder: ViewHolder.(Int, TestItem) -> Unit = { _, _ -> }
     definition.onBind(viewHolderCreator, binder)
 
-    val viewHolder = definition.createViewHolder(rootView) as TestViewHolder
+    val viewHolder = definition.createViewHolder(testBinding) as TestViewHolder
     definition.bindViewHolder(
         viewHolder, testItem,
         TEST_ITEM_INDEX
     )
 
-    rootView.performClick()
+    testBinding.root.performClick()
     listener.expectNothing()
 
-    rootView.performLongClick()
+    testBinding.root.performLongClick()
     listener.expectNothing()
 
-    viewHolder.title.performClick()
-    listener.expect(TEST_ITEM_INDEX, viewHolder.title, testItem)
+    viewHolder.binding.title.performClick()
+    listener.expect(TEST_ITEM_INDEX, viewHolder.binding.title, testItem)
   }
 }
