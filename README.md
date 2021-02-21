@@ -40,7 +40,7 @@
 
 # Core
 
-[ ![Core](https://img.shields.io/maven-central/v/com.afollestad.recyclical/core?style=flat&label=Core) ](https://repo1.maven.org/maven2/com/afollestad/recyclical/core)
+[ ![Core](https://img.shields.io/maven-central/v/com.afollestad/recyclical?style=flat&label=Core) ](https://repo1.maven.org/maven2/com/afollestad/recyclical)
 
 ## Gradle Dependency
 
@@ -448,7 +448,7 @@ If you have more than one item that your RecyclerView can hold, *all* need to de
 
 The swipe module provides extensions to setup swipe actions, like swipe to delete.
 
-[ ![Swipe](https://img.shields.io/maven-central/v/com.afollestad.recyclical/swipe?style=flat&label=Swipe) ](https://repo1.maven.org/maven2/com/afollestad/recyclical/swipe]
+[ ![Swipe](https://img.shields.io/maven-central/v/com.afollestad/recyclical-swipe?style=flat&label=Swipe) ](https://repo1.maven.org/maven2/com/afollestad/recyclical-swipe]
 
 ## Gradle Dependency
 
