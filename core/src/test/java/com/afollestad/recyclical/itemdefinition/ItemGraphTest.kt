@@ -15,6 +15,10 @@
  */
 package com.afollestad.recyclical.itemdefinition
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
+import com.afollestad.recyclical.databinding.TestItemBinding
 import com.afollestad.recyclical.testutil.assertEqualTo
 import com.afollestad.recyclical.testutil.assertFalse
 import com.afollestad.recyclical.testutil.assertSameAs
@@ -25,17 +29,17 @@ import com.nhaarman.mockitokotlin2.mock
 import java.lang.IllegalArgumentException
 import org.junit.Test
 
-private const val REAL_LAYOUT_RES_1 = 1024
+private val REAL_LAYOUT_RES_1: ((LayoutInflater, ViewGroup, Boolean) -> ViewBinding) = TestItemBinding::inflate
 private const val REAL_CLASS_NAME_1 = "com.afollestad.SomeClass1"
-private const val REAL_LAYOUT_RES_2 = 2048
+private val REAL_LAYOUT_RES_2: ((LayoutInflater, ViewGroup, Boolean) -> ViewBinding) = TestItemBinding::inflate
 private const val REAL_CLASS_NAME_2 = "com.afollestad.SomeClass2"
 
 class ItemGraphTest {
   private val graph = ItemGraph()
-  private val itemDefinitionNoIdGetter = mock<RealItemDefinition<*, *>> {
+  private val itemDefinitionNoIdGetter = mock<RealItemDefinition<*, *, *>> {
     on { itemClassName } doReturn REAL_CLASS_NAME_1
   }
-  private val itemDefinitionWithIdGetter = mock<RealItemDefinition<*, *>> {
+  private val itemDefinitionWithIdGetter = mock<RealItemDefinition<*, *, *>> {
     on { itemClassName } doReturn REAL_CLASS_NAME_2
     on { idGetter } doReturn { 5 }
   }

@@ -18,16 +18,12 @@ package com.afollestad.recyclicalsample.data
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.afollestad.recyclical.BindingViewHolder
 import com.afollestad.recyclical.ViewHolder
 import com.afollestad.recyclicalsample.R.id
+import com.afollestad.recyclicalsample.databinding.MyListItem2Binding
+import com.afollestad.recyclicalsample.databinding.MyListItemBinding
 
-class MyViewHolder(itemView: View) : ViewHolder(itemView) {
-  val icon: ImageView = itemView.findViewById(id.icon)
-  val title: TextView = itemView.findViewById(id.title)
-  val body: TextView = itemView.findViewById(id.body)
-}
+class MyViewHolder(binding: MyListItemBinding) : BindingViewHolder<MyListItemBinding>(binding)
 
-class MyViewHolder2(itemView: View) : ViewHolder(itemView) {
-  val icon: ImageView = itemView.findViewById(id.icon)
-  val title: TextView = itemView.findViewById(id.title)
-}
+class MyViewHolder2(binding: MyListItem2Binding) : BindingViewHolder<MyListItem2Binding>(binding)

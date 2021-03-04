@@ -73,9 +73,8 @@ internal open class DefinitionAdapter : RecyclerView.Adapter<ViewHolder>() {
     parent: ViewGroup,
     viewType: Int
   ): ViewHolder {
-    val layoutRes = itemGraph.layoutForType(viewType)
-    val view = LayoutInflater.from(parent.context)
-        .inflate(layoutRes, parent, false)
+    val layoutBindingFun = itemGraph.layoutForType(viewType)
+    val view = layoutBindingFun(LayoutInflater.from(parent.context), parent, false)
     return itemGraph.definitionForType(viewType)
         .createViewHolder(view)
   }

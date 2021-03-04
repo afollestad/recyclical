@@ -18,6 +18,7 @@ package com.afollestad.recyclical.swipe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
+import com.afollestad.recyclical.databinding.TestItemBinding
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.setup
 import com.afollestad.recyclical.swipe.SwipeLocation.LEFT
@@ -47,7 +48,7 @@ class SwipePluginTest {
   @Test fun `attaches to recycler view`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(LEFT, RIGHT) {}
@@ -66,7 +67,7 @@ class SwipePluginTest {
   @Test fun `left swipe direction`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(LEFT) {}
@@ -82,7 +83,7 @@ class SwipePluginTest {
   @Test fun `right swipe direction`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(RIGHT) {}
@@ -98,7 +99,7 @@ class SwipePluginTest {
   @Test fun `left and right swipe directions`() {
     recyclerView.setup {
       withDataSource(dataSource)
-      withItem<TestItem, TestViewHolder>(android.R.layout.simple_list_item_1) {
+      withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
         onBind(::TestViewHolder) { _, _ -> }
       }
       withSwipeAction(LEFT, RIGHT) {}

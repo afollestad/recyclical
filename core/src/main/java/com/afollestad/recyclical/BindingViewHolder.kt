@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused")
+package com.afollestad.recyclical
 
-package com.afollestad.recyclical.testdata
+import androidx.viewbinding.ViewBinding
 
-import com.afollestad.recyclical.BindingViewHolder
-import com.afollestad.recyclical.databinding.TestItemBinding
-
-class TestViewHolder(binding: TestItemBinding) : BindingViewHolder<TestItemBinding>(binding)
-class TestViewHolder2(binding: TestItemBinding) : BindingViewHolder<TestItemBinding>(binding)
-
+abstract class BindingViewHolder<VB : ViewBinding>(val binding: VB) : ViewHolder(binding.root)

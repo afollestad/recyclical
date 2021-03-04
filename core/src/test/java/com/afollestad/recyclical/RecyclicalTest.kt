@@ -19,6 +19,8 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import androidx.viewbinding.ViewBinding
+import com.afollestad.recyclical.databinding.TestItemBinding
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.getDataSource
@@ -90,7 +92,7 @@ class RecyclicalTest {
         withLayoutManager(testLayoutManager)
         verify(recyclerView).layoutManager = same(testLayoutManager)
 
-        withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
+        withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
           onBind(::TestViewHolder, binder)
           onClick(testItemClickListener)
           onLongClick(testItemLongClickListener)
@@ -100,7 +102,7 @@ class RecyclicalTest {
   }
 
   @Test fun `setup succeeds with required information`() {
-    var itemDefinition: ItemDefinition<*, *>? = null
+    var itemDefinition: ItemDefinition<*, *, *>? = null
     val handle = recyclerView.setup {
       adapterCreator = { adapter }
       withEmptyView(emptyView)
@@ -108,7 +110,7 @@ class RecyclicalTest {
       withClickListener(testGlobalClickListener)
       withLongClickListener(testGlobalLongClickListener)
 
-      itemDefinition = withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
+      itemDefinition = withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
         onBind(::TestViewHolder, binder)
         onClick(testItemClickListener)
         onLongClick(testItemLongClickListener)
@@ -140,7 +142,7 @@ class RecyclicalTest {
       adapterCreator = { adapter }
       withDataSource(dataSource)
 
-      withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
+      withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
         hasStableIds { it.id }
         onBind(::TestViewHolder, binder)
       }
@@ -158,11 +160,11 @@ class RecyclicalTest {
         adapterCreator = { adapter }
         withDataSource(dataSource)
 
-        withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
+        withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
           onBind(::TestViewHolder, binder)
         }
 
-        withItem<TestItem2, TestViewHolder2>(INFLATE_ITEM_LAYOUT_RES_2) {
+        withItem<TestItem2, TestViewHolder2, TestItemBinding>(TestItemBinding::inflate) {
           hasStableIds { it.id }
           onBind(::TestViewHolder2, binder2)
         }
@@ -178,7 +180,7 @@ class RecyclicalTest {
     recyclerView.setup {
       adapterCreator = { adapter }
       withDataSource(dataSource)
-      withItem<TestItem, TestViewHolder>(INFLATE_ITEM_LAYOUT_RES) {
+      withItem<TestItem, TestViewHolder, TestItemBinding>(TestItemBinding::inflate) {
         onBind(::TestViewHolder, binder)
       }
 

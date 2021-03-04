@@ -17,13 +17,15 @@
 
 package com.afollestad.recyclical
 
+import android.view.LayoutInflater
 import android.view.View
-import androidx.annotation.LayoutRes
+import android.view.ViewGroup
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import androidx.viewbinding.ViewBinding
 import com.afollestad.recyclical.datasource.DataSource
 import com.afollestad.recyclical.handle.RealRecyclicalHandle
 import com.afollestad.recyclical.handle.RecyclicalHandle
@@ -118,9 +120,9 @@ class RecyclicalSetup internal constructor(
 
   /** This should not be called directly. */
   @RestrictTo(LIBRARY) fun registerItemDefinition(
-    @LayoutRes layoutRes: Int,
-    definition: ItemDefinition<*, *>
-  ) = itemGraph.register(layoutRes, definition)
+    layoutBinding: (LayoutInflater, ViewGroup, Boolean) -> ViewBinding,
+    definition: ItemDefinition<*, *, *>
+  ) = itemGraph.register(layoutBinding, definition)
 
   internal fun toAttached(): RecyclicalHandle {
     val dataSource = currentDataSource ?: error("Must set a data source.")
