@@ -10,6 +10,8 @@
 
 ---
 
+This repo is archived as this library is deprecated. I do not wish to maintain a View-based library now that Jetpack Compose is a thing. Prefer `LazyColumn`/`LazyRow`.
+
 # Table of Contents
 
 ## Core
