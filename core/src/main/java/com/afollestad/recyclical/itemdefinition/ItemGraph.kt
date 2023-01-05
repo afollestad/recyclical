@@ -15,11 +15,13 @@
  */
 package com.afollestad.recyclical.itemdefinition
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.annotation.CheckResult
-import androidx.annotation.LayoutRes
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.annotation.VisibleForTesting
+import androidx.viewbinding.ViewBinding
 import com.afollestad.recyclical.ItemDefinition
 
 /**
@@ -30,38 +32,38 @@ import com.afollestad.recyclical.ItemDefinition
 @RestrictTo(LIBRARY)
 class ItemGraph {
   @VisibleForTesting
-  internal val itemTypeToLayout = mutableMapOf<Int, Int>()
+  internal val itemTypeToLayout = mutableMapOf<Int, (LayoutInflater, ViewGroup, Boolean) -> ViewBinding>()
   @VisibleForTesting
-  internal var itemTypeToDefinition = mutableMapOf<Int, ItemDefinition<*, *>>()
+  internal var itemTypeToDefinition = mutableMapOf<Int, ItemDefinition<*, *, *>>()
 
   private var itemClassToType = mutableMapOf<String, Int>()
 
   fun register(
-    @LayoutRes layoutRes: Int,
-    definition: ItemDefinition<*, *>
+    layoutBinding: (LayoutInflater, ViewGroup, Boolean) -> ViewBinding,
+    definition: ItemDefinition<*, *, *>
   ) {
     val itemClassName = definition.realDefinition()
         .itemClassName
     val itemType = (itemTypeToLayout.keys.max() ?: 0) + 1
-    this.itemTypeToLayout[itemType] = layoutRes
+    this.itemTypeToLayout[itemType] = layoutBinding
     this.itemClassToType[itemClassName] = itemType
     this.itemTypeToDefinition[itemType] = definition
   }
 
-  @CheckResult @LayoutRes
-  fun layoutForType(type: Int): Int {
+  @CheckResult
+  fun layoutForType(type: Int): (LayoutInflater, ViewGroup, Boolean) -> ViewBinding {
     return itemTypeToLayout[type] ?: error(
         "Didn't find layout for type $type"
     )
   }
 
-  @CheckResult fun definitionForType(type: Int): ItemDefinition<*, *> {
+  @CheckResult fun definitionForType(type: Int): ItemDefinition<*, *, *> {
     return itemTypeToDefinition[type] ?: error(
         "Didn't find any definitions for type $type"
     )
   }
 
-  @CheckResult fun definitionForName(name: String): ItemDefinition<*, *> {
+  @CheckResult fun definitionForName(name: String): ItemDefinition<*, *, *> {
     val type = itemClassToType[name] ?: error(
         "Didn't find item type for class $name"
     )
